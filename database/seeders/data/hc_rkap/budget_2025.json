@@ -1,0 +1,1013 @@
+{
+"year": 2025,
+"entries": [
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 1,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 2,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 3,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 4,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 5,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 6,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 7,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 8,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 9,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 10,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 11,
+"scenario": "rkap",
+"amount": 1658776706.9
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 12,
+"scenario": "rkap",
+"amount": 1658776706.86
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 1,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 2,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 3,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 4,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 5,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 6,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 7,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 8,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 9,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 10,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 11,
+"scenario": "prognosa",
+"amount": 1658029972.21
+},
+{
+"cost_type": "GAJI",
+"unit": "JOINT",
+"month": 12,
+"scenario": "prognosa",
+"amount": 1658029972.16
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 1,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 2,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 3,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 4,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 5,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 6,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 7,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 8,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 9,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 10,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 11,
+"scenario": "rkap",
+"amount": 2423307075.55
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 12,
+"scenario": "rkap",
+"amount": 2423307075.51
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 1,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 2,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 3,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 4,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 5,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 6,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 7,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 8,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 9,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 10,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 11,
+"scenario": "prognosa",
+"amount": 2294107820.03
+},
+{
+"cost_type": "TUNJ",
+"unit": "JOINT",
+"month": 12,
+"scenario": "prognosa",
+"amount": 2294107820.06
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 1,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 2,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 3,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 4,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 5,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 6,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 7,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 8,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 9,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 10,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 11,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 12,
+"scenario": "rkap",
+"amount": 1195916632.82
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 1,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 2,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 3,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 4,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 5,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 6,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 7,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 8,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 9,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 10,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 11,
+"scenario": "prognosa",
+"amount": 1050129277.17
+},
+{
+"cost_type": "HONOR",
+"unit": "JOINT",
+"month": 12,
+"scenario": "prognosa",
+"amount": 1050129277.13
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 1,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 2,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 3,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 4,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 5,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 6,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 7,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 8,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 9,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 10,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 11,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 12,
+"scenario": "rkap",
+"amount": 839452247.12
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 1,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 2,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 3,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 4,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 5,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 6,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 7,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 8,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 9,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 10,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 11,
+"scenario": "prognosa",
+"amount": 561435435.47
+},
+{
+"cost_type": "IURAN",
+"unit": "JOINT",
+"month": 12,
+"scenario": "prognosa",
+"amount": 561435435.48
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 1,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 2,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 3,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 4,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 5,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 6,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 7,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 8,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 9,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 10,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 11,
+"scenario": "rkap",
+"amount": 166666666.67
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 12,
+"scenario": "rkap",
+"amount": 166666666.63
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 1,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 2,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 3,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 4,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 5,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 6,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 7,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 8,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 9,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 10,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 11,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LEMBUR",
+"unit": "JOINT",
+"month": 12,
+"scenario": "prognosa",
+"amount": 134081971.38
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 1,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 2,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 3,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 4,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 5,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 6,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 7,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 8,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 9,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 10,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 11,
+"scenario": "rkap",
+"amount": 219299334.44
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 12,
+"scenario": "rkap",
+"amount": 219299334.45
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 1,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 2,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 3,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 4,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 5,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 6,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 7,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 8,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 9,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 10,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 11,
+"scenario": "prognosa",
+"amount": 169067975.08
+},
+{
+"cost_type": "LAIN",
+"unit": "JOINT",
+"month": 12,
+"scenario": "prognosa",
+"amount": 169067975.12
+}
+]
+}

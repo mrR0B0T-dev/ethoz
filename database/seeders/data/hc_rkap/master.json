@@ -1,0 +1,374 @@
+{
+ "work_units": [
+  {
+   "code": "PUSAT",
+   "name": "Kantor Pusat",
+   "type": "group",
+   "parent": null
+  },
+  {
+   "code": "KC",
+   "name": "Kantor Cabang",
+   "type": "group",
+   "parent": null
+  },
+  {
+   "code": "JOINT",
+   "name": "Biaya Bersama (Joint Cost)",
+   "type": "group",
+   "parent": null
+  },
+  {
+   "code": "BMG-GM",
+   "name": "Business & Marketing Group - GM",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "BMG-MM",
+   "name": "Business & Marketing Group - MM",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "PMG",
+   "name": "Production Management Group",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "BCN",
+   "name": "Business Consulting Group",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "OSM",
+   "name": "Operation & Service Management",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "SMG",
+   "name": "Strategic Management Group",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "HCS",
+   "name": "Human Capital & Corporate Secretary",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "FAC",
+   "name": "Finance & Accounting Group",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "BAC",
+   "name": "Business Audit & Compliance",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "DSP",
+   "name": "Development & System Planning",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "IAT",
+   "name": "Internal Audit Team",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "BOD",
+   "name": "Board of Directors",
+   "type": "department",
+   "parent": "PUSAT"
+  },
+  {
+   "code": "CABANG",
+   "name": "Koordinator Cabang",
+   "type": "department",
+   "parent": "KC"
+  },
+  {
+   "code": "DENPASAR",
+   "name": "Cabang Denpasar",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "MAKASSAR",
+   "name": "Cabang Makassar",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "BANDUNG",
+   "name": "Cabang Bandung",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "MEDAN",
+   "name": "Cabang Medan",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "SURABAYA",
+   "name": "Cabang Surabaya",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "SEMARANG",
+   "name": "Cabang Semarang",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "PALEMBANG",
+   "name": "Cabang Palembang",
+   "type": "section",
+   "parent": "CABANG"
+  },
+  {
+   "code": "BANJARMASIN",
+   "name": "Cabang Banjarmasin",
+   "type": "section",
+   "parent": "CABANG"
+  }
+ ],
+ "cost_types": [
+  {
+   "code": "GAJI",
+   "name": "Biaya Gaji",
+   "parent": null,
+   "employee_status": "tetap",
+   "sort_order": 0
+  },
+  {
+   "code": "GAJI.DASAR",
+   "name": "Biaya Gaji Dasar",
+   "parent": "GAJI",
+   "employee_status": "tetap",
+   "sort_order": 1
+  },
+  {
+   "code": "GAJI.TRANSPORT",
+   "name": "Biaya Transport",
+   "parent": "GAJI",
+   "employee_status": "tetap",
+   "sort_order": 2
+  },
+  {
+   "code": "GAJI.JABATAN",
+   "name": "Biaya Tunjangan Jabatan",
+   "parent": "GAJI",
+   "employee_status": "tetap",
+   "sort_order": 3
+  },
+  {
+   "code": "GAJI.GMM",
+   "name": "Biaya Gaji GMM",
+   "parent": "GAJI",
+   "employee_status": "tetap",
+   "sort_order": 4
+  },
+  {
+   "code": "GAJI.CABANG",
+   "name": "Biaya Gaji Cabang",
+   "parent": "GAJI",
+   "employee_status": "tetap",
+   "sort_order": 5
+  },
+  {
+   "code": "TUNJ",
+   "name": "Biaya Tunjangan",
+   "parent": null,
+   "employee_status": null,
+   "sort_order": 6
+  },
+  {
+   "code": "TUNJ.CUTI",
+   "name": "Biaya Tunjangan Cuti",
+   "parent": "TUNJ",
+   "employee_status": "tetap",
+   "sort_order": 7
+  },
+  {
+   "code": "TUNJ.PENGOBATAN",
+   "name": "Biaya Tunjangan Pengobatan",
+   "parent": "TUNJ",
+   "employee_status": "tetap",
+   "sort_order": 8
+  },
+  {
+   "code": "TUNJ.KOMPENSASI",
+   "name": "Biaya Tunjangan Kompensasi",
+   "parent": "TUNJ",
+   "employee_status": "kontrak",
+   "sort_order": 9
+  },
+  {
+   "code": "TUNJ.PPH21",
+   "name": "Biaya Tunjangan Pajak PPh 21",
+   "parent": "TUNJ",
+   "employee_status": null,
+   "sort_order": 10
+  },
+  {
+   "code": "TUNJ.THR",
+   "name": "Biaya Tunjangan Hari Raya",
+   "parent": "TUNJ",
+   "employee_status": null,
+   "sort_order": 11
+  },
+  {
+   "code": "TUNJ.BONUS",
+   "name": "Biaya Tunjangan Bonus",
+   "parent": "TUNJ",
+   "employee_status": null,
+   "sort_order": 12
+  },
+  {
+   "code": "TUNJ.COP",
+   "name": "Biaya Tunj. Car Owner Program",
+   "parent": "TUNJ",
+   "employee_status": "tetap",
+   "sort_order": 13
+  },
+  {
+   "code": "TUNJ.UTILITAS",
+   "name": "Biaya Tunjangan Utilitas",
+   "parent": "TUNJ",
+   "employee_status": "tetap",
+   "sort_order": 14
+  },
+  {
+   "code": "HONOR",
+   "name": "Biaya Honorarium",
+   "parent": null,
+   "employee_status": null,
+   "sort_order": 15
+  },
+  {
+   "code": "HONOR.BULANAN",
+   "name": "Biaya Honorarium Bulanan",
+   "parent": "HONOR",
+   "employee_status": "kontrak",
+   "sort_order": 16
+  },
+  {
+   "code": "HONOR.PIHAK3",
+   "name": "Biaya Honorarium Pihak Ke-3",
+   "parent": "HONOR",
+   "employee_status": "honor",
+   "sort_order": 17
+  },
+  {
+   "code": "IURAN",
+   "name": "Biaya Iuran Dana Pensiun & BPJS",
+   "parent": null,
+   "employee_status": null,
+   "sort_order": 18
+  },
+  {
+   "code": "IURAN.PENSIUN",
+   "name": "Iuran Dana Pensiun",
+   "parent": "IURAN",
+   "employee_status": "tetap",
+   "sort_order": 19
+  },
+  {
+   "code": "IURAN.JAMSOSTEK",
+   "name": "Iuran BPJS Ketenagakerjaan",
+   "parent": "IURAN",
+   "employee_status": null,
+   "sort_order": 20
+  },
+  {
+   "code": "IURAN.BPJSKES",
+   "name": "Iuran BPJS Kesehatan",
+   "parent": "IURAN",
+   "employee_status": null,
+   "sort_order": 21
+  },
+  {
+   "code": "IURAN.INHEALTH",
+   "name": "Iuran Inhealth",
+   "parent": "IURAN",
+   "employee_status": "tetap",
+   "sort_order": 22
+  },
+  {
+   "code": "LEMBUR",
+   "name": "Biaya Lembur & Uang Makan",
+   "parent": null,
+   "employee_status": null,
+   "sort_order": 23
+  },
+  {
+   "code": "LEMBUR.TETAP",
+   "name": "Lembur & Uang Makan Pegawai Tetap",
+   "parent": "LEMBUR",
+   "employee_status": "tetap",
+   "sort_order": 24
+  },
+  {
+   "code": "LEMBUR.HONOR",
+   "name": "Lembur Pegawai Honorer",
+   "parent": "LEMBUR",
+   "employee_status": "honor",
+   "sort_order": 25
+  },
+  {
+   "code": "LAIN",
+   "name": "Biaya Personil Lainnya",
+   "parent": null,
+   "employee_status": null,
+   "sort_order": 26
+  },
+  {
+   "code": "LAIN.DIKLAT_TETAP",
+   "name": "Pendidikan & Pelatihan Pegawai Tetap",
+   "parent": "LAIN",
+   "employee_status": "tetap",
+   "sort_order": 27
+  },
+  {
+   "code": "LAIN.DIKLAT_HONOR",
+   "name": "Pendidikan & Pelatihan Pegawai Tidak Tetap",
+   "parent": "LAIN",
+   "employee_status": "honor",
+   "sort_order": 28
+  },
+  {
+   "code": "LAIN.IAMJ",
+   "name": "Biaya IAMJ",
+   "parent": "LAIN",
+   "employee_status": "tetap",
+   "sort_order": 29
+  },
+  {
+   "code": "LAIN.PURNABAKTI",
+   "name": "Biaya Purnabakti",
+   "parent": "LAIN",
+   "employee_status": "tetap",
+   "sort_order": 30
+  },
+  {
+   "code": "LAIN.CAR",
+   "name": "Biaya CAR",
+   "parent": "LAIN",
+   "employee_status": "tetap",
+   "sort_order": 31
+  }
+ ]
+}

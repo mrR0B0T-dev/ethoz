@@ -1,0 +1,170 @@
+[
+ {
+  "code": "kenaikan_dirkom",
+  "label": "Kenaikan Gaji Direksi & Komisaris",
+  "group": "kenaikan_gaji",
+  "value_type": "persen",
+  "value": 6,
+  "applies_to": "direksi"
+ },
+ {
+  "code": "kenaikan_tetap",
+  "label": "Kenaikan Gaji Pegawai Tetap",
+  "group": "kenaikan_gaji",
+  "value_type": "persen",
+  "value": 5,
+  "applies_to": "tetap"
+ },
+ {
+  "code": "kenaikan_kontrak",
+  "label": "Kenaikan Gaji Pegawai Kontrak",
+  "group": "kenaikan_gaji",
+  "value_type": "persen",
+  "value": 4,
+  "applies_to": "kontrak"
+ },
+ {
+  "code": "kenaikan_ump",
+  "label": "Kenaikan UMP (Pegawai Honor/Outsource)",
+  "group": "kenaikan_gaji",
+  "value_type": "persen",
+  "value": 7,
+  "applies_to": "honor"
+ },
+ {
+  "code": "bonus_direksi",
+  "label": "Bonus Direksi",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 5,
+  "applies_to": "direksi"
+ },
+ {
+  "code": "bonus_tetap",
+  "label": "Bonus Pegawai Tetap",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 3.5,
+  "applies_to": "tetap"
+ },
+ {
+  "code": "thr_tetap",
+  "label": "THR Pegawai Tetap",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 2,
+  "applies_to": "tetap"
+ },
+ {
+  "code": "bonus_kontrak",
+  "label": "Bonus Pegawai Kontrak (Honorarium)",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 1.5,
+  "applies_to": "kontrak"
+ },
+ {
+  "code": "thr_kontrak",
+  "label": "THR Pegawai Kontrak (Honorarium)",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 2,
+  "applies_to": "kontrak"
+ },
+ {
+  "code": "kompensasi_kontrak",
+  "label": "Kompensasi Pegawai Kontrak",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 1,
+  "applies_to": "kontrak"
+ },
+ {
+  "code": "bonus_honor",
+  "label": "Bonus Honor Pihak Ke-3",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 0.5,
+  "applies_to": "honor"
+ },
+ {
+  "code": "thr_honor",
+  "label": "THR Honor Pihak Ke-3",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 1,
+  "applies_to": "honor"
+ },
+ {
+  "code": "kompensasi_honor",
+  "label": "Kompensasi Honor Pihak Ke-3",
+  "group": "tunjangan",
+  "value_type": "bulan",
+  "value": 1,
+  "applies_to": "honor"
+ },
+ {
+  "code": "pph21",
+  "label": "Tarif Tunjangan Pajak PPh 21",
+  "group": "pajak",
+  "value_type": "persen",
+  "value": 25,
+  "applies_to": null
+ },
+ {
+  "code": "ppn",
+  "label": "PPN Jasa Pihak Ke-3",
+  "group": "pajak",
+  "value_type": "persen",
+  "value": 11,
+  "applies_to": "honor"
+ },
+ {
+  "code": "fee_pihak3",
+  "label": "Management Fee Pihak Ke-3 (opsi 1–3%)",
+  "group": "fee",
+  "value_type": "persen",
+  "value": 2,
+  "applies_to": "honor"
+ },
+ {
+  "code": "bpjs_kes",
+  "label": "BPJS Kesehatan (beban perusahaan)",
+  "group": "iuran",
+  "value_type": "persen",
+  "value": 4,
+  "applies_to": null
+ },
+ {
+  "code": "bpjs_jht",
+  "label": "BPJS TK - JHT (beban perusahaan)",
+  "group": "iuran",
+  "value_type": "persen",
+  "value": 3.7,
+  "applies_to": null
+ },
+ {
+  "code": "bpjs_jkk",
+  "label": "BPJS TK - JKK",
+  "group": "iuran",
+  "value_type": "persen",
+  "value": 0.24,
+  "applies_to": null
+ },
+ {
+  "code": "bpjs_jkm",
+  "label": "BPJS TK - JKM",
+  "group": "iuran",
+  "value_type": "persen",
+  "value": 0.3,
+  "applies_to": null
+ },
+ {
+  "code": "bpjs_jp",
+  "label": "BPJS TK - Jaminan Pensiun",
+  "group": "iuran",
+  "value_type": "persen",
+  "value": 2,
+  "applies_to": null
+ }
+]
