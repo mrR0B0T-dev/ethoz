@@ -1,0 +1,36 @@
+@import 'tailwindcss';
+
+@source '../../vendor/laravel/framework/src/Illuminate/Pagination/resources/views/*.blade.php';
+@source '../../storage/framework/views/*.php';
+@source '../js/**/*.vue';
+@source '../js/**/*.js';
+
+@theme {
+    --font-sans: 'Instrument Sans', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
+        'Segoe UI Symbol', 'Noto Color Emoji';
+}
+
+/* ── Sistem Informasi RKAP HC ─────────────────────────────────────────────── */
+@layer components {
+    .hc-select {
+        @apply rounded-lg border border-gray-300 bg-white py-1.5 pl-2.5 pr-8 text-sm text-gray-800 focus:border-blue-500 focus:ring-blue-500;
+    }
+    .hc-input {
+        @apply rounded-lg border border-gray-300 bg-white px-2.5 py-1.5 text-sm text-gray-800 focus:border-blue-500 focus:ring-blue-500;
+    }
+    .hc-btn {
+        @apply inline-flex items-center gap-1.5 rounded-lg bg-[#2a78d6] px-3.5 py-2 text-sm font-medium text-white transition-colors hover:bg-[#256abf] disabled:cursor-not-allowed disabled:opacity-50;
+    }
+    .hc-btn-secondary {
+        @apply inline-flex items-center gap-1.5 rounded-lg border border-gray-300 bg-white px-3.5 py-2 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50;
+    }
+    .hc-card {
+        @apply rounded-xl border border-gray-200 bg-white;
+    }
+    .hc-th {
+        @apply px-3 py-2 text-left text-[11px] font-semibold uppercase tracking-wide text-gray-500;
+    }
+    .hc-td {
+        @apply px-3 py-2 text-sm text-gray-700;
+    }
+}
