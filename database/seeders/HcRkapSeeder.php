@@ -37,6 +37,11 @@ class HcRkapSeeder extends Seeder
             $this->seedBudgets();
             $this->seedEmployees();
         });
+
+        // Biaya Gaji Dasar mengikuti data pegawai → samakan untuk tahun aktif/draft
+        $sync = app(\App\Services\HcRkap\EmployeeCostService::class);
+        FiscalYear::where('status', '!=', 'final')->get()
+            ->each(fn ($year) => $sync->syncEmployeeSourcedEntries($year));
     }
 
     private function json(string $file): array
@@ -59,13 +64,32 @@ class HcRkapSeeder extends Seeder
             ]);
         }
 
+        // jenis biaya yang nominalnya mengikuti aturan berbasis
+        // Gaji Dasar / Tunj. Jabatan / Tunj. Transport → tidak diinput manual
+        $derived = [
+            'TUNJ.THR' => 'THR = jumlah bulan THR (asumsi) × (Gaji Dasar + Tunj. Jabatan + Tunj. Transport)',
+            'TUNJ.BONUS' => 'Bonus = jumlah bulan bonus (asumsi) × (Gaji Dasar + Tunj. Jabatan + Tunj. Transport)',
+            'TUNJ.PPH21' => 'PPh 21 dihitung dari Gaji Dasar, Tunj. Jabatan & Tunj. Transport',
+            'TUNJ.KOMPENSASI' => 'Kompensasi = jumlah bulan (asumsi) × Gaji Dasar',
+            'IURAN.JAMSOSTEK' => 'BPJS Ketenagakerjaan = tarif iuran (asumsi) × Gaji Dasar',
+            'IURAN.BPJSKES' => 'BPJS Kesehatan = tarif iuran (asumsi) × Gaji Dasar',
+            'IURAN.PENSIUN' => 'Iuran Dana Pensiun = tarif iuran (asumsi) × Gaji Dasar',
+        ];
+
         foreach ($master['cost_types'] as $type) {
+            // Biaya Gaji Dasar = grand total Gaji Dasar seluruh pegawai per unit
+            $isGaji = $type['code'] === 'GAJI.DASAR';
             CostType::updateOrCreate(['code' => $type['code']], [
                 'name' => $type['name'],
                 'parent_id' => $type['parent']
                     ? CostType::where('code', $type['parent'])->value('id')
                     : null,
                 'employee_status' => $type['employee_status'],
+                'is_derived' => isset($derived[$type['code']]) || $isGaji,
+                'derived_note' => $isGaji
+                    ? 'Total Gaji Dasar seluruh pegawai per unit — dikelola di menu Pegawai & Biaya'
+                    : ($derived[$type['code']] ?? null),
+                'employee_source' => $isGaji ? 'base_salary' : null,
                 'sort_order' => $type['sort_order'],
             ]);
         }

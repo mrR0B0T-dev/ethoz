@@ -26,7 +26,10 @@
             <div class="min-w-0 flex-1">
               <p class="truncate text-sm text-gray-800">{{ a.label }}</p>
               <p class="text-[11px] text-gray-400">
-                <span v-if="a.applies_to" class="mr-1 rounded bg-gray-100 px-1.5 py-0.5 font-medium uppercase text-gray-500">{{ a.applies_to }}</span>
+                <span
+                  v-for="s in statusList(a.applies_to)" :key="s"
+                  class="mr-1 rounded bg-gray-100 px-1.5 py-0.5 font-medium uppercase text-gray-500"
+                >{{ s }}</span>
                 {{ a.code }}
               </p>
             </div>
@@ -88,7 +91,7 @@
           <span class="mb-1 block text-xs font-medium text-gray-600">Label</span>
           <input v-model="form.label" type="text" required class="hc-input w-full" />
         </label>
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tipe Nilai</span>
             <select v-model="form.value_type" class="hc-select w-full">
@@ -101,17 +104,17 @@
             <span class="mb-1 block text-xs font-medium text-gray-600">Nilai</span>
             <input v-model.number="form.value" type="number" step="any" required class="hc-input w-full" />
           </label>
-          <label class="block">
-            <span class="mb-1 block text-xs font-medium text-gray-600">Status Pegawai</span>
-            <select v-model="form.applies_to" class="hc-select w-full">
-              <option :value="null">Semua</option>
-              <option value="tetap">Tetap</option>
-              <option value="kontrak">Kontrak</option>
-              <option value="honor">Honor</option>
-              <option value="direksi">Direksi</option>
-            </select>
-          </label>
         </div>
+        <fieldset class="rounded-lg border border-gray-200 p-3">
+          <legend class="px-1 text-xs font-medium text-gray-600">Status Pegawai (boleh lebih dari satu)</legend>
+          <div class="grid grid-cols-2 gap-1.5">
+            <label v-for="(label, s) in STATUS_OPTIONS" :key="s" class="flex items-center gap-2 text-sm text-gray-700">
+              <input v-model="form.applies_to" type="checkbox" :value="s" class="rounded text-[#2a78d6]" />
+              {{ label }}
+            </label>
+          </div>
+          <p class="mt-1.5 text-[11px] text-gray-400">Kosongkan semua bila asumsi berlaku untuk seluruh status.</p>
+        </fieldset>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" class="hc-btn-secondary" @click="modal = false">Batal</button>
           <button type="submit" class="hc-btn">Tambah</button>
@@ -153,6 +156,9 @@ const CATEGORY_META = {
 }
 const categoryMeta = (c) => CATEGORY_META[c] ?? CATEGORY_META.lainnya
 
+const STATUS_OPTIONS = { tetap: 'Tetap', kontrak: 'Kontrak', honor: 'Honor', direksi: 'Direksi' }
+const statusList = (s) => s ? s.split(',').filter(Boolean) : []
+
 const displayValue = (a) => {
   if (a.value_type === 'persen') return a.value.toLocaleString('id-ID') + '%'
   if (a.value_type === 'bulan') return a.value.toLocaleString('id-ID') + ' bln'
@@ -191,11 +197,11 @@ function confirmDelete(a) {
 const modal = ref(false)
 const form = reactive({
   code: '', label: '', category: 'kenaikan_gaji',
-  value_type: 'persen', value: 0, applies_to: null,
+  value_type: 'persen', value: 0, applies_to: [],
 })
 
 function openCreate() {
-  Object.assign(form, { code: '', label: '', category: 'kenaikan_gaji', value_type: 'persen', value: 0, applies_to: null })
+  Object.assign(form, { code: '', label: '', category: 'kenaikan_gaji', value_type: 'persen', value: 0, applies_to: [] })
   modal.value = true
 }
 

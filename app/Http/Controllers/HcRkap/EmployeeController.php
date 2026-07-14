@@ -38,6 +38,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {
         Employee::create($this->validated($request));
+        $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Pegawai ditambahkan.');
     }
@@ -45,15 +46,27 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         $employee->update($this->validated($request));
+        $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Data pegawai diperbarui.');
     }
 
-    public function destroy(Employee $employee)
+    public function destroy(Request $request, Employee $employee)
     {
         $employee->delete();
+        $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Pegawai dihapus.');
+    }
+
+    /**
+     * Perubahan roster pegawai memengaruhi jenis biaya bersumber pegawai
+     * (mis. Biaya Gaji Dasar). Samakan untuk semua tahun yang belum final.
+     */
+    private function syncRosterSourcedBudgets(): void
+    {
+        \App\Models\HcRkap\FiscalYear::where('status', '!=', 'final')->get()
+            ->each(fn ($year) => $this->costs->syncEmployeeSourcedEntries($year));
     }
 
     private function validated(Request $request): array
@@ -66,6 +79,7 @@ class EmployeeController extends Controller
             'position_allowance' => ['nullable', 'numeric', 'min:0'],
             'transport_allowance' => ['nullable', 'numeric', 'min:0'],
             'join_date' => ['nullable', 'date'],
+            'notes' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['boolean'],
         ]);
     }

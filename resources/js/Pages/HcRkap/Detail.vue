@@ -27,6 +27,18 @@
       <PencilSquareIcon class="h-4 w-4" />
       Klik sel angka pada baris unit kerja untuk mengubah nilai ({{ skenario }}) — tersimpan otomatis.
     </p>
+    <p v-else class="mb-3 flex items-center gap-1.5 text-xs text-gray-500">
+      <LockClosedIcon class="h-4 w-4 shrink-0" />
+      <template v-if="skenario === 'rkap'">
+        Nilai RKAP mengacu pada input di menu <Link :href="route('hc.nominal', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Input Nominal</Link> — tabel ini hanya untuk dibaca.
+      </template>
+      <template v-else-if="skenario === 'realisasi'">
+        Nilai realisasi diinput melalui menu <Link :href="route('hc.realisasi', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Realisasi &amp; Monitoring</Link> — tabel ini hanya untuk dibaca.
+      </template>
+      <template v-else>
+        Tahun {{ tahun.year }} berstatus final — data terkunci dan hanya bisa dibaca.
+      </template>
+    </p>
 
     <!-- Matriks -->
     <div class="hc-card overflow-x-auto">
@@ -60,7 +72,10 @@
                     <span class="flex items-center gap-1.5">
                       <ChevronRightIcon class="h-3 w-3 text-gray-400 transition-transform" :class="expandedComps.has(cat.id + '-' + comp.id) ? 'rotate-90' : ''" />
                       {{ comp.name }}
-                      <span v-if="comp.employee_status" class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium uppercase text-gray-500">{{ comp.employee_status }}</span>
+                      <span
+                        v-for="s in (comp.employee_status ? comp.employee_status.split(',') : [])" :key="s"
+                        class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium uppercase text-gray-500"
+                      >{{ s }}</span>
                     </span>
                   </td>
                   <td v-for="(v, i) in comp.months" :key="i" class="hc-td text-right tabular-nums text-gray-600">{{ fmtCell(v) }}</td>
@@ -115,11 +130,11 @@
 
 <script setup>
 import { computed, nextTick, ref } from 'vue'
-import { router } from '@inertiajs/vue3'
+import { Link, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import * as XLSX from 'xlsx'
 import {
-  ArrowDownTrayIcon, ChevronRightIcon, ChevronUpDownIcon, PencilSquareIcon,
+  ArrowDownTrayIcon, ChevronRightIcon, ChevronUpDownIcon, LockClosedIcon, PencilSquareIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import UnitCascade from '@/Components/HcRkap/UnitCascade.vue'

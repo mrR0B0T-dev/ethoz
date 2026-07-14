@@ -5,6 +5,7 @@ use App\Http\Controllers\HcRkap\DashboardController;
 use App\Http\Controllers\HcRkap\DetailController;
 use App\Http\Controllers\HcRkap\EmployeeController;
 use App\Http\Controllers\HcRkap\MasterController;
+use App\Http\Controllers\HcRkap\NominalController;
 use App\Http\Controllers\HcRkap\RealizationController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,8 +23,12 @@ Route::prefix('hc-rkap')->name('hc.')->middleware('admin.auth')->group(function 
     Route::get('/detail', [DetailController::class, 'index'])->name('detail');
     Route::put('/detail', [DetailController::class, 'upsert'])->name('detail.upsert');
 
+    Route::get('/nominal', [NominalController::class, 'index'])->name('nominal');
+    Route::put('/nominal', [NominalController::class, 'upsert'])->name('nominal.upsert');
+
     Route::get('/realisasi', [RealizationController::class, 'index'])->name('realisasi');
     Route::post('/realisasi', [RealizationController::class, 'store'])->name('realisasi.store');
+    Route::delete('/realisasi', [RealizationController::class, 'destroy'])->name('realisasi.destroy');
     Route::get('/realisasi/template', [RealizationController::class, 'template'])->name('realisasi.template');
     Route::post('/realisasi/import', [RealizationController::class, 'import'])->name('realisasi.import');
 

@@ -180,13 +180,23 @@ class MasterController extends Controller
 
     private function costTypeData(Request $request, ?int $ignoreId = null): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'code' => ['required', 'string', 'max:40',
                 Rule::unique('hc_cost_types', 'code')->ignore($ignoreId)],
             'name' => ['required', 'string', 'max:150'],
             'parent_id' => ['nullable', 'exists:hc_cost_types,id', Rule::notIn([$ignoreId])],
-            'employee_status' => ['nullable', Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
+            'employee_status' => ['nullable', 'array'],
+            'employee_status.*' => [Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
+            'is_derived' => ['boolean'],
+            'derived_note' => ['nullable', 'string', 'max:200'],
             'is_active' => ['boolean'],
         ]);
+
+        // multi status disimpan dipisah koma; kosong = lintas status
+        $data['employee_status'] = ! empty($data['employee_status'])
+            ? implode(',', array_unique($data['employee_status']))
+            : null;
+
+        return $data;
     }
 }

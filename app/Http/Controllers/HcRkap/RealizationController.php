@@ -55,19 +55,73 @@ class RealizationController extends Controller
         }
 
         foreach ($data['items'] as $item) {
-            if ($item['amount'] === null || $item['amount'] === '') {
-                continue;
-            }
-            BudgetEntry::updateOrCreate([
+            $key = [
                 'fiscal_year_id' => $year->id,
                 'cost_type_id' => $item['cost_type_id'],
                 'work_unit_id' => $item['work_unit_id'],
                 'month' => $data['month'],
                 'scenario' => 'realisasi',
-            ], ['amount' => $item['amount']]);
+            ];
+
+            // input dikosongkan → hapus realisasi yang pernah tercatat
+            if ($item['amount'] === null || $item['amount'] === '') {
+                BudgetEntry::where($key)->delete();
+
+                continue;
+            }
+
+            BudgetEntry::updateOrCreate($key, ['amount' => $item['amount']]);
         }
 
         return back()->with('success', 'Realisasi bulan '.$data['month'].' tersimpan.');
+    }
+
+    /**
+     * Hapus data realisasi: baris terpilih (mode "selected"), satu bulan
+     * penuh (mode "month"), atau seluruh tahun (mode "year").
+     */
+    public function destroy(Request $request)
+    {
+        $data = $request->validate([
+            'fiscal_year_id' => ['required', 'exists:hc_fiscal_years,id'],
+            'mode' => ['required', 'in:selected,month,year'],
+            'month' => ['required_unless:mode,year', 'integer', 'between:1,12'],
+            'items' => ['required_if:mode,selected', 'array'],
+            'items.*.cost_type_id' => ['required', 'exists:hc_cost_types,id'],
+            'items.*.work_unit_id' => ['required', 'exists:hc_work_units,id'],
+        ]);
+
+        $year = FiscalYear::findOrFail($data['fiscal_year_id']);
+        if ($year->status === 'final') {
+            return back()->with('error', 'Tahun anggaran sudah final dan terkunci.');
+        }
+
+        $query = BudgetEntry::where('fiscal_year_id', $year->id)
+            ->where('scenario', 'realisasi');
+
+        if ($data['mode'] !== 'year') {
+            $query->where('month', $data['month']);
+        }
+
+        if ($data['mode'] === 'selected') {
+            $query->where(function ($q) use ($data) {
+                foreach ($data['items'] as $item) {
+                    $q->orWhere(fn ($w) => $w
+                        ->where('cost_type_id', $item['cost_type_id'])
+                        ->where('work_unit_id', $item['work_unit_id']));
+                }
+            });
+        }
+
+        $deleted = $query->delete();
+
+        $scope = match ($data['mode']) {
+            'selected' => 'baris terpilih',
+            'month' => 'bulan '.RealizationSpreadsheet::monthName((int) $data['month']),
+            'year' => 'seluruh tahun '.$year->year,
+        };
+
+        return back()->with('success', "Realisasi {$scope} dihapus ({$deleted} entri).");
     }
 
     /** Unduh template Excel input realisasi untuk tahun & bulan terpilih. */

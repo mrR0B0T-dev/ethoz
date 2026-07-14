@@ -69,7 +69,7 @@ class AssumptionController extends Controller
 
     private function validated(Request $request): array
     {
-        return $request->validate([
+        $data = $request->validate([
             'fiscal_year_id' => ['required', 'exists:hc_fiscal_years,id'],
             'code' => ['required', 'string', 'max:60',
                 Rule::unique('hc_assumptions')->where('fiscal_year_id', $request->integer('fiscal_year_id'))],
@@ -77,8 +77,16 @@ class AssumptionController extends Controller
             'category' => ['required', Rule::in(['kenaikan_gaji', 'tunjangan', 'pajak', 'fee', 'iuran', 'lainnya'])],
             'value_type' => ['required', Rule::in(['persen', 'nominal', 'bulan'])],
             'value' => ['required', 'numeric'],
-            'applies_to' => ['nullable', Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
+            'applies_to' => ['nullable', 'array'],
+            'applies_to.*' => [Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
             'notes' => ['nullable', 'string'],
         ]);
+
+        // multi status disimpan dipisah koma; kosong = semua status
+        $data['applies_to'] = ! empty($data['applies_to'])
+            ? implode(',', array_unique($data['applies_to']))
+            : null;
+
+        return $data;
     }
 }

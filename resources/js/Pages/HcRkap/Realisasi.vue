@@ -67,7 +67,10 @@
       <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
         <div>
           <h2 class="text-sm font-semibold text-gray-900">Input Realisasi — {{ BULAN_PANJANG[bulan - 1] }} {{ tahun.year }}</h2>
-          <p class="mt-0.5 text-xs text-gray-500">Isi nilai realisasi per komponen biaya dan unit kerja. Kosongkan bila belum ada.</p>
+          <p class="mt-0.5 text-xs text-gray-500">
+            Isi nilai realisasi per komponen biaya dan unit kerja.
+            Nilai bisa diubah kapan saja; mengosongkan input lalu menyimpan akan menghapus angka tersebut.
+          </p>
         </div>
         <div class="flex flex-wrap items-center gap-2">
           <a :href="templateUrl" class="hc-btn-secondary" title="Unduh template Excel berisi baris bulan ini">
@@ -77,6 +80,16 @@
             <ArrowUpTrayIcon class="h-4 w-4" /> {{ importing ? 'Mengimpor…' : 'Import Excel' }}
           </button>
           <input ref="fileInput" type="file" accept=".xlsx,.xls" class="hidden" @change="importExcel" />
+          <button
+            v-if="canEdit" type="button" class="hc-btn-danger"
+            :disabled="!selectedCount" :title="selectedCount ? '' : 'Centang komponen yang ingin dihapus dulu'"
+            @click="deleteSelected"
+          >
+            <TrashIcon class="h-4 w-4" /> Hapus Terpilih{{ selectedCount ? ` (${selectedCount})` : '' }}
+          </button>
+          <button v-if="canEdit" type="button" class="hc-btn-danger" @click="deleteAll">
+            <TrashIcon class="h-4 w-4" /> Hapus Semua
+          </button>
           <button v-if="canEdit" type="submit" class="hc-btn" :disabled="saving">
             <CheckIcon class="h-4 w-4" /> {{ saving ? 'Menyimpan…' : 'Simpan Realisasi' }}
           </button>
@@ -87,6 +100,13 @@
         <table class="min-w-full divide-y divide-gray-100">
           <thead class="sticky top-0 z-10 bg-gray-50">
             <tr>
+              <th v-if="canEdit" class="w-10 px-3 py-2">
+                <input
+                  type="checkbox" class="rounded border-gray-300 text-[#2a78d6] focus:ring-[#2a78d6]"
+                  :checked="allSelected" title="Pilih semua baris"
+                  @change="toggleAll"
+                />
+              </th>
               <th class="hc-th">Komponen Biaya</th>
               <th class="hc-th">Unit</th>
               <th class="hc-th text-right">RKAP {{ BULAN[bulan - 1] }}</th>
@@ -97,9 +117,16 @@
           <tbody class="divide-y divide-gray-50">
             <template v-for="(group, category) in groupedRows" :key="category">
               <tr class="bg-blue-50/40">
-                <td colspan="5" class="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[#1c5cab]">{{ category }}</td>
+                <td :colspan="canEdit ? 6 : 5" class="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[#1c5cab]">{{ category }}</td>
               </tr>
-              <tr v-for="row in group" :key="rowKey(row)" class="hover:bg-gray-50/50">
+              <tr v-for="row in group" :key="rowKey(row)" class="hover:bg-gray-50/50" :class="selected.has(rowKey(row)) ? 'bg-red-50/40' : ''">
+                <td v-if="canEdit" class="px-3 py-1 text-center">
+                  <input
+                    type="checkbox" class="rounded border-gray-300 text-[#2a78d6] focus:ring-[#2a78d6]"
+                    :checked="selected.has(rowKey(row))"
+                    @change="toggleRow(row)"
+                  />
+                </td>
                 <td class="hc-td text-gray-700">{{ row.component }}</td>
                 <td class="hc-td text-xs text-gray-500">{{ row.unit }}</td>
                 <td class="hc-td text-right tabular-nums text-gray-600">{{ fmtNum(row.rkap) }}</td>
@@ -126,9 +153,10 @@
 import { computed, reactive, ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
+import Swal from 'sweetalert2'
 import {
   ArrowDownTrayIcon, ArrowUpTrayIcon, CheckIcon, CheckCircleIcon,
-  ExclamationTriangleIcon, FireIcon,
+  ExclamationTriangleIcon, FireIcon, TrashIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import { BULAN, BULAN_PANJANG, useHcFormat } from '@/composables/useHcFormat'
@@ -192,6 +220,74 @@ function pickMonth(m) {
   router.get(route('hc.realisasi'), { tahun: props.tahun.year, bulan: m }, { preserveScroll: true })
 }
 
+// ── pilih & hapus massal ──────────────────────────────────────────────────
+const selected = ref(new Set())
+const selectedCount = computed(() => selected.value.size)
+const allSelected = computed(() =>
+  props.rows.length > 0 && props.rows.every(r => selected.value.has(rowKey(r))))
+
+function toggleRow(row) {
+  const key = rowKey(row)
+  selected.value.has(key) ? selected.value.delete(key) : selected.value.add(key)
+}
+
+function toggleAll() {
+  if (allSelected.value) {
+    selected.value.clear()
+  } else {
+    props.rows.forEach(r => selected.value.add(rowKey(r)))
+  }
+}
+
+function deleteSelected() {
+  const items = props.rows
+    .filter(r => selected.value.has(rowKey(r)))
+    .map(r => ({ cost_type_id: r.cost_type_id, work_unit_id: r.work_unit_id }))
+
+  Swal.fire({
+    title: `Hapus realisasi ${items.length} baris terpilih?`,
+    text: `Angka realisasi ${BULAN_PANJANG[props.bulan - 1]} ${props.tahun.year} pada baris yang dicentang akan dihapus.`,
+    icon: 'warning',
+    showCancelButton: true,
+    confirmButtonColor: '#d03b3b',
+    confirmButtonText: 'Ya, hapus',
+    cancelButtonText: 'Batal',
+  }).then((res) => {
+    if (!res.isConfirmed) return
+    router.delete(route('hc.realisasi.destroy'), {
+      data: { fiscal_year_id: props.tahun.id, mode: 'selected', month: props.bulan, items },
+      preserveScroll: true,
+      onSuccess: () => selected.value.clear(),
+    })
+  })
+}
+
+function deleteAll() {
+  Swal.fire({
+    title: 'Hapus semua data realisasi?',
+    html: `Pilih cakupan penghapusan untuk tahun <b>${props.tahun.year}</b>. Data RKAP tidak ikut terhapus.`,
+    icon: 'warning',
+    showCancelButton: true,
+    showDenyButton: true,
+    confirmButtonColor: '#d03b3b',
+    denyButtonColor: '#8a3ab5',
+    confirmButtonText: `Bulan ${BULAN_PANJANG[props.bulan - 1]} saja`,
+    denyButtonText: `Seluruh tahun ${props.tahun.year}`,
+    cancelButtonText: 'Batal',
+  }).then((res) => {
+    if (!res.isConfirmed && !res.isDenied) return
+    router.delete(route('hc.realisasi.destroy'), {
+      data: {
+        fiscal_year_id: props.tahun.id,
+        mode: res.isDenied ? 'year' : 'month',
+        month: props.bulan,
+      },
+      preserveScroll: true,
+      onSuccess: () => selected.value.clear(),
+    })
+  })
+}
+
 const pctOf = (row) => {
   const v = parseFloat(inputs[rowKey(row)])
   if (!v || !row.rkap) return '–'
@@ -212,13 +308,16 @@ const statusBadge = (serapan) => {
 
 function save() {
   saving.value = true
+  // nilai terisi → simpan; input yang dikosongkan padahal sebelumnya
+  // tercatat → kirim null agar entri realisasinya dihapus
   const items = props.rows
     .map(r => ({ ...r, val: inputs[rowKey(r)] }))
-    .filter(r => r.val !== '' && r.val !== null && !Number.isNaN(parseFloat(r.val)))
+    .filter(r => (r.val !== '' && r.val !== null && !Number.isNaN(parseFloat(r.val)))
+      || (r.realisasi !== null && (r.val === '' || r.val === null)))
     .map(r => ({
       cost_type_id: r.cost_type_id,
       work_unit_id: r.work_unit_id,
-      amount: parseFloat(r.val),
+      amount: (r.val === '' || r.val === null) ? null : parseFloat(r.val),
     }))
 
   router.post(route('hc.realisasi.store'), {

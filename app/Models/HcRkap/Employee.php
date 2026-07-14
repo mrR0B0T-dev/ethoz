@@ -10,7 +10,7 @@ class Employee extends Model
 
     protected $fillable = [
         'name', 'work_unit_id', 'status', 'base_salary',
-        'position_allowance', 'transport_allowance', 'join_date', 'is_active',
+        'position_allowance', 'transport_allowance', 'join_date', 'notes', 'is_active',
     ];
 
     protected $casts = [

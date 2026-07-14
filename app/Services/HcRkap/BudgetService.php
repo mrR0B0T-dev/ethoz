@@ -107,6 +107,16 @@ class BudgetService
         $prevRkap = $sum($prevRows, 'rkap');
         $prevPrognosa = $sum($prevRows, 'prognosa');
 
+        // bulan terakhir yang punya realisasi — dasar serapan yang adil
+        // (realisasi dibandingkan RKAP periode yang sudah berjalan saja)
+        $lastRealMonth = $rows
+            ->filter(fn ($r) => $r->scenario === 'realisasi' && $r->amount != 0)
+            ->max('month');
+        $ytdEnd = $lastRealMonth ? min($monthEnd, $lastRealMonth) : null;
+        $rkapYtd = $ytdEnd
+            ? (float) $rows->filter(fn ($r) => $r->scenario === 'rkap' && $r->month >= $monthStart && $r->month <= $ytdEnd)->sum('amount')
+            : 0.0;
+
         // Tren bulanan selalu 12 bulan penuh agar pola tahunan terlihat.
         $monthly = collect(range(1, 12))->map(fn ($m) => [
             'month' => $m,
@@ -121,27 +131,30 @@ class BudgetService
                 'realisasi' => $realisasi,
                 'prognosa' => $prognosa,
                 'serapan' => $rkap > 0 ? round($realisasi / $rkap * 100, 1) : null,
+                'last_real_month' => $lastRealMonth,
+                'rkap_ytd' => $rkapYtd,
+                'serapan_ytd' => $rkapYtd > 0 ? round($realisasi / $rkapYtd * 100, 1) : null,
                 'prev_rkap' => $prevRkap,
                 'prev_prognosa' => $prevPrognosa,
                 'yoy' => $prevRkap > 0 ? round(($rkap - $prevRkap) / $prevRkap * 100, 1) : null,
                 'prev_year' => $prevYear?->year,
             ],
             'monthly' => $monthly,
-            'by_category' => $this->byCategory($rows->filter($inRange), $prevRows->filter($inRange)),
-            'by_unit' => $this->byUnit($rows->filter($inRange), $filters['unit_id'] ?? null),
+            'by_category' => $this->byCategory($rows->filter($inRange), $prevRows->filter($inRange), $ytdEnd, $monthStart),
+            'by_unit' => $this->byUnit($rows->filter($inRange), $filters['unit_id'] ?? null, $ytdEnd, $monthStart),
         ];
     }
 
     /** Rekap per kategori biaya (akar pohon jenis biaya). */
-    private function byCategory(Collection $rows, Collection $prevRows): array
+    private function byCategory(Collection $rows, Collection $prevRows, ?int $ytdEnd = null, int $monthStart = 1): array
     {
         $roots = $this->costTypes()->whereNull('parent_id')->sortBy('sort_order');
         $rootOf = fn ($id) => $this->rootCostTypeId($id);
 
-        $group = function (Collection $set, string $scenario) use ($rootOf) {
+        $group = function (Collection $set, string $scenario, ?callable $extra = null) use ($rootOf) {
             $out = [];
             foreach ($set as $r) {
-                if ($r->scenario !== $scenario) {
+                if ($r->scenario !== $scenario || ($extra && ! $extra($r))) {
                     continue;
                 }
                 $root = $rootOf($r->cost_type_id);
@@ -154,18 +167,26 @@ class BudgetService
         $rkap = $group($rows, 'rkap');
         $realisasi = $group($rows, 'realisasi');
         $prevRkap = $group($prevRows, 'rkap');
+        // RKAP s.d. bulan realisasi terakhir → pembanding serapan yang adil
+        $rkapYtd = $ytdEnd
+            ? $group($rows, 'rkap', fn ($r) => $r->month >= $monthStart && $r->month <= $ytdEnd)
+            : [];
         $totalRkap = array_sum($rkap);
 
-        return $roots->map(function ($root) use ($rkap, $realisasi, $prevRkap, $totalRkap) {
+        return $roots->map(function ($root) use ($rkap, $realisasi, $prevRkap, $rkapYtd, $totalRkap) {
             $r = $rkap[$root->id] ?? 0;
             $p = $prevRkap[$root->id] ?? 0;
+            $real = $realisasi[$root->id] ?? 0;
+            $ytd = $rkapYtd[$root->id] ?? 0;
 
             return [
                 'id' => $root->id,
                 'code' => $root->code,
                 'name' => $root->name,
                 'rkap' => $r,
-                'realisasi' => $realisasi[$root->id] ?? 0,
+                'realisasi' => $real,
+                'rkap_ytd' => $ytd,
+                'serapan_ytd' => $ytd > 0 ? round($real / $ytd * 100, 1) : null,
                 'prev_rkap' => $p,
                 'yoy' => $p > 0 ? round(($r - $p) / $p * 100, 1) : null,
                 'share' => $totalRkap > 0 ? round($r / $totalRkap * 100, 1) : 0,
@@ -178,7 +199,7 @@ class BudgetService
      * Rekap per unit kerja pada level tampilan yang relevan:
      * tanpa filter → level department/group; dengan filter → anak unit terpilih.
      */
-    private function byUnit(Collection $rows, $selectedUnitId): array
+    private function byUnit(Collection $rows, $selectedUnitId, ?int $ytdEnd = null, int $monthStart = 1): array
     {
         $units = $this->units()->keyBy('id');
         $selectedUnitId = $selectedUnitId ? (int) $selectedUnitId : null;
@@ -216,9 +237,13 @@ class BudgetService
                 'name' => $display->name,
                 'rkap' => 0.0,
                 'realisasi' => 0.0,
+                'rkap_ytd' => 0.0,
             ];
             if ($r->scenario === 'rkap') {
                 $out[$display->id]['rkap'] += $r->amount;
+                if ($ytdEnd && $r->month >= $monthStart && $r->month <= $ytdEnd) {
+                    $out[$display->id]['rkap_ytd'] += $r->amount;
+                }
             } elseif ($r->scenario === 'realisasi') {
                 $out[$display->id]['realisasi'] += $r->amount;
             }
@@ -226,6 +251,11 @@ class BudgetService
 
         return collect($out)
             ->filter(fn ($u) => $u['rkap'] != 0 || $u['realisasi'] != 0)
+            ->map(function ($u) {
+                $u['serapan_ytd'] = $u['rkap_ytd'] > 0 ? round($u['realisasi'] / $u['rkap_ytd'] * 100, 1) : null;
+
+                return $u;
+            })
             ->sortByDesc('rkap')
             ->values()->all();
     }

@@ -2,8 +2,11 @@
 
 namespace App\Services\HcRkap;
 
+use App\Models\HcRkap\BudgetEntry;
+use App\Models\HcRkap\CostType;
 use App\Models\HcRkap\Employee;
 use App\Models\HcRkap\FiscalYear;
+use Illuminate\Support\Facades\DB;
 
 /**
  * Menghitung estimasi biaya tahunan per pegawai berdasarkan asumsi tahun anggaran.
@@ -53,6 +56,80 @@ class EmployeeCostService
         return $out;
     }
 
+    /**
+     * Jumlah field pegawai (mis. base_salary) per unit kerja — nilai bulanan.
+     *
+     * @return array<int, float>  [work_unit_id => total bulanan]
+     */
+    public function sumByUnit(string $field): array
+    {
+        return Employee::query()
+            ->where('is_active', true)
+            ->whereNotNull('work_unit_id')
+            ->groupBy('work_unit_id')
+            ->selectRaw("work_unit_id, SUM({$field}) as total")
+            ->pluck('total', 'work_unit_id')
+            ->map(fn ($v) => (float) $v)
+            ->all();
+    }
+
+    /**
+     * Sinkronkan seluruh jenis biaya "employee_source" ke entri RKAP tahun ini:
+     * nilai = grand total field pegawai per unit, disebar rata 12 bulan.
+     * Tahun final dilewati (terkunci).
+     */
+    public function syncEmployeeSourcedEntries(FiscalYear $year): void
+    {
+        if ($year->status === 'final') {
+            return;
+        }
+
+        $sourced = CostType::whereNotNull('employee_source')->get();
+        if ($sourced->isEmpty()) {
+            return;
+        }
+
+        $allowed = ['base_salary', 'position_allowance', 'transport_allowance'];
+
+        DB::transaction(function () use ($sourced, $year, $allowed) {
+            $now = now();
+            foreach ($sourced as $type) {
+                if (! in_array($type->employee_source, $allowed, true)) {
+                    continue;
+                }
+
+                // ganti penuh: hapus entri lama komponen ini lalu tulis dari data pegawai
+                BudgetEntry::where('fiscal_year_id', $year->id)
+                    ->where('cost_type_id', $type->id)
+                    ->where('scenario', 'rkap')
+                    ->delete();
+
+                $rows = [];
+                foreach ($this->sumByUnit($type->employee_source) as $unitId => $monthly) {
+                    if ($monthly == 0.0) {
+                        continue;
+                    }
+                    for ($m = 1; $m <= 12; $m++) {
+                        $rows[] = [
+                            'fiscal_year_id' => $year->id,
+                            'cost_type_id' => $type->id,
+                            'work_unit_id' => $unitId,
+                            'month' => $m,
+                            'scenario' => 'rkap',
+                            'amount' => $monthly,
+                            'created_at' => $now,
+                            'updated_at' => $now,
+                        ];
+                    }
+                }
+
+                foreach (array_chunk($rows, 500) as $chunk) {
+                    BudgetEntry::insert($chunk);
+                }
+            }
+        });
+    }
+
     private function a(string $code, float $default = 0): float
     {
         return (float) ($this->assumptions[$code] ?? $default);
@@ -83,6 +160,7 @@ class EmployeeCostService
             'work_unit_id' => $e->work_unit_id,
             'status' => $e->status,
             'join_date' => $e->join_date?->toDateString(),
+            'notes' => $e->notes,
             'base_salary' => $base,
             'position_allowance' => $e->position_allowance,
             'transport_allowance' => $e->transport_allowance,

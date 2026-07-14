@@ -68,7 +68,13 @@ class YearGeneratorService
 
             // faktor kenaikan per jenis biaya (mengikuti status pegawai komponen;
             // komponen lintas status memakai kenaikan pegawai tetap)
-            $factorByStatus = fn (?string $status) => 1 + ((float) ($increases[$status ?? 'tetap'] ?? $increases['tetap'] ?? 0)) / 100;
+            // komponen ber-multi-status memakai rata-rata kenaikan status terkait
+            $increaseOf = fn (string $status) => (float) ($increases[$status] ?? $increases['tetap'] ?? 0);
+            $factorByStatus = function (?string $statuses) use ($increaseOf) {
+                $list = $statuses ? array_filter(explode(',', $statuses)) : ['tetap'];
+
+                return 1 + array_sum(array_map($increaseOf, $list)) / max(count($list), 1) / 100;
+            };
             $factors = CostType::all()->mapWithKeys(
                 fn ($t) => [$t->id => $factorByStatus($t->employee_status)]
             );
@@ -91,6 +97,10 @@ class YearGeneratorService
             foreach ($rows->chunk(500) as $chunk) {
                 BudgetEntry::insert($chunk->values()->all());
             }
+
+            // Biaya bersumber pegawai (mis. Gaji Dasar) mengikuti roster terkini,
+            // bukan hasil penggandaan basis; samakan setelah generate.
+            app(EmployeeCostService::class)->syncEmployeeSourcedEntries($target);
 
             return $target;
         });

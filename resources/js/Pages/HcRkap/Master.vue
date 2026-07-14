@@ -106,7 +106,15 @@
         >
           <span class="w-36 shrink-0 truncate text-xs font-mono text-gray-400">{{ t.code }}</span>
           <span class="min-w-0 flex-1 truncate text-sm" :class="t.depth === 0 ? 'font-semibold text-gray-900' : 'text-gray-600'">{{ t.name }}</span>
-          <span v-if="t.employee_status" class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium uppercase text-gray-500">{{ t.employee_status }}</span>
+          <span
+            v-if="t.is_derived"
+            class="inline-flex items-center gap-1 rounded bg-amber-50 px-1.5 py-0.5 text-[10px] font-medium text-amber-700"
+            :title="t.derived_note ?? 'Nominal mengacu ke jenis biaya lain'"
+          ><LockClosedIcon class="h-3 w-3" /> referensi</span>
+          <span
+            v-for="s in statusList(t.employee_status)" :key="s"
+            class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-medium uppercase text-gray-500"
+          >{{ s }}</span>
           <button class="rounded p-1 text-gray-400 hover:bg-blue-50 hover:text-blue-600" @click="openTypeModal(t)">
             <PencilSquareIcon class="h-4 w-4" />
           </button>
@@ -237,15 +245,23 @@
           <span class="mb-1 block text-xs font-medium text-gray-600">Nama</span>
           <input v-model="typeForm.name" type="text" required class="hc-input w-full" />
         </label>
-        <label class="block">
-          <span class="mb-1 block text-xs font-medium text-gray-600">Status Pegawai Terkait</span>
-          <select v-model="typeForm.employee_status" class="hc-select w-full">
-            <option :value="null">Semua / lintas status</option>
-            <option value="tetap">Tetap</option>
-            <option value="kontrak">Kontrak</option>
-            <option value="honor">Honor</option>
-            <option value="direksi">Direksi</option>
-          </select>
+        <fieldset class="rounded-lg border border-gray-200 p-3">
+          <legend class="px-1 text-xs font-medium text-gray-600">Status Pegawai Terkait (boleh lebih dari satu)</legend>
+          <div class="grid grid-cols-2 gap-1.5">
+            <label v-for="(label, s) in STATUS_OPTIONS" :key="s" class="flex items-center gap-2 text-sm text-gray-700">
+              <input v-model="typeForm.employee_status" type="checkbox" :value="s" class="rounded text-[#2a78d6]" />
+              {{ label }}
+            </label>
+          </div>
+          <p class="mt-1.5 text-[11px] text-gray-400">Kosongkan semua bila komponen berlaku lintas status.</p>
+        </fieldset>
+        <label class="flex items-center gap-2 text-sm text-gray-700">
+          <input v-model="typeForm.is_derived" type="checkbox" class="rounded text-[#2a78d6]" />
+          Nominal mengacu ke jenis biaya lain (tidak diinput manual)
+        </label>
+        <label v-if="typeForm.is_derived" class="block">
+          <span class="mb-1 block text-xs font-medium text-gray-600">Keterangan referensi</span>
+          <input v-model="typeForm.derived_note" type="text" maxlength="200" class="hc-input w-full" placeholder="mis. % BPJS × Biaya Gaji" />
         </label>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" class="hc-btn-secondary" @click="typeModal = false">Batal</button>
@@ -265,6 +281,9 @@ import {
   CalendarDaysIcon, BuildingOffice2Icon, TagIcon, PlusIcon, TrashIcon,
   PencilSquareIcon, PlayIcon, LockClosedIcon, LockOpenIcon,
 } from '@heroicons/vue/24/outline'
+
+const STATUS_OPTIONS = { tetap: 'Tetap', kontrak: 'Kontrak', honor: 'Honor', direksi: 'Direksi' }
+const statusList = (s) => s ? s.split(',').filter(Boolean) : []
 import HcLayout from '@/Layouts/HcLayout.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
 import { useHcFormat } from '@/composables/useHcFormat'
@@ -385,13 +404,20 @@ function deleteUnit(u) {
 // ── jenis biaya ──────────────────────────────────────────────────────────
 const typeModal = ref(false)
 const editingType = ref(null)
-const typeForm = reactive({ code: '', name: '', parent_id: null, employee_status: null })
+const typeForm = reactive({
+  code: '', name: '', parent_id: null,
+  employee_status: [], is_derived: false, derived_note: '',
+})
 
 function openTypeModal(t) {
   editingType.value = t
   Object.assign(typeForm, t
-    ? { code: t.code, name: t.name, parent_id: t.parent_id, employee_status: t.employee_status }
-    : { code: '', name: '', parent_id: null, employee_status: null })
+    ? {
+        code: t.code, name: t.name, parent_id: t.parent_id,
+        employee_status: statusList(t.employee_status),
+        is_derived: !!t.is_derived, derived_note: t.derived_note ?? '',
+      }
+    : { code: '', name: '', parent_id: null, employee_status: [], is_derived: false, derived_note: '' })
   typeModal.value = true
 }
 

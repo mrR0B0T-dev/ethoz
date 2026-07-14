@@ -34,8 +34,18 @@
         </Link>
       </nav>
 
-      <div class="border-t border-gray-100 px-5 py-3">
-        <p class="text-[11px] leading-relaxed text-gray-400">
+      <div class="border-t border-gray-100 px-3 py-3">
+        <div v-if="user" class="mb-2 px-2">
+          <p class="truncate text-xs font-semibold text-gray-700">{{ user.name }}</p>
+          <p class="truncate text-[11px] text-gray-400">{{ user.email }}</p>
+        </div>
+        <button
+          class="flex w-full items-center gap-3 rounded-lg px-3 py-2 text-sm font-medium text-gray-600 transition-colors hover:bg-red-50 hover:text-red-600"
+          @click="logout"
+        >
+          <ArrowRightStartOnRectangleIcon class="h-4 w-4 shrink-0" /> Keluar
+        </button>
+        <p class="mt-2 px-2 text-[11px] leading-relaxed text-gray-400">
           Sistem Informasi Monitoring<br />Rencana Kerja & Anggaran Perusahaan
         </p>
       </div>
@@ -91,6 +101,7 @@ import Swal from 'sweetalert2'
 import {
   HomeIcon, TableCellsIcon, ClipboardDocumentCheckIcon, UsersIcon,
   AdjustmentsHorizontalIcon, CircleStackIcon, Bars3Icon, CalendarIcon,
+  BanknotesIcon, ArrowRightStartOnRectangleIcon,
 } from '@heroicons/vue/24/outline'
 
 defineProps({ title: { type: String, default: 'Dashboard' } })
@@ -100,15 +111,21 @@ const sidebarOpen = ref(false)
 
 const tahun = computed(() => page.props.tahun)
 const years = computed(() => page.props.years ?? [])
+const user = computed(() => page.props.auth?.user)
 
 const menus = [
   { label: 'Dashboard', icon: HomeIcon, route: 'hc.dashboard' },
   { label: 'RKAP Detail', icon: TableCellsIcon, route: 'hc.detail' },
+  { label: 'Input Nominal', icon: BanknotesIcon, route: 'hc.nominal' },
   { label: 'Realisasi & Monitoring', icon: ClipboardDocumentCheckIcon, route: 'hc.realisasi' },
   { label: 'Pegawai & Biaya', icon: UsersIcon, route: 'hc.pegawai' },
   { label: 'Asumsi', icon: AdjustmentsHorizontalIcon, route: 'hc.asumsi' },
   { label: 'Master Data', icon: CircleStackIcon, route: 'hc.master' },
 ]
+
+function logout() {
+  router.post(route('logout'))
+}
 
 const isActive = (name) => {
   const target = new URL(route(name), window.location.origin).pathname

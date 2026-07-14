@@ -42,21 +42,64 @@
       </div>
 
       <!-- tabel pegawai -->
-      <div class="hc-card overflow-x-auto">
+      <div class="hc-card">
+        <!-- pencarian, filter & urutan -->
+        <div class="flex flex-wrap items-center gap-2 border-b border-gray-100 px-4 py-3">
+          <div class="relative">
+            <MagnifyingGlassIcon class="pointer-events-none absolute left-2.5 top-1/2 h-4 w-4 -translate-y-1/2 text-gray-400" />
+            <input
+              v-model="search" type="search"
+              class="hc-input w-56 py-1.5 pl-8"
+              placeholder="Cari nama / catatan…"
+            />
+          </div>
+          <select v-model="filterUnit" class="hc-select max-w-52">
+            <option :value="null">Semua unit kerja</option>
+            <option v-for="u in unitOptions" :key="u.id" :value="u.id">{{ u.label }}</option>
+          </select>
+          <button
+            v-if="search || filterUnit" class="hc-btn-secondary !px-2.5 !py-1.5 text-xs"
+            @click="search = ''; filterUnit = null"
+          >
+            <XMarkIcon class="h-3.5 w-3.5" /> Reset
+          </button>
+          <p class="ml-auto text-xs text-gray-400">
+            {{ filteredEmployees.length }} dari {{ current.employees.length }} pegawai · klik judul kolom untuk mengurutkan
+          </p>
+        </div>
+
+        <div class="overflow-x-auto">
         <table class="min-w-max divide-y divide-gray-100 text-sm">
           <thead class="bg-gray-50/60">
             <tr>
-              <th class="hc-th sticky left-0 z-10 bg-gray-50">Nama</th>
-              <th class="hc-th">Unit</th>
-              <th class="hc-th text-right">Gaji /bln</th>
+              <th class="hc-th sticky left-0 z-10 cursor-pointer select-none bg-gray-50" @click="sortBy('name')">
+                Nama <SortMark col="name" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
+              <th class="hc-th cursor-pointer select-none" @click="sortBy('unit')">
+                Unit <SortMark col="unit" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
+              <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('base_salary')">
+                Gaji /bln <SortMark col="base_salary" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
               <th v-for="key in componentKeys" :key="key" class="hc-th text-right">{{ COMPONENT_LABELS[key] ?? key }}</th>
-              <th class="hc-th border-l border-gray-200 text-right">Total /tahun</th>
+              <th class="hc-th cursor-pointer select-none border-l border-gray-200 text-right" @click="sortBy('total')">
+                Total /tahun <SortMark col="total" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
               <th class="hc-th text-right">Aksi</th>
             </tr>
           </thead>
           <tbody class="divide-y divide-gray-50">
-            <tr v-for="emp in current.employees" :key="emp.id" class="hover:bg-gray-50/50">
-              <td class="hc-td sticky left-0 z-10 bg-white font-medium text-gray-900">{{ emp.name }}</td>
+            <tr v-for="emp in filteredEmployees" :key="emp.id" class="hover:bg-gray-50/50">
+              <td class="hc-td sticky left-0 z-10 bg-white font-medium text-gray-900">
+                <span class="flex items-center gap-1.5">
+                  {{ emp.name }}
+                  <ChatBubbleBottomCenterTextIcon
+                    v-if="emp.notes" class="h-3.5 w-3.5 shrink-0 text-amber-500"
+                    :title="emp.notes"
+                  />
+                </span>
+                <span v-if="emp.notes" class="mt-0.5 block max-w-52 truncate text-[11px] font-normal text-gray-400" :title="emp.notes">{{ emp.notes }}</span>
+              </td>
               <td class="hc-td text-xs text-gray-500" :title="emp.unit_name">{{ emp.unit ?? '–' }}</td>
               <td class="hc-td text-right tabular-nums">{{ fmtNum(emp.base_salary) }}</td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right tabular-nums text-gray-600">
@@ -75,14 +118,19 @@
           </tbody>
           <tfoot class="border-t border-gray-200 bg-gray-50/60">
             <tr>
-              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" colspan="3">Total {{ STATUS_LABELS[tab] }}</td>
-              <td v-for="key in componentKeys" :key="key" class="hc-td text-right font-medium tabular-nums">{{ fmtNum(current.totals[key]) }}</td>
-              <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(current.grand_total) }}</td>
+              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" colspan="3">
+                Total {{ STATUS_LABELS[tab] }}{{ isFiltered ? ` (${filteredEmployees.length} pegawai tersaring)` : '' }}
+              </td>
+              <td v-for="key in componentKeys" :key="key" class="hc-td text-right font-medium tabular-nums">{{ fmtNum(viewTotals.components[key]) }}</td>
+              <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(viewTotals.grand) }}</td>
               <td />
             </tr>
           </tfoot>
         </table>
-        <p v-if="!current.employees.length" class="p-8 text-center text-sm text-gray-400">Belum ada pegawai berstatus ini.</p>
+        <p v-if="!filteredEmployees.length" class="p-8 text-center text-sm text-gray-400">
+          {{ current.employees.length ? 'Tidak ada pegawai yang cocok dengan pencarian/filter.' : 'Belum ada pegawai berstatus ini.' }}
+        </p>
+        </div>
       </div>
       <p class="mt-3 text-xs text-gray-400">
         Seluruh angka dalam Rupiah — estimasi setahun berdasarkan asumsi tahun {{ tahun.year }}.
@@ -130,6 +178,14 @@
           <span class="mb-1 block text-xs font-medium text-gray-600">TMT / Awal PKWT</span>
           <input v-model="form.join_date" type="date" class="hc-input w-full" />
         </label>
+        <label class="block">
+          <span class="mb-1 block text-xs font-medium text-gray-600">Catatan / Keterangan</span>
+          <textarea
+            v-model="form.notes" rows="2" maxlength="1000"
+            class="hc-input w-full resize-y"
+            placeholder="mis. promosi Juli, penyesuaian gaji menunggu SK, dsb."
+          />
+        </label>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" class="hc-btn-secondary" @click="modal = false">Batal</button>
           <button type="submit" class="hc-btn">{{ editingEmp ? 'Simpan Perubahan' : 'Tambah' }}</button>
@@ -140,11 +196,14 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, h, reactive, ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
-import { InformationCircleIcon, PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
+import {
+  ChatBubbleBottomCenterTextIcon, InformationCircleIcon, MagnifyingGlassIcon,
+  PencilSquareIcon, PlusIcon, TrashIcon, XMarkIcon,
+} from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import StatCard from '@/Components/HcRkap/StatCard.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
@@ -183,6 +242,58 @@ const tab = ref(Object.keys(props.byStatus)[0] ?? 'tetap')
 const current = computed(() => props.byStatus[tab.value])
 const componentKeys = computed(() => Object.keys(current.value?.totals ?? {}))
 
+// ── pencarian, filter & urutan ────────────────────────────────────────────
+const search = ref('')
+const filterUnit = ref(null)
+const sortKey = ref('name')
+const sortDir = ref('asc')
+const isFiltered = computed(() => !!(search.value.trim() || filterUnit.value))
+
+// penanda kolom yang sedang diurutkan (▲/▼)
+const SortMark = (p) => p.sortKey === p.col
+  ? h('span', { class: 'ml-0.5 text-[9px] text-[#2a78d6]' }, p.sortDir === 'asc' ? '▲' : '▼')
+  : null
+SortMark.props = ['col', 'sortKey', 'sortDir']
+
+function sortBy(key) {
+  if (sortKey.value === key) {
+    sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
+  } else {
+    sortKey.value = key
+    sortDir.value = (key === 'name' || key === 'unit') ? 'asc' : 'desc'
+  }
+}
+
+const filteredEmployees = computed(() => {
+  let list = current.value?.employees ?? []
+  const q = search.value.trim().toLowerCase()
+  if (q) {
+    list = list.filter(e => e.name.toLowerCase().includes(q)
+      || (e.notes ?? '').toLowerCase().includes(q))
+  }
+  if (filterUnit.value) list = list.filter(e => e.work_unit_id === filterUnit.value)
+
+  const dir = sortDir.value === 'asc' ? 1 : -1
+  const key = sortKey.value
+  return [...list].sort((a, b) => {
+    const va = key === 'unit' ? (a.unit ?? '') : (a[key] ?? 0)
+    const vb = key === 'unit' ? (b.unit ?? '') : (b[key] ?? 0)
+    return (typeof va === 'string' ? va.localeCompare(vb, 'id') : va - vb) * dir
+  })
+})
+
+// total mengikuti baris yang tampil agar tabel konsisten saat difilter
+const viewTotals = computed(() => {
+  const components = {}
+  componentKeys.value.forEach((key) => {
+    components[key] = filteredEmployees.value.reduce((sum, e) => sum + (e.components[key] ?? 0), 0)
+  })
+  return {
+    components,
+    grand: filteredEmployees.value.reduce((sum, e) => sum + e.total, 0),
+  }
+})
+
 const unitOptions = computed(() => {
   const units = props.options.units
   const out = []
@@ -202,14 +313,15 @@ const editingEmp = ref(null)
 const form = reactive({
   name: '', status: 'tetap', work_unit_id: null,
   base_salary: 0, position_allowance: 0, transport_allowance: 0,
-  join_date: null,
+  join_date: null, notes: '',
 })
 
 function openCreate() {
   editingEmp.value = null
   Object.assign(form, {
     name: '', status: tab.value, work_unit_id: null,
-    base_salary: 0, position_allowance: 0, transport_allowance: 0, join_date: null,
+    base_salary: 0, position_allowance: 0, transport_allowance: 0,
+    join_date: null, notes: '',
   })
   modal.value = true
 }
@@ -224,6 +336,7 @@ function openEdit(emp) {
     position_allowance: emp.position_allowance,
     transport_allowance: emp.transport_allowance,
     join_date: emp.join_date,
+    notes: emp.notes ?? '',
   })
   modal.value = true
 }
@@ -251,7 +364,7 @@ function confirmDelete(emp) {
     cancelButtonText: 'Batal',
   }).then((res) => {
     if (res.isConfirmed) {
-      router.delete(route('hc.pegawai.destroy', emp.id), { preserveScroll: true })
+      router.delete(route('hc.pegawai.destroy', { employee: emp.id, tahun: props.tahun.year }), { preserveScroll: true })
     }
   })
 }

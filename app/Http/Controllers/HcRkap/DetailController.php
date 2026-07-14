@@ -33,7 +33,9 @@ class DetailController extends Controller
                     ->map(fn ($u) => $u->only('id', 'code', 'name', 'type', 'parent_id'))->values(),
             ],
             'matrix' => $this->budget->detailMatrix($year, $scenario, $unitId),
-            'canEdit' => $year->status !== 'final',
+            // RKAP diinput lewat menu Input Nominal, realisasi lewat menu
+            // Realisasi — di sini hanya prognosa yang bisa diubah langsung.
+            'canEdit' => $year->status !== 'final' && $scenario === 'prognosa',
         ]);
     }
 
@@ -44,7 +46,7 @@ class DetailController extends Controller
             'cost_type_id' => ['required', 'exists:hc_cost_types,id'],
             'work_unit_id' => ['required', 'exists:hc_work_units,id'],
             'month' => ['required', 'integer', 'between:1,12'],
-            'scenario' => ['required', Rule::in(['rkap', 'realisasi', 'prognosa'])],
+            'scenario' => ['required', Rule::in(['prognosa'])],
             'amount' => ['required', 'numeric', 'min:0'],
         ]);
 
