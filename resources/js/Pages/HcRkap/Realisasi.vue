@@ -44,6 +44,21 @@
             </td>
           </tr>
         </tbody>
+        <tfoot v-if="ytd.length" class="border-t-2 border-gray-200 bg-gray-50/80">
+          <tr>
+            <td class="hc-td font-bold text-gray-900">Total</td>
+            <td class="hc-td text-right font-bold tabular-nums text-gray-900">{{ fmtIDR(ytdTotal.rkap) }}</td>
+            <td class="hc-td text-right font-bold tabular-nums text-gray-900">{{ ytdTotal.realisasi ? fmtIDR(ytdTotal.realisasi) : '–' }}</td>
+            <td class="hc-td text-right font-bold tabular-nums" :class="ytdTotal.selisih < 0 ? 'text-red-600' : 'text-gray-900'">{{ fmtIDR(ytdTotal.selisih) }}</td>
+            <td class="hc-td text-right font-bold tabular-nums text-gray-900">{{ ytdTotal.serapan !== null && ytdTotal.realisasi ? fmtPct(ytdTotal.serapan) : '–' }}</td>
+            <td class="hc-td">
+              <span v-if="ytdTotal.realisasi" class="inline-flex items-center gap-1 rounded-full px-2 py-0.5 text-[11px] font-semibold" :class="statusBadge(ytdTotal.serapan).class">
+                <component :is="statusBadge(ytdTotal.serapan).icon" class="h-3 w-3" />
+                {{ statusBadge(ytdTotal.serapan).label }}
+              </span>
+            </td>
+          </tr>
+        </tfoot>
       </table>
     </div>
 
@@ -54,9 +69,18 @@
           <h2 class="text-sm font-semibold text-gray-900">Input Realisasi — {{ BULAN_PANJANG[bulan - 1] }} {{ tahun.year }}</h2>
           <p class="mt-0.5 text-xs text-gray-500">Isi nilai realisasi per komponen biaya dan unit kerja. Kosongkan bila belum ada.</p>
         </div>
-        <button v-if="canEdit" type="submit" class="hc-btn" :disabled="saving">
-          <CheckIcon class="h-4 w-4" /> {{ saving ? 'Menyimpan…' : 'Simpan Realisasi' }}
-        </button>
+        <div class="flex flex-wrap items-center gap-2">
+          <a :href="templateUrl" class="hc-btn-secondary" title="Unduh template Excel berisi baris bulan ini">
+            <ArrowDownTrayIcon class="h-4 w-4" /> Unduh Template
+          </a>
+          <button v-if="canEdit" type="button" class="hc-btn-secondary" :disabled="importing" @click="fileInput.click()">
+            <ArrowUpTrayIcon class="h-4 w-4" /> {{ importing ? 'Mengimpor…' : 'Import Excel' }}
+          </button>
+          <input ref="fileInput" type="file" accept=".xlsx,.xls" class="hidden" @change="importExcel" />
+          <button v-if="canEdit" type="submit" class="hc-btn" :disabled="saving">
+            <CheckIcon class="h-4 w-4" /> {{ saving ? 'Menyimpan…' : 'Simpan Realisasi' }}
+          </button>
+        </div>
       </div>
 
       <div class="max-h-[32rem] overflow-y-auto">
@@ -102,7 +126,10 @@
 import { computed, reactive, ref } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
-import { CheckIcon, CheckCircleIcon, ExclamationTriangleIcon, FireIcon } from '@heroicons/vue/24/outline'
+import {
+  ArrowDownTrayIcon, ArrowUpTrayIcon, CheckIcon, CheckCircleIcon,
+  ExclamationTriangleIcon, FireIcon,
+} from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import { BULAN, BULAN_PANJANG, useHcFormat } from '@/composables/useHcFormat'
 
@@ -117,12 +144,43 @@ const props = defineProps({
 
 const { fmtIDR, fmtNum, fmtPct } = useHcFormat()
 const saving = ref(false)
+const importing = ref(false)
+const fileInput = ref(null)
+
+const templateUrl = computed(() =>
+  route('hc.realisasi.template', { tahun: props.tahun.year, bulan: props.bulan })
+)
+
+function importExcel(event) {
+  const file = event.target.files[0]
+  if (!file) return
+  importing.value = true
+  router.post(route('hc.realisasi.import'), { file }, {
+    forceFormData: true,
+    preserveScroll: true,
+    onFinish: () => {
+      importing.value = false
+      event.target.value = ''
+    },
+  })
+}
 
 const rowKey = (r) => `${r.cost_type_id}-${r.work_unit_id}`
 
 const inputs = reactive(Object.fromEntries(
   props.rows.map(r => [rowKey(r), r.realisasi ?? ''])
 ))
+
+const ytdTotal = computed(() => {
+  const rkap = props.ytd.reduce((sum, r) => sum + (r.rkap || 0), 0)
+  const realisasi = props.ytd.reduce((sum, r) => sum + (r.realisasi || 0), 0)
+  return {
+    rkap,
+    realisasi,
+    selisih: rkap - realisasi,
+    serapan: rkap > 0 ? realisasi / rkap * 100 : null,
+  }
+})
 
 const groupedRows = computed(() => {
   const out = {}

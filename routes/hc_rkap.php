@@ -24,6 +24,8 @@ Route::prefix('hc-rkap')->name('hc.')->middleware('admin.auth')->group(function 
 
     Route::get('/realisasi', [RealizationController::class, 'index'])->name('realisasi');
     Route::post('/realisasi', [RealizationController::class, 'store'])->name('realisasi.store');
+    Route::get('/realisasi/template', [RealizationController::class, 'template'])->name('realisasi.template');
+    Route::post('/realisasi/import', [RealizationController::class, 'import'])->name('realisasi.import');
 
     Route::get('/pegawai', [EmployeeController::class, 'index'])->name('pegawai');
     Route::post('/pegawai', [EmployeeController::class, 'store'])->name('pegawai.store');
