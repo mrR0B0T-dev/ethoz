@@ -7,9 +7,11 @@ use App\Http\Controllers\HcRkap\Concerns\ResolvesFiscalYear;
 use App\Models\HcRkap\Employee;
 use App\Services\HcRkap\BudgetService;
 use App\Services\HcRkap\EmployeeCostService;
+use App\Services\HcRkap\EmployeeSpreadsheet;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class EmployeeController extends Controller
 {
@@ -18,6 +20,7 @@ class EmployeeController extends Controller
     public function __construct(
         private EmployeeCostService $costs,
         private BudgetService $budget,
+        private EmployeeSpreadsheet $spreadsheet,
     ) {}
 
     public function index(Request $request)
@@ -57,6 +60,67 @@ class EmployeeController extends Controller
         $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Pegawai dihapus.');
+    }
+
+    /** Unduh template Excel untuk menambah pegawai secara massal. */
+    public function template()
+    {
+        $units = $this->budget->units()->where('is_active', true)->sortBy('sort_order')->values();
+        $workbook = $this->spreadsheet->buildTemplate($units);
+
+        return response()->streamDownload(function () use ($workbook) {
+            (new Xlsx($workbook))->save('php://output');
+            $workbook->disconnectWorksheets();
+        }, 'Template_Tambah_Pegawai.xlsx', [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        ]);
+    }
+
+    /** Impor daftar pegawai baru dari template Excel yang sudah diisi. */
+    public function import(Request $request)
+    {
+        $request->validate([
+            'file' => ['required', 'file', 'mimes:xlsx,xls', 'max:10240'],
+        ], [], ['file' => 'file Excel']);
+
+        try {
+            $parsed = $this->spreadsheet->parseImport($request->file('file')->getRealPath());
+        } catch (\Throwable) {
+            return back()->with('error', 'File tidak dapat dibaca. Gunakan template yang diunduh dari sistem.');
+        }
+
+        if (empty($parsed['items'])) {
+            return back()->with('error', $parsed['errors']
+                ? 'Tidak ada baris valid. '.$parsed['errors'][0]
+                : 'Tidak ada data pegawai pada file.');
+        }
+
+        $now = now();
+        $rows = array_map(fn ($it) => [
+            'name' => $it['name'],
+            'work_unit_id' => $it['work_unit_id'],
+            'status' => $it['status'],
+            'base_salary' => $it['base_salary'],
+            'position_allowance' => $it['position_allowance'],
+            'transport_allowance' => $it['transport_allowance'],
+            'join_date' => $it['join_date'],
+            'notes' => $it['notes'],
+            'is_active' => true,
+            'created_at' => $now,
+            'updated_at' => $now,
+        ], $parsed['items']);
+
+        foreach (array_chunk($rows, 500) as $chunk) {
+            Employee::insert($chunk);
+        }
+        $this->syncRosterSourcedBudgets();
+
+        $message = count($rows).' pegawai berhasil diimpor.';
+        if ($parsed['errors']) {
+            $message .= ' '.count($parsed['errors']).' baris dilewati — '.$parsed['errors'][0];
+        }
+
+        return back()->with('success', $message);
     }
 
     /**

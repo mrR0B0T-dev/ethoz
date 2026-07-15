@@ -60,9 +60,18 @@
               </template>
             </p>
           </div>
-          <button v-if="canEdit" class="hc-btn" :disabled="saving || !rows.length" @click="save">
-            <CheckIcon class="h-4 w-4" /> {{ saving ? 'Menyimpan…' : 'Simpan Nominal' }}
-          </button>
+          <div v-if="canEdit" class="flex flex-wrap items-center gap-2">
+            <a :href="templateUrl" class="hc-btn-secondary" title="Unduh template Excel berisi nilai komponen ini">
+              <ArrowDownTrayIcon class="h-4 w-4" /> Unduh Template
+            </a>
+            <button type="button" class="hc-btn-secondary" :disabled="importing" @click="fileInput.click()">
+              <ArrowUpTrayIcon class="h-4 w-4" /> {{ importing ? 'Mengimpor…' : 'Import Excel' }}
+            </button>
+            <input ref="fileInput" type="file" accept=".xlsx,.xls" class="hidden" @change="importExcel" />
+            <button class="hc-btn" :disabled="saving || !rows.length" @click="save">
+              <CheckIcon class="h-4 w-4" /> {{ saving ? 'Menyimpan…' : 'Simpan Nominal' }}
+            </button>
+          </div>
         </div>
 
         <div class="overflow-x-auto">
@@ -137,11 +146,12 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import {
-  ArrowsRightLeftIcon, CheckIcon, LockClosedIcon, PlusIcon, TrashIcon, UsersIcon,
+  ArrowDownTrayIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, CheckIcon,
+  LockClosedIcon, PlusIcon, TrashIcon, UsersIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import { BULAN, useHcFormat } from '@/composables/useHcFormat'
@@ -164,6 +174,32 @@ const saving = ref(false)
 
 // salinan lokal agar sel bisa diedit sebelum disimpan
 const rows = reactive(props.rows.map(r => ({ ...r, months: [...r.months] })))
+
+// selaraskan salinan lokal saat data server berubah (mis. setelah impor)
+watch(() => props.rows, (next) => {
+  rows.splice(0, rows.length, ...next.map(r => ({ ...r, months: [...r.months] })))
+})
+
+// ── unduh template & impor Excel ──────────────────────────────────────────
+const importing = ref(false)
+const fileInput = ref(null)
+const templateUrl = computed(() =>
+  route('hc.nominal.template', { tahun: props.tahun.year, komponen: props.selected?.id }),
+)
+
+function importExcel(event) {
+  const file = event.target.files[0]
+  if (!file) return
+  importing.value = true
+  router.post(route('hc.nominal.import'), { file }, {
+    forceFormData: true,
+    preserveScroll: true,
+    onFinish: () => {
+      importing.value = false
+      event.target.value = ''
+    },
+  })
+}
 
 function pick(comp) {
   router.get(route('hc.nominal'), { tahun: props.tahun.year, komponen: comp.id }, { preserveScroll: true })

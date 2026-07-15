@@ -138,13 +138,19 @@ function changeYear(year) {
   router.get(page.url.split('?')[0], { ...query, tahun: year }, { preserveScroll: true })
 }
 
-// Toast flash message
+// Toast flash message.
+// SweetAlert2 merender opsi `title` sebagai HTML, sedangkan pesan flash bisa
+// memuat teks dari sumber tak tepercaya (mis. isi sel Excel saat impor).
+// Escape dulu agar markup ditampilkan apa adanya, bukan dieksekusi (cegah XSS).
 const toast = Swal.mixin({
   toast: true, position: 'top-end', showConfirmButton: false,
   timer: 2500, timerProgressBar: true,
 })
+const escapeHtml = (s) => String(s).replace(/[&<>"']/g, (c) => (
+  { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]
+))
 watch(() => page.props.flash, (flash) => {
-  if (flash?.success) toast.fire({ icon: 'success', title: flash.success })
-  if (flash?.error) toast.fire({ icon: 'error', title: flash.error })
+  if (flash?.success) toast.fire({ icon: 'success', title: escapeHtml(flash.success) })
+  if (flash?.error) toast.fire({ icon: 'error', title: escapeHtml(flash.error) })
 }, { deep: true, immediate: true })
 </script>

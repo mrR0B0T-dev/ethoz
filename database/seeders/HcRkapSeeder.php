@@ -64,9 +64,22 @@ class HcRkapSeeder extends Seeder
             ]);
         }
 
-        // jenis biaya yang nominalnya mengikuti aturan berbasis
-        // Gaji Dasar / Tunj. Jabatan / Tunj. Transport → tidak diinput manual
+        // Komponen Biaya Gaji yang nilainya = total field pegawai per unit
+        // (dikelola di menu Pegawai & Biaya, tidak diinput manual).
+        $employeeSource = [
+            'GAJI.DASAR' => 'base_salary',
+            'GAJI.TRANSPORT' => 'transport_allowance',
+            'GAJI.JABATAN' => 'position_allowance',
+        ];
+
+        // jenis biaya turunan → keterangan yang tampil pada komponen terkunci
         $derived = [
+            'GAJI.DASAR' => 'Total Gaji Dasar seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
+            'GAJI.TRANSPORT' => 'Total Tunj. Transport seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
+            'GAJI.JABATAN' => 'Total Tunj. Jabatan seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
+            // GMM & Cabang melekat pada unit tanpa pegawai → baris terkunci bernilai tetap
+            'GAJI.GMM' => 'Nilai Biaya Gaji GMM terkunci mengikuti kebijakan biaya personil dan tidak diinput manual di menu Input Nominal.',
+            'GAJI.CABANG' => 'Nilai Biaya Gaji Cabang terkunci mengikuti kebijakan biaya personil dan tidak diinput manual di menu Input Nominal.',
             'TUNJ.THR' => 'THR = jumlah bulan THR (asumsi) × (Gaji Dasar + Tunj. Jabatan + Tunj. Transport)',
             'TUNJ.BONUS' => 'Bonus = jumlah bulan bonus (asumsi) × (Gaji Dasar + Tunj. Jabatan + Tunj. Transport)',
             'TUNJ.PPH21' => 'PPh 21 dihitung dari Gaji Dasar, Tunj. Jabatan & Tunj. Transport',
@@ -77,19 +90,16 @@ class HcRkapSeeder extends Seeder
         ];
 
         foreach ($master['cost_types'] as $type) {
-            // Biaya Gaji Dasar = grand total Gaji Dasar seluruh pegawai per unit
-            $isGaji = $type['code'] === 'GAJI.DASAR';
-            CostType::updateOrCreate(['code' => $type['code']], [
+            $code = $type['code'];
+            CostType::updateOrCreate(['code' => $code], [
                 'name' => $type['name'],
                 'parent_id' => $type['parent']
                     ? CostType::where('code', $type['parent'])->value('id')
                     : null,
                 'employee_status' => $type['employee_status'],
-                'is_derived' => isset($derived[$type['code']]) || $isGaji,
-                'derived_note' => $isGaji
-                    ? 'Total Gaji Dasar seluruh pegawai per unit — dikelola di menu Pegawai & Biaya'
-                    : ($derived[$type['code']] ?? null),
-                'employee_source' => $isGaji ? 'base_salary' : null,
+                'is_derived' => isset($derived[$code]),
+                'derived_note' => $derived[$code] ?? null,
+                'employee_source' => $employeeSource[$code] ?? null,
                 'sort_order' => $type['sort_order'],
             ]);
         }

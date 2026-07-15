@@ -25,6 +25,8 @@ Route::prefix('hc-rkap')->name('hc.')->middleware('admin.auth')->group(function 
 
     Route::get('/nominal', [NominalController::class, 'index'])->name('nominal');
     Route::put('/nominal', [NominalController::class, 'upsert'])->name('nominal.upsert');
+    Route::get('/nominal/template', [NominalController::class, 'template'])->name('nominal.template');
+    Route::post('/nominal/import', [NominalController::class, 'import'])->name('nominal.import');
 
     Route::get('/realisasi', [RealizationController::class, 'index'])->name('realisasi');
     Route::post('/realisasi', [RealizationController::class, 'store'])->name('realisasi.store');
@@ -33,6 +35,8 @@ Route::prefix('hc-rkap')->name('hc.')->middleware('admin.auth')->group(function 
     Route::post('/realisasi/import', [RealizationController::class, 'import'])->name('realisasi.import');
 
     Route::get('/pegawai', [EmployeeController::class, 'index'])->name('pegawai');
+    Route::get('/pegawai/template', [EmployeeController::class, 'template'])->name('pegawai.template');
+    Route::post('/pegawai/import', [EmployeeController::class, 'import'])->name('pegawai.import');
     Route::post('/pegawai', [EmployeeController::class, 'store'])->name('pegawai.store');
     Route::put('/pegawai/{employee}', [EmployeeController::class, 'update'])->name('pegawai.update');
     Route::delete('/pegawai/{employee}', [EmployeeController::class, 'destroy'])->name('pegawai.destroy');

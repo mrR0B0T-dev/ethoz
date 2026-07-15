@@ -153,7 +153,7 @@ class RealizationSpreadsheet
 
             $amount = $this->parseAmount($raw);
             if ($amount === null || $amount < 0) {
-                $errors[] = "Baris {$r}: nilai realisasi \"{$raw}\" tidak valid, baris dilewati.";
+                $errors[] = "Baris {$r}: nilai realisasi \"{$this->clip($raw)}\" tidak valid, baris dilewati.";
                 continue;
             }
 
@@ -166,6 +166,19 @@ class RealizationSpreadsheet
         }
 
         return compact('year', 'month', 'items', 'errors');
+    }
+
+    /**
+     * Ringkas nilai sel mentah untuk ditampilkan di pesan error: buang karakter
+     * kontrol/baris baru dan batasi panjang, sehingga isi sel yang berbahaya atau
+     * sangat panjang tidak masuk utuh ke pesan flash.
+     */
+    private function clip(mixed $value): string
+    {
+        $s = preg_replace('/[\x00-\x1F\x7F]+/u', ' ', (string) $value);
+        $s = trim($s);
+
+        return mb_strlen($s) > 30 ? mb_substr($s, 0, 30).'…' : $s;
     }
 
     /** Cari baris header (kolom A berisi "No"); data mulai satu baris di bawahnya. */

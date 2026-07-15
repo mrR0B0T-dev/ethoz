@@ -1,7 +1,17 @@
 <template>
   <HcLayout title="Pegawai & Biaya per Status">
     <!-- Tabs status -->
-    <div class="mb-5 flex flex-wrap gap-1 rounded-xl border border-gray-200 bg-white p-1.5">
+    <div class="mb-5 flex flex-wrap items-center gap-1 rounded-xl border border-gray-200 bg-white p-1.5">
+      <button
+        class="rounded-lg px-4 py-2 text-sm font-medium transition-colors"
+        :class="tab === 'semua' ? 'bg-[#2a78d6] text-white' : 'text-gray-600 hover:bg-gray-100'"
+        @click="tab = 'semua'"
+      >
+        Semua Pegawai
+        <span class="ml-1.5 rounded-full px-1.5 text-xs" :class="tab === 'semua' ? 'bg-white/20' : 'bg-gray-100 text-gray-500'">
+          {{ totalHeadcount }}
+        </span>
+      </button>
       <button
         v-for="(label, status) in STATUS_LABELS" :key="status"
         v-show="byStatus[status]"
@@ -14,15 +24,24 @@
           {{ byStatus[status]?.headcount ?? 0 }}
         </span>
       </button>
-      <button class="hc-btn ml-auto" @click="openCreate">
-        <PlusIcon class="h-4 w-4" /> Tambah Pegawai
-      </button>
+      <div class="ml-auto flex flex-wrap items-center gap-2">
+        <a :href="templateUrl" class="hc-btn-secondary" title="Unduh template Excel untuk menambah pegawai">
+          <ArrowDownTrayIcon class="h-4 w-4" /> Unduh Template
+        </a>
+        <button type="button" class="hc-btn-secondary" :disabled="importing" @click="fileInput.click()">
+          <ArrowUpTrayIcon class="h-4 w-4" /> {{ importing ? 'Mengimpor…' : 'Import Excel' }}
+        </button>
+        <input ref="fileInput" type="file" accept=".xlsx,.xls" class="hidden" @change="importExcel" />
+        <button class="hc-btn" @click="openCreate">
+          <PlusIcon class="h-4 w-4" /> Tambah Pegawai
+        </button>
+      </div>
     </div>
 
     <div v-if="current">
       <!-- ringkasan -->
       <div class="mb-5 grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <StatCard label="Jumlah Pegawai" :value="String(current.headcount)" :hint="STATUS_LABELS[tab]" />
+        <StatCard label="Jumlah Pegawai" :value="String(current.headcount)" :hint="isAll ? 'Semua status' : STATUS_LABELS[tab]" />
         <StatCard label="Estimasi Biaya Setahun" :value="fmtShort(current.grand_total)" :hint="fmtIDR(current.grand_total)" />
         <StatCard
           label="Rata-rata per Pegawai"
@@ -32,7 +51,7 @@
       </div>
 
       <!-- catatan asumsi -->
-      <div class="mb-5 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3">
+      <div v-if="!isAll" class="mb-5 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3">
         <p class="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#1c5cab]">
           <InformationCircleIcon class="h-4 w-4" /> Dasar perhitungan (Asumsi {{ tahun.year }})
         </p>
@@ -78,6 +97,9 @@
               <th class="hc-th cursor-pointer select-none" @click="sortBy('unit')">
                 Unit <SortMark col="unit" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
+              <th v-if="isAll" class="hc-th cursor-pointer select-none" @click="sortBy('status')">
+                Status <SortMark col="status" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
               <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('base_salary')">
                 Gaji /bln <SortMark col="base_salary" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
@@ -101,6 +123,11 @@
                 <span v-if="emp.notes" class="mt-0.5 block max-w-52 truncate text-[11px] font-normal text-gray-400" :title="emp.notes">{{ emp.notes }}</span>
               </td>
               <td class="hc-td text-xs text-gray-500" :title="emp.unit_name">{{ emp.unit ?? '–' }}</td>
+              <td v-if="isAll" class="hc-td">
+                <span class="inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium" :class="statusChip(emp.status)">
+                  {{ STATUS_LABELS[emp.status] ?? emp.status }}
+                </span>
+              </td>
               <td class="hc-td text-right tabular-nums">{{ fmtNum(emp.base_salary) }}</td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right tabular-nums text-gray-600">
                 {{ fmtNum(emp.components[key]) }}
@@ -118,8 +145,8 @@
           </tbody>
           <tfoot class="border-t border-gray-200 bg-gray-50/60">
             <tr>
-              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" colspan="3">
-                Total {{ STATUS_LABELS[tab] }}{{ isFiltered ? ` (${filteredEmployees.length} pegawai tersaring)` : '' }}
+              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 4 : 3">
+                Total {{ isAll ? 'Semua Pegawai' : STATUS_LABELS[tab] }}{{ isFiltered ? ` (${filteredEmployees.length} pegawai tersaring)` : '' }}
               </td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right font-medium tabular-nums">{{ fmtNum(viewTotals.components[key]) }}</td>
               <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(viewTotals.grand) }}</td>
@@ -201,7 +228,8 @@ import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
 import {
-  ChatBubbleBottomCenterTextIcon, InformationCircleIcon, MagnifyingGlassIcon,
+  ArrowDownTrayIcon, ArrowUpTrayIcon, ChatBubbleBottomCenterTextIcon,
+  InformationCircleIcon, MagnifyingGlassIcon,
   PencilSquareIcon, PlusIcon, TrashIcon, XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
@@ -225,6 +253,14 @@ const STATUS_LABELS = {
   direksi: 'Direksi',
 }
 
+const STATUS_CHIP = {
+  tetap: 'bg-emerald-50 text-emerald-700',
+  kontrak: 'bg-blue-50 text-blue-700',
+  honor: 'bg-amber-50 text-amber-700',
+  direksi: 'bg-purple-50 text-purple-700',
+}
+const statusChip = (s) => STATUS_CHIP[s] ?? 'bg-gray-100 text-gray-600'
+
 const COMPONENT_LABELS = {
   gaji: 'Gaji /thn',
   tunj_jabatan: 'Tunj. Jabatan /thn',
@@ -239,8 +275,44 @@ const COMPONENT_LABELS = {
 }
 
 const tab = ref(Object.keys(props.byStatus)[0] ?? 'tetap')
-const current = computed(() => props.byStatus[tab.value])
+const isAll = computed(() => tab.value === 'semua')
+const allEmployees = computed(() => Object.values(props.byStatus).flatMap(s => s.employees ?? []))
+const totalHeadcount = computed(() => allEmployees.value.length)
+
+// "current" = data status terpilih, atau gabungan semua status untuk tab "Semua"
+const current = computed(() => {
+  if (isAll.value) {
+    const employees = allEmployees.value
+    return {
+      headcount: employees.length,
+      employees,
+      grand_total: employees.reduce((sum, e) => sum + (e.total ?? 0), 0),
+      totals: {},
+      assumption_notes: [],
+    }
+  }
+  return props.byStatus[tab.value]
+})
 const componentKeys = computed(() => Object.keys(current.value?.totals ?? {}))
+
+// ── unduh template & impor Excel ──────────────────────────────────────────
+const importing = ref(false)
+const fileInput = ref(null)
+const templateUrl = computed(() => route('hc.pegawai.template'))
+
+function importExcel(event) {
+  const file = event.target.files[0]
+  if (!file) return
+  importing.value = true
+  router.post(route('hc.pegawai.import'), { file }, {
+    forceFormData: true,
+    preserveScroll: true,
+    onFinish: () => {
+      importing.value = false
+      event.target.value = ''
+    },
+  })
+}
 
 // ── pencarian, filter & urutan ────────────────────────────────────────────
 const search = ref('')
@@ -260,7 +332,7 @@ function sortBy(key) {
     sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortKey.value = key
-    sortDir.value = (key === 'name' || key === 'unit') ? 'asc' : 'desc'
+    sortDir.value = (key === 'name' || key === 'unit' || key === 'status') ? 'asc' : 'desc'
   }
 }
 
@@ -319,7 +391,7 @@ const form = reactive({
 function openCreate() {
   editingEmp.value = null
   Object.assign(form, {
-    name: '', status: tab.value, work_unit_id: null,
+    name: '', status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
     base_salary: 0, position_allowance: 0, transport_allowance: 0,
     join_date: null, notes: '',
   })
