@@ -36,13 +36,19 @@ class EmployeeController extends Controller
             'options' => [
                 'units' => $this->budget->units()
                     ->map(fn ($u) => $u->only('id', 'code', 'name', 'type', 'parent_id'))->values(),
+                'grades' => $this->grading->grades()->map(fn ($g) => $g->only(
+                    'id', 'jabatan', 'code', 'level',
+                    'salary_min', 'salary_mid', 'salary_max',
+                    'position_allowance', 'transport_allowance',
+                ))->values(),
             ],
         ]);
     }
 
     public function store(Request $request)
     {
-        $employee = Employee::create($this->validated($request));
+        $data = $this->validated($request);
+        $employee = Employee::create($this->applyGradeRules($data));
         $this->autoGrade($employee);
         $this->syncRosterSourcedBudgets();
 
@@ -51,11 +57,49 @@ class EmployeeController extends Controller
 
     public function update(Request $request, Employee $employee)
     {
-        $employee->update($this->validated($request));
+        $data = $this->validated($request);
+        $employee->update($this->applyGradeRules($data));
         $this->autoGrade($employee);
         $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Data pegawai diperbarui.');
+    }
+
+    /**
+     * Terapkan aturan skala upah bila grade dipilih pada form:
+     * gaji dasar wajib dalam rentang min–max grade, tunjangan jabatan &
+     * transport mengikuti tarif grade, jabatan kosong diisi referensi grade.
+     * Tanpa grade → salary_grade_id dilepas agar grading otomatis berjalan.
+     */
+    private function applyGradeRules(array $data): array
+    {
+        if (empty($data['salary_grade_id'])) {
+            $data['salary_grade_id'] = null;
+            $data['grade_source'] = null;
+
+            return $data;
+        }
+
+        $grade = $this->grading->grades()->firstWhere('id', (int) $data['salary_grade_id']);
+
+        if ((float) $data['base_salary'] < $grade->salary_min
+            || (float) $data['base_salary'] > $grade->salary_max) {
+            throw \Illuminate\Validation\ValidationException::withMessages([
+                'base_salary' => sprintf(
+                    'Gaji dasar harus dalam rentang skala upah grade %s: Rp %s – Rp %s.',
+                    $grade->code,
+                    number_format($grade->salary_min, 0, ',', '.'),
+                    number_format($grade->salary_max, 0, ',', '.'),
+                ),
+            ]);
+        }
+
+        $data['position_allowance'] = $grade->position_allowance;
+        $data['transport_allowance'] = $grade->transport_allowance;
+        $data['jabatan'] = $data['jabatan'] ?: $grade->jabatan;
+        $data['grade_source'] = 'manual'; // dipilih pengguna → tidak ditimpa grading otomatis
+
+        return $data;
     }
 
     /** Grading ulang otomatis setelah data gaji berubah; grade manual dipertahankan. */
@@ -87,7 +131,7 @@ class EmployeeController extends Controller
     public function template()
     {
         $units = $this->budget->units()->where('is_active', true)->sortBy('sort_order')->values();
-        $workbook = $this->spreadsheet->buildTemplate($units);
+        $workbook = $this->spreadsheet->buildTemplate($units, $this->grading->grades());
 
         return response()->streamDownload(function () use ($workbook) {
             (new Xlsx($workbook))->save('php://output');
@@ -161,6 +205,7 @@ class EmployeeController extends Controller
         return $request->validate([
             'name' => ['required', 'string', 'max:150'],
             'jabatan' => ['nullable', 'string', 'max:150'],
+            'salary_grade_id' => ['nullable', 'exists:hc_salary_grades,id'],
             'work_unit_id' => ['nullable', 'exists:hc_work_units,id'],
             'status' => ['required', Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
             'base_salary' => ['required', 'numeric', 'min:0'],

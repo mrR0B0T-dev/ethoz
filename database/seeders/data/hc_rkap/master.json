@@ -20,37 +20,37 @@
   },
   {
    "code": "BMG-GM",
-   "name": "Business & Marketing Group - GM",
+   "name": "Building Management Group - Graha Mandiri",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "BMG-MM",
-   "name": "Business & Marketing Group - MM",
+   "name": "Building Management Group - Menara Mandiri",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "PMG",
-   "name": "Production Management Group",
+   "name": "Property Management Group",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "BCN",
-   "name": "Business Consulting Group",
+   "name": "Building Construction Group",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "OSM",
-   "name": "Operation & Service Management",
+   "name": "Outsourcing Management Group",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "SMG",
-   "name": "Strategic Management Group",
+   "name": "Security Management Group",
    "type": "department",
    "parent": "PUSAT"
   },
@@ -68,19 +68,19 @@
   },
   {
    "code": "BAC",
-   "name": "Business Audit & Compliance",
+   "name": "Business Acquisition and Client Services",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "DSP",
-   "name": "Development & System Planning",
+   "name": "Distribution & Strategic Performance",
    "type": "department",
    "parent": "PUSAT"
   },
   {
    "code": "IAT",
-   "name": "Internal Audit Team",
+   "name": "Internal Audit Department",
    "type": "department",
    "parent": "PUSAT"
   },

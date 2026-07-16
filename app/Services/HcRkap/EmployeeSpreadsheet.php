@@ -30,16 +30,18 @@ class EmployeeSpreadsheet
 
     /**
      * @param  \Illuminate\Support\Collection<int, WorkUnit>  $units
+     * @param  \Illuminate\Support\Collection<int, \App\Models\HcRkap\SalaryGrade>  $grades
      */
-    public function buildTemplate($units): Spreadsheet
+    public function buildTemplate($units, $grades = null): Spreadsheet
     {
+        $grades ??= collect();
         $spreadsheet = new Spreadsheet;
 
         // ── Sheet Pegawai (diisi pengguna) sebagai sheet pertama ────────────
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Pegawai');
 
-        // ── Sheet Referensi (daftar unit & status) ──────────────────────────
+        // ── Sheet Referensi (seluruh acuan input pegawai) ────────────────────
         $ref = $spreadsheet->createSheet();
         $ref->setTitle('Referensi');
         $ref->setCellValue('A1', 'Kode Unit');
@@ -61,6 +63,64 @@ class EmployeeSpreadsheet
         $ref->getColumnDimension('B')->setWidth(38);
         $ref->getColumnDimension('D')->setWidth(14);
 
+        // daftar jabatan referensi (unik, urut level) → dropdown kolom Jabatan
+        $jabatanList = $grades->sortBy('level')->pluck('jabatan')->unique()->values();
+        $ref->setCellValue('F1', 'Jabatan (referensi)');
+        $ref->getStyle('F1')->getFont()->setBold(true);
+        foreach ($jabatanList as $i => $j) {
+            $ref->setCellValue('F'.($i + 2), $j);
+        }
+        $lastJabatanRow = max(2, $jabatanList->count() + 1);
+        $ref->getColumnDimension('F')->setWidth(22);
+
+        // struktur grade & skala upah: acuan Gaji Dasar (min–max) dan tarif tunjangan
+        $gradeHeaders = [
+            'H' => 'Grade', 'I' => 'Level', 'J' => 'Jabatan',
+            'K' => 'Gaji Dasar Min', 'L' => 'Gaji Dasar Mid', 'M' => 'Gaji Dasar Max',
+            'N' => 'Tunj. Jabatan /bln', 'O' => 'Tunj. Transport /bln',
+        ];
+        foreach ($gradeHeaders as $col => $label) {
+            $ref->setCellValue("{$col}1", $label);
+        }
+        $ref->getStyle('H1:O1')->getFont()->setBold(true);
+        $ref->getStyle('H1:O1')->getFill()->setFillType(Fill::FILL_SOLID)
+            ->getStartColor()->setRGB('DBEAFE');
+        $g = 2;
+        foreach ($grades->sortBy('level') as $grade) {
+            $ref->setCellValue("H{$g}", $grade->code);
+            $ref->setCellValue("I{$g}", $grade->level);
+            $ref->setCellValue("J{$g}", $grade->jabatan);
+            $ref->setCellValue("K{$g}", $grade->salary_min);
+            $ref->setCellValue("L{$g}", $grade->salary_mid);
+            $ref->setCellValue("M{$g}", $grade->salary_max);
+            $ref->setCellValue("N{$g}", $grade->position_allowance);
+            $ref->setCellValue("O{$g}", $grade->transport_allowance);
+            $g++;
+        }
+        $lastGradeRow = $g - 1;
+        if ($lastGradeRow >= 2) {
+            $ref->getStyle("K2:O{$lastGradeRow}")->getNumberFormat()->setFormatCode('#,##0');
+        }
+        foreach (['H' => 10, 'I' => 8, 'J' => 20, 'K' => 16, 'L' => 16, 'M' => 16, 'N' => 18, 'O' => 20] as $col => $w) {
+            $ref->getColumnDimension($col)->setWidth($w);
+        }
+
+        // petunjuk pengisian di bawah tabel grade
+        $notes = [
+            'PETUNJUK PENGISIAN:',
+            '• Jabatan, Unit & Status: pilih dari dropdown (daftar pada sheet ini).',
+            '• Gaji Dasar: isi sesuai rentang skala upah grade pegawai (kolom Gaji Dasar Min–Max).',
+            '• Tunj. Jabatan & Tunj. Transport: mengikuti tarif grade pada tabel di atas.',
+            '• TMT: format YYYY-MM-DD (mis. 2026-01-15). Catatan: opsional.',
+            '• Grade pegawai ditentukan otomatis oleh sistem dari gaji & tunjangan yang diisi.',
+        ];
+        $n = $lastGradeRow + 2;
+        foreach ($notes as $i => $note) {
+            $ref->setCellValue('H'.($n + $i), $note);
+        }
+        $ref->getStyle("H{$n}")->getFont()->setBold(true);
+        $ref->getStyle("H{$n}:H".($n + count($notes) - 1))->getFont()->setSize(10);
+
         // ── Header & format sheet Pegawai ───────────────────────────────────
         foreach (self::HEADERS as $i => $label) {
             $sheet->setCellValue([$i + 1, 1], $label);
@@ -76,7 +136,10 @@ class EmployeeSpreadsheet
         $sheet->getStyle('E2:G'.self::MAX_ROWS)->getNumberFormat()->setFormatCode('#,##0');
         $sheet->freezePane('A2');
 
-        // dropdown Unit (kolom C) & Status (kolom D)
+        // dropdown Jabatan (kolom B), Unit (kolom C) & Status (kolom D)
+        if ($jabatanList->isNotEmpty()) {
+            $this->applyListValidation($sheet, 'B', "=Referensi!\$F\$2:\$F\${$lastJabatanRow}", 'Pilih jabatan referensi dari daftar.');
+        }
         $this->applyListValidation($sheet, 'C', "=Referensi!\$A\$2:\$A\${$lastUnitRow}", 'Pilih kode unit dari daftar.');
         $this->applyListValidation($sheet, 'D', '"'.implode(',', self::STATUSES).'"', 'Pilih status kepegawaian.');
 

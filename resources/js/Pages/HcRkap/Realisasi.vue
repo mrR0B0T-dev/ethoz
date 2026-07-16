@@ -90,7 +90,11 @@
           <button v-if="canEdit" type="button" class="hc-btn-danger" @click="deleteAll">
             <TrashIcon class="h-4 w-4" /> Hapus Semua
           </button>
-          <button v-if="canEdit" type="submit" class="hc-btn" :disabled="saving">
+          <button
+            v-if="canEdit" type="submit" class="hc-btn"
+            :disabled="saving || !hasChanges"
+            :title="hasChanges ? '' : 'Belum ada perubahan realisasi untuk disimpan'"
+          >
             <CheckIcon class="h-4 w-4" /> {{ saving ? 'Menyimpan…' : 'Simpan Realisasi' }}
           </button>
         </div>
@@ -150,7 +154,7 @@
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
@@ -196,9 +200,20 @@ function importExcel(event) {
 
 const rowKey = (r) => `${r.cost_type_id}-${r.work_unit_id}`
 
-const inputs = reactive(Object.fromEntries(
-  props.rows.map(r => [rowKey(r), r.realisasi ?? ''])
-))
+// nilai input + potret awalnya; tombol Simpan hanya aktif bila ada perubahan
+const snapshot = () => Object.fromEntries(props.rows.map(r => [rowKey(r), r.realisasi ?? '']))
+const inputs = ref(snapshot())
+const initial = ref(snapshot())
+
+// props segar (setelah simpan/hapus/ganti bulan) → mulai dari potret baru
+watch(() => props.rows, () => {
+  inputs.value = snapshot()
+  initial.value = snapshot()
+})
+
+const norm = (v) => (v === '' || v === null || v === undefined || Number.isNaN(Number(v))) ? '' : String(Number(v))
+const hasChanges = computed(() =>
+  props.rows.some(r => norm(inputs.value[rowKey(r)]) !== norm(initial.value[rowKey(r)])))
 
 const ytdTotal = computed(() => {
   const rkap = props.ytd.reduce((sum, r) => sum + (r.rkap || 0), 0)
@@ -290,12 +305,12 @@ function deleteAll() {
 }
 
 const pctOf = (row) => {
-  const v = parseFloat(inputs[rowKey(row)])
+  const v = parseFloat(inputs.value[rowKey(row)])
   if (!v || !row.rkap) return '–'
   return fmtPct(v / row.rkap * 100)
 }
 const pctClass = (row) => {
-  const v = parseFloat(inputs[rowKey(row)])
+  const v = parseFloat(inputs.value[rowKey(row)])
   if (!v || !row.rkap) return 'text-gray-400'
   return v / row.rkap > 1 ? 'text-red-600 font-medium' : 'text-gray-600'
 }
@@ -312,7 +327,7 @@ function save() {
   // nilai terisi → simpan; input yang dikosongkan padahal sebelumnya
   // tercatat → kirim null agar entri realisasinya dihapus
   const items = props.rows
-    .map(r => ({ ...r, val: inputs[rowKey(r)] }))
+    .map(r => ({ ...r, val: inputs.value[rowKey(r)] }))
     .filter(r => (r.val !== '' && r.val !== null && !Number.isNaN(parseFloat(r.val)))
       || (r.realisasi !== null && (r.val === '' || r.val === null)))
     .map(r => ({

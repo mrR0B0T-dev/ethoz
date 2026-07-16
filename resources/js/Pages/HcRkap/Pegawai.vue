@@ -183,10 +183,24 @@
           <span class="mb-1 block text-xs font-medium text-gray-600">Nama</span>
           <input v-model="form.name" type="text" required class="hc-input w-full" />
         </label>
-        <label class="block">
-          <span class="mb-1 block text-xs font-medium text-gray-600">Jabatan</span>
-          <input v-model="form.jabatan" type="text" maxlength="150" class="hc-input w-full" placeholder="mis. Staff Administrasi HC" />
-        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Jabatan</span>
+            <select v-model="form.jabatan" class="hc-select w-full" @change="onJabatanChange">
+              <option value="">– pilih jabatan –</option>
+              <option v-for="j in jabatanOptions" :key="j" :value="j">{{ j }}</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Grade / Level</span>
+            <select v-model="form.salary_grade_id" class="hc-select w-full" @change="onGradeChange">
+              <option :value="null">– tanpa grade (isi manual) –</option>
+              <option v-for="g in gradeOptions" :key="g.id" :value="g.id">
+                {{ g.code }} · Level {{ g.level }} — {{ g.jabatan }}
+              </option>
+            </select>
+          </label>
+        </div>
         <div class="grid grid-cols-2 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Status</span>
@@ -205,17 +219,29 @@
         <div class="grid grid-cols-3 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Dasar /bln</span>
-            <HcNumberInput v-model="form.base_salary" required class="hc-input w-full text-right" />
+            <HcNumberInput
+              v-model="form.base_salary" required
+              class="hc-input w-full text-right"
+              :class="salaryError ? '!border-red-400 focus:!border-red-500 focus:!ring-red-500' : ''"
+            />
           </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Jabatan /bln</span>
-            <HcNumberInput v-model="form.position_allowance" class="hc-input w-full text-right" />
+            <HcNumberInput v-model="form.position_allowance" :disabled="!!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
           </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Transport /bln</span>
-            <HcNumberInput v-model="form.transport_allowance" class="hc-input w-full text-right" />
+            <HcNumberInput v-model="form.transport_allowance" :disabled="!!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
           </label>
         </div>
+        <p v-if="salaryError" class="flex items-start gap-1 text-xs font-medium text-red-600">
+          <ExclamationTriangleIcon class="mt-0.5 h-3.5 w-3.5 shrink-0" /> {{ salaryError }}
+        </p>
+        <p v-else-if="selectedGrade" class="text-[11px] leading-relaxed text-gray-500">
+          Skala upah grade <b>{{ selectedGrade.code }}</b>: Gaji Dasar
+          {{ fmtNum(selectedGrade.salary_min) }} – {{ fmtNum(selectedGrade.salary_max) }} /bln.
+          Tunj. Jabatan &amp; Transport otomatis mengikuti tarif grade.
+        </p>
         <label class="block">
           <span class="mb-1 block text-xs font-medium text-gray-600">TMT / Awal PKWT</span>
           <input v-model="form.join_date" type="date" class="hc-input w-full" />
@@ -230,7 +256,7 @@
         </label>
         <div class="flex justify-end gap-2 pt-2">
           <button type="button" class="hc-btn-secondary" @click="modal = false">Batal</button>
-          <button type="submit" class="hc-btn">{{ editingEmp ? 'Simpan Perubahan' : 'Tambah' }}</button>
+          <button type="submit" class="hc-btn" :disabled="!!salaryError">{{ editingEmp ? 'Simpan Perubahan' : 'Tambah' }}</button>
         </div>
       </form>
     </HcModal>
@@ -244,7 +270,7 @@ import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
 import {
   ArrowDownTrayIcon, ArrowUpTrayIcon, ChatBubbleBottomCenterTextIcon,
-  InformationCircleIcon, MagnifyingGlassIcon,
+  ExclamationTriangleIcon, InformationCircleIcon, MagnifyingGlassIcon,
   PencilSquareIcon, PlusIcon, TrashIcon, XMarkIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
@@ -399,11 +425,61 @@ const unitOptions = computed(() => {
   return out
 })
 
+// ── Grade / skala upah ────────────────────────────────────────────────────
+const grades = computed(() => props.options.grades ?? [])
+
+// referensi jabatan dari struktur grading (urut level); jabatan lama pegawai
+// yang tidak ada di referensi tetap ditampilkan agar tidak hilang saat edit
+const jabatanOptions = computed(() => {
+  const seen = new Set()
+  const out = []
+  grades.value.forEach((g) => {
+    if (!seen.has(g.jabatan)) { seen.add(g.jabatan); out.push(g.jabatan) }
+  })
+  if (form.jabatan && !seen.has(form.jabatan)) out.push(form.jabatan)
+  return out
+})
+
+// grade difilter mengikuti jabatan terpilih
+const gradeOptions = computed(() => form.jabatan
+  ? grades.value.filter(g => g.jabatan === form.jabatan)
+  : grades.value)
+
+const selectedGrade = computed(() =>
+  grades.value.find(g => g.id === form.salary_grade_id) ?? null)
+
+// pilih grade → jabatan & tunjangan mengikuti referensi grade
+function onGradeChange() {
+  const g = selectedGrade.value
+  if (!g) return
+  form.jabatan = g.jabatan
+  form.position_allowance = g.position_allowance
+  form.transport_allowance = g.transport_allowance
+}
+
+// ganti jabatan → grade yang tidak sesuai jabatan dilepas
+function onJabatanChange() {
+  if (selectedGrade.value && selectedGrade.value.jabatan !== form.jabatan) {
+    form.salary_grade_id = null
+  }
+}
+
+// gaji dasar wajib dalam rentang min–max skala upah grade terpilih
+const salaryError = computed(() => {
+  const g = selectedGrade.value
+  if (!g) return null
+  const salary = Number(form.base_salary) || 0
+  if (salary < g.salary_min || salary > g.salary_max) {
+    return `Gaji Dasar di luar skala upah grade ${g.code}: harus ${fmtNum(g.salary_min)} – ${fmtNum(g.salary_max)} /bln.`
+  }
+  return null
+})
+
 // ── CRUD ──────────────────────────────────────────────────────────────────
 const modal = ref(false)
 const editingEmp = ref(null)
 const form = reactive({
-  name: '', jabatan: '', status: 'tetap', work_unit_id: null,
+  name: '', jabatan: '', salary_grade_id: null, status: 'tetap', work_unit_id: null,
   base_salary: 0, position_allowance: 0, transport_allowance: 0,
   join_date: null, notes: '',
 })
@@ -411,7 +487,8 @@ const form = reactive({
 function openCreate() {
   editingEmp.value = null
   Object.assign(form, {
-    name: '', jabatan: '', status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
+    name: '', jabatan: '', salary_grade_id: null,
+    status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
     base_salary: 0, position_allowance: 0, transport_allowance: 0,
     join_date: null, notes: '',
   })
@@ -423,6 +500,7 @@ function openEdit(emp) {
   Object.assign(form, {
     name: emp.name,
     jabatan: emp.jabatan ?? '',
+    salary_grade_id: emp.salary_grade_id ?? null,
     status: emp.status,
     work_unit_id: emp.work_unit_id,
     base_salary: emp.base_salary,
@@ -431,6 +509,8 @@ function openEdit(emp) {
     join_date: emp.join_date,
     notes: emp.notes ?? '',
   })
+  // tunjangan pegawai ber-grade selalu mengikuti tarif grade-nya
+  onGradeChange()
   modal.value = true
 }
 

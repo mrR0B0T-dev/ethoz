@@ -162,6 +162,8 @@ class EmployeeCostService
             'status' => $e->status,
             'grade' => $e->salaryGrade?->code,
             'grade_level' => $e->salaryGrade?->level,
+            'salary_grade_id' => $e->salary_grade_id,
+            'grade_source' => $e->grade_source,
             'join_date' => $e->join_date?->toDateString(),
             'notes' => $e->notes,
             'base_salary' => $base,
