@@ -167,7 +167,7 @@
             <div class="grid grid-cols-4 gap-2">
               <label v-for="s in ['tetap', 'kontrak', 'honor', 'direksi']" :key="s" class="block">
                 <span class="mb-0.5 block text-[10px] uppercase text-gray-400">{{ s }}</span>
-                <input v-model.number="yearForm.kenaikan[s]" type="number" step="any" class="hc-input w-full py-1 text-right text-sm" />
+                <HcNumberInput v-model="yearForm.kenaikan[s]" class="hc-input w-full py-1 text-right text-sm" />
               </label>
             </div>
             <p class="mt-1.5 text-[11px] leading-relaxed text-gray-400">
@@ -286,6 +286,7 @@ const STATUS_OPTIONS = { tetap: 'Tetap', kontrak: 'Kontrak', honor: 'Honor', dir
 const statusList = (s) => s ? s.split(',').filter(Boolean) : []
 import HcLayout from '@/Layouts/HcLayout.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import { useHcFormat } from '@/composables/useHcFormat'
 
 const props = defineProps({

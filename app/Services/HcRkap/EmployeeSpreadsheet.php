@@ -22,7 +22,7 @@ class EmployeeSpreadsheet
 
     /** Header kolom data (baris 1). */
     private const HEADERS = [
-        'Nama', 'Unit (kode)', 'Status', 'Gaji Dasar /bln',
+        'Nama', 'Jabatan', 'Unit (kode)', 'Status', 'Gaji Dasar /bln',
         'Tunj. Jabatan /bln', 'Tunj. Transport /bln', 'TMT (YYYY-MM-DD)', 'Catatan',
     ];
 
@@ -65,20 +65,20 @@ class EmployeeSpreadsheet
         foreach (self::HEADERS as $i => $label) {
             $sheet->setCellValue([$i + 1, 1], $label);
         }
-        $sheet->getStyle('A1:H1')->getFont()->setBold(true);
-        $sheet->getStyle('A1:H1')->getFill()->setFillType(Fill::FILL_SOLID)
+        $sheet->getStyle('A1:I1')->getFont()->setBold(true);
+        $sheet->getStyle('A1:I1')->getFill()->setFillType(Fill::FILL_SOLID)
             ->getStartColor()->setRGB('DBEAFE');
-        $sheet->getStyle('A1:H1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
+        $sheet->getStyle('A1:I1')->getAlignment()->setVertical(Alignment::VERTICAL_CENTER);
 
-        foreach (['A' => 26, 'B' => 12, 'C' => 12, 'D' => 16, 'E' => 18, 'F' => 18, 'G' => 18, 'H' => 30] as $col => $w) {
+        foreach (['A' => 26, 'B' => 24, 'C' => 12, 'D' => 12, 'E' => 16, 'F' => 18, 'G' => 18, 'H' => 18, 'I' => 30] as $col => $w) {
             $sheet->getColumnDimension($col)->setWidth($w);
         }
-        $sheet->getStyle('D2:F'.self::MAX_ROWS)->getNumberFormat()->setFormatCode('#,##0');
+        $sheet->getStyle('E2:G'.self::MAX_ROWS)->getNumberFormat()->setFormatCode('#,##0');
         $sheet->freezePane('A2');
 
-        // dropdown Unit (kolom B) & Status (kolom C)
-        $this->applyListValidation($sheet, 'B', "=Referensi!\$A\$2:\$A\${$lastUnitRow}", 'Pilih kode unit dari daftar.');
-        $this->applyListValidation($sheet, 'C', '"'.implode(',', self::STATUSES).'"', 'Pilih status kepegawaian.');
+        // dropdown Unit (kolom C) & Status (kolom D)
+        $this->applyListValidation($sheet, 'C', "=Referensi!\$A\$2:\$A\${$lastUnitRow}", 'Pilih kode unit dari daftar.');
+        $this->applyListValidation($sheet, 'D', '"'.implode(',', self::STATUSES).'"', 'Pilih status kepegawaian.');
 
         $spreadsheet->setActiveSheetIndex(0);
 
@@ -132,13 +132,14 @@ class EmployeeSpreadsheet
                 continue; // baris kosong dilewati
             }
 
-            $unitCode = trim((string) $sheet->getCell([2, $row])->getValue());
-            $status = mb_strtolower(trim((string) $sheet->getCell([3, $row])->getValue()));
-            $base = $this->parseAmount($sheet->getCell([4, $row])->getValue());
-            $position = $this->parseAmount($sheet->getCell([5, $row])->getValue()) ?? 0.0;
-            $transport = $this->parseAmount($sheet->getCell([6, $row])->getValue()) ?? 0.0;
-            $joinDate = $this->parseDate($sheet->getCell([7, $row])->getValue());
-            $notes = trim((string) $sheet->getCell([8, $row])->getValue()) ?: null;
+            $jabatan = trim((string) $sheet->getCell([2, $row])->getValue()) ?: null;
+            $unitCode = trim((string) $sheet->getCell([3, $row])->getValue());
+            $status = mb_strtolower(trim((string) $sheet->getCell([4, $row])->getValue()));
+            $base = $this->parseAmount($sheet->getCell([5, $row])->getValue());
+            $position = $this->parseAmount($sheet->getCell([6, $row])->getValue()) ?? 0.0;
+            $transport = $this->parseAmount($sheet->getCell([7, $row])->getValue()) ?? 0.0;
+            $joinDate = $this->parseDate($sheet->getCell([8, $row])->getValue());
+            $notes = trim((string) $sheet->getCell([9, $row])->getValue()) ?: null;
 
             if (! in_array($status, self::STATUSES, true)) {
                 $errors[] = "Baris {$row} ({$name}): status \"{$status}\" tidak valid, dilewati.";
@@ -163,6 +164,7 @@ class EmployeeSpreadsheet
             $items[] = [
                 'row' => $row,
                 'name' => mb_substr($name, 0, 150),
+                'jabatan' => $jabatan ? mb_substr($jabatan, 0, 150) : null,
                 'work_unit_id' => $workUnitId,
                 'status' => $status,
                 'base_salary' => $base,

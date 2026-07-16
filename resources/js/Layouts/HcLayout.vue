@@ -101,7 +101,7 @@ import Swal from 'sweetalert2'
 import {
   HomeIcon, TableCellsIcon, ClipboardDocumentCheckIcon, UsersIcon,
   AdjustmentsHorizontalIcon, CircleStackIcon, Bars3Icon, CalendarIcon,
-  BanknotesIcon, ArrowRightStartOnRectangleIcon,
+  BanknotesIcon, ArrowRightStartOnRectangleIcon, ChartBarSquareIcon,
 } from '@heroicons/vue/24/outline'
 
 defineProps({ title: { type: String, default: 'Dashboard' } })
@@ -119,6 +119,7 @@ const menus = [
   { label: 'Input Nominal', icon: BanknotesIcon, route: 'hc.nominal' },
   { label: 'Realisasi & Monitoring', icon: ClipboardDocumentCheckIcon, route: 'hc.realisasi' },
   { label: 'Pegawai & Biaya', icon: UsersIcon, route: 'hc.pegawai' },
+  { label: 'Grading & Struktur Upah', icon: ChartBarSquareIcon, route: 'hc.grading' },
   { label: 'Asumsi', icon: AdjustmentsHorizontalIcon, route: 'hc.asumsi' },
   { label: 'Master Data', icon: CircleStackIcon, route: 'hc.master' },
 ]

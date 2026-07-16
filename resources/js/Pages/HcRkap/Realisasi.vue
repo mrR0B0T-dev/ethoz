@@ -131,9 +131,9 @@
                 <td class="hc-td text-xs text-gray-500">{{ row.unit }}</td>
                 <td class="hc-td text-right tabular-nums text-gray-600">{{ fmtNum(row.rkap) }}</td>
                 <td class="px-3 py-1 text-right">
-                  <input
+                  <HcNumberInput
                     v-model="inputs[rowKey(row)]"
-                    type="number" min="0" step="any" :disabled="!canEdit"
+                    :disabled="!canEdit"
                     class="hc-input w-40 py-1 text-right text-xs tabular-nums disabled:bg-gray-50"
                     placeholder="0"
                   />
@@ -159,6 +159,7 @@ import {
   ExclamationTriangleIcon, FireIcon, TrashIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import { BULAN, BULAN_PANJANG, useHcFormat } from '@/composables/useHcFormat'
 
 const props = defineProps({

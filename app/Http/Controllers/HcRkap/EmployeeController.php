@@ -8,6 +8,7 @@ use App\Models\HcRkap\Employee;
 use App\Services\HcRkap\BudgetService;
 use App\Services\HcRkap\EmployeeCostService;
 use App\Services\HcRkap\EmployeeSpreadsheet;
+use App\Services\HcRkap\GradingService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -21,6 +22,7 @@ class EmployeeController extends Controller
         private EmployeeCostService $costs,
         private BudgetService $budget,
         private EmployeeSpreadsheet $spreadsheet,
+        private GradingService $grading,
     ) {}
 
     public function index(Request $request)
@@ -40,7 +42,8 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        Employee::create($this->validated($request));
+        $employee = Employee::create($this->validated($request));
+        $this->autoGrade($employee);
         $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Pegawai ditambahkan.');
@@ -49,9 +52,27 @@ class EmployeeController extends Controller
     public function update(Request $request, Employee $employee)
     {
         $employee->update($this->validated($request));
+        $this->autoGrade($employee);
         $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Data pegawai diperbarui.');
+    }
+
+    /** Grading ulang otomatis setelah data gaji berubah; grade manual dipertahankan. */
+    private function autoGrade(Employee $employee): void
+    {
+        if ($employee->grade_source === 'manual') {
+            return;
+        }
+        $grade = $this->grading->inferGrade($employee);
+        if ($grade) {
+            $employee->forceFill([
+                'salary_grade_id' => $grade->id,
+                'grade_source' => 'auto',
+                // jabatan kosong diisi dari referensi jabatan grade-nya
+                'jabatan' => $employee->jabatan ?: $grade->jabatan,
+            ])->save();
+        }
     }
 
     public function destroy(Request $request, Employee $employee)
@@ -98,6 +119,7 @@ class EmployeeController extends Controller
         $now = now();
         $rows = array_map(fn ($it) => [
             'name' => $it['name'],
+            'jabatan' => $it['jabatan'],
             'work_unit_id' => $it['work_unit_id'],
             'status' => $it['status'],
             'base_salary' => $it['base_salary'],
@@ -113,6 +135,7 @@ class EmployeeController extends Controller
         foreach (array_chunk($rows, 500) as $chunk) {
             Employee::insert($chunk);
         }
+        $this->grading->applyToAll(); // grading otomatis pegawai baru (manual dipertahankan)
         $this->syncRosterSourcedBudgets();
 
         $message = count($rows).' pegawai berhasil diimpor.';
@@ -137,6 +160,7 @@ class EmployeeController extends Controller
     {
         return $request->validate([
             'name' => ['required', 'string', 'max:150'],
+            'jabatan' => ['nullable', 'string', 'max:150'],
             'work_unit_id' => ['nullable', 'exists:hc_work_units,id'],
             'status' => ['required', Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
             'base_salary' => ['required', 'numeric', 'min:0'],

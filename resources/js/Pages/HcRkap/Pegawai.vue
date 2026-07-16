@@ -69,7 +69,7 @@
             <input
               v-model="search" type="search"
               class="hc-input w-56 py-1.5 pl-8"
-              placeholder="Cari nama / catatan…"
+              placeholder="Cari nama / jabatan / catatan…"
             />
           </div>
           <select v-model="filterUnit" class="hc-select max-w-52">
@@ -94,11 +94,17 @@
               <th class="hc-th sticky left-0 z-10 cursor-pointer select-none bg-gray-50" @click="sortBy('name')">
                 Nama <SortMark col="name" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
+              <th class="hc-th cursor-pointer select-none" @click="sortBy('jabatan')">
+                Jabatan <SortMark col="jabatan" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
               <th class="hc-th cursor-pointer select-none" @click="sortBy('unit')">
                 Unit <SortMark col="unit" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
               <th v-if="isAll" class="hc-th cursor-pointer select-none" @click="sortBy('status')">
                 Status <SortMark col="status" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
+              <th class="hc-th cursor-pointer select-none" @click="sortBy('grade_level')">
+                Grade <SortMark col="grade_level" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
               <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('base_salary')">
                 Gaji /bln <SortMark col="base_salary" :sort-key="sortKey" :sort-dir="sortDir" />
@@ -122,11 +128,16 @@
                 </span>
                 <span v-if="emp.notes" class="mt-0.5 block max-w-52 truncate text-[11px] font-normal text-gray-400" :title="emp.notes">{{ emp.notes }}</span>
               </td>
+              <td class="hc-td max-w-44 truncate text-xs text-gray-600" :title="emp.jabatan">{{ emp.jabatan ?? '–' }}</td>
               <td class="hc-td text-xs text-gray-500" :title="emp.unit_name">{{ emp.unit ?? '–' }}</td>
               <td v-if="isAll" class="hc-td">
                 <span class="inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium" :class="statusChip(emp.status)">
                   {{ STATUS_LABELS[emp.status] ?? emp.status }}
                 </span>
+              </td>
+              <td class="hc-td">
+                <span v-if="emp.grade" class="rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[#1c5cab]">{{ emp.grade }}</span>
+                <span v-else class="text-xs text-gray-400">–</span>
               </td>
               <td class="hc-td text-right tabular-nums">{{ fmtNum(emp.base_salary) }}</td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right tabular-nums text-gray-600">
@@ -145,7 +156,7 @@
           </tbody>
           <tfoot class="border-t border-gray-200 bg-gray-50/60">
             <tr>
-              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 4 : 3">
+              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 6 : 5">
                 Total {{ isAll ? 'Semua Pegawai' : STATUS_LABELS[tab] }}{{ isFiltered ? ` (${filteredEmployees.length} pegawai tersaring)` : '' }}
               </td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right font-medium tabular-nums">{{ fmtNum(viewTotals.components[key]) }}</td>
@@ -172,6 +183,10 @@
           <span class="mb-1 block text-xs font-medium text-gray-600">Nama</span>
           <input v-model="form.name" type="text" required class="hc-input w-full" />
         </label>
+        <label class="block">
+          <span class="mb-1 block text-xs font-medium text-gray-600">Jabatan</span>
+          <input v-model="form.jabatan" type="text" maxlength="150" class="hc-input w-full" placeholder="mis. Staff Administrasi HC" />
+        </label>
         <div class="grid grid-cols-2 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Status</span>
@@ -190,15 +205,15 @@
         <div class="grid grid-cols-3 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Dasar /bln</span>
-            <input v-model.number="form.base_salary" type="number" min="0" required class="hc-input w-full" />
+            <HcNumberInput v-model="form.base_salary" required class="hc-input w-full text-right" />
           </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Jabatan /bln</span>
-            <input v-model.number="form.position_allowance" type="number" min="0" class="hc-input w-full" />
+            <HcNumberInput v-model="form.position_allowance" class="hc-input w-full text-right" />
           </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Transport /bln</span>
-            <input v-model.number="form.transport_allowance" type="number" min="0" class="hc-input w-full" />
+            <HcNumberInput v-model="form.transport_allowance" class="hc-input w-full text-right" />
           </label>
         </div>
         <label class="block">
@@ -235,6 +250,7 @@ import {
 import HcLayout from '@/Layouts/HcLayout.vue'
 import StatCard from '@/Components/HcRkap/StatCard.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import { useHcFormat } from '@/composables/useHcFormat'
 
 const props = defineProps({
@@ -332,24 +348,28 @@ function sortBy(key) {
     sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortKey.value = key
-    sortDir.value = (key === 'name' || key === 'unit' || key === 'status') ? 'asc' : 'desc'
+    sortDir.value = ['name', 'unit', 'status', 'jabatan'].includes(key) ? 'asc' : 'desc'
   }
 }
+
+const STRING_SORT_KEYS = ['name', 'unit', 'status', 'jabatan']
 
 const filteredEmployees = computed(() => {
   let list = current.value?.employees ?? []
   const q = search.value.trim().toLowerCase()
   if (q) {
     list = list.filter(e => e.name.toLowerCase().includes(q)
+      || (e.jabatan ?? '').toLowerCase().includes(q)
       || (e.notes ?? '').toLowerCase().includes(q))
   }
   if (filterUnit.value) list = list.filter(e => e.work_unit_id === filterUnit.value)
 
   const dir = sortDir.value === 'asc' ? 1 : -1
   const key = sortKey.value
+  const isString = STRING_SORT_KEYS.includes(key)
   return [...list].sort((a, b) => {
-    const va = key === 'unit' ? (a.unit ?? '') : (a[key] ?? 0)
-    const vb = key === 'unit' ? (b.unit ?? '') : (b[key] ?? 0)
+    const va = isString ? (a[key] ?? '') : (a[key] ?? 0)
+    const vb = isString ? (b[key] ?? '') : (b[key] ?? 0)
     return (typeof va === 'string' ? va.localeCompare(vb, 'id') : va - vb) * dir
   })
 })
@@ -383,7 +403,7 @@ const unitOptions = computed(() => {
 const modal = ref(false)
 const editingEmp = ref(null)
 const form = reactive({
-  name: '', status: 'tetap', work_unit_id: null,
+  name: '', jabatan: '', status: 'tetap', work_unit_id: null,
   base_salary: 0, position_allowance: 0, transport_allowance: 0,
   join_date: null, notes: '',
 })
@@ -391,7 +411,7 @@ const form = reactive({
 function openCreate() {
   editingEmp.value = null
   Object.assign(form, {
-    name: '', status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
+    name: '', jabatan: '', status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
     base_salary: 0, position_allowance: 0, transport_allowance: 0,
     join_date: null, notes: '',
   })
@@ -402,6 +422,7 @@ function openEdit(emp) {
   editingEmp.value = emp
   Object.assign(form, {
     name: emp.name,
+    jabatan: emp.jabatan ?? '',
     status: emp.status,
     work_unit_id: emp.work_unit_id,
     base_salary: emp.base_salary,

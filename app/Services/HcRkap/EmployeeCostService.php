@@ -26,7 +26,7 @@ class EmployeeCostService
         $out = [];
 
         foreach ($statuses as $status) {
-            $employees = Employee::with('workUnit')
+            $employees = Employee::with(['workUnit', 'salaryGrade'])
                 ->where('status', $status)
                 ->where('is_active', true)
                 ->orderBy('name')
@@ -155,10 +155,13 @@ class EmployeeCostService
         return [
             'id' => $e->id,
             'name' => $e->name,
+            'jabatan' => $e->jabatan,
             'unit' => $e->workUnit?->code,
             'unit_name' => $e->workUnit?->name,
             'work_unit_id' => $e->work_unit_id,
             'status' => $e->status,
+            'grade' => $e->salaryGrade?->code,
+            'grade_level' => $e->salaryGrade?->level,
             'join_date' => $e->join_date?->toDateString(),
             'notes' => $e->notes,
             'base_salary' => $base,

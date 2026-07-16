@@ -35,9 +35,8 @@
             </div>
 
             <template v-if="editingId === a.id">
-              <input
-                v-model.number="editValue"
-                type="number" step="any"
+              <HcNumberInput
+                v-model="editValue"
                 class="hc-input w-24 py-1 text-right text-sm"
                 @keyup.enter="saveEdit(a)"
                 @keyup.esc="editingId = null"
@@ -102,7 +101,7 @@
           </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Nilai</span>
-            <input v-model.number="form.value" type="number" step="any" required class="hc-input w-full" />
+            <HcNumberInput v-model="form.value" required class="hc-input w-full" />
           </label>
         </div>
         <fieldset class="rounded-lg border border-gray-200 p-3">
@@ -135,6 +134,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import { useHcFormat } from '@/composables/useHcFormat'
 
 const props = defineProps({

@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\HcRkap\AssumptionController;
 use App\Http\Controllers\HcRkap\DashboardController;
+use App\Http\Controllers\HcRkap\GradingController;
 use App\Http\Controllers\HcRkap\DetailController;
 use App\Http\Controllers\HcRkap\EmployeeController;
 use App\Http\Controllers\HcRkap\MasterController;
@@ -40,6 +41,14 @@ Route::prefix('hc-rkap')->name('hc.')->middleware('admin.auth')->group(function 
     Route::post('/pegawai', [EmployeeController::class, 'store'])->name('pegawai.store');
     Route::put('/pegawai/{employee}', [EmployeeController::class, 'update'])->name('pegawai.update');
     Route::delete('/pegawai/{employee}', [EmployeeController::class, 'destroy'])->name('pegawai.destroy');
+
+    Route::get('/grading', [GradingController::class, 'index'])->name('grading');
+    Route::post('/grading/struktur', [GradingController::class, 'storeStructure'])->name('grading.struktur.store');
+    Route::put('/grading/struktur/{grade}', [GradingController::class, 'updateStructure'])->name('grading.struktur');
+    Route::delete('/grading/struktur/{grade}', [GradingController::class, 'destroyStructure'])->name('grading.struktur.destroy');
+    Route::put('/grading/struktur/{grade}/urutan', [GradingController::class, 'moveStructure'])->name('grading.struktur.urutan');
+    Route::post('/grading/terapkan', [GradingController::class, 'apply'])->name('grading.terapkan');
+    Route::put('/grading/pegawai/{employee}', [GradingController::class, 'assign'])->name('grading.pegawai');
 
     Route::get('/asumsi', [AssumptionController::class, 'index'])->name('asumsi');
     Route::post('/asumsi', [AssumptionController::class, 'store'])->name('asumsi.store');

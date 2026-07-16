@@ -88,10 +88,9 @@
               <tr v-for="row in rows" :key="row.work_unit_id" class="hover:bg-gray-50/40">
                 <td class="hc-td sticky left-0 z-10 bg-white text-xs font-medium text-gray-700" :title="row.name">{{ row.code }}</td>
                 <td v-for="(v, i) in row.months" :key="i" class="px-1 py-1 text-right">
-                  <input
+                  <HcNumberInput
                     v-if="canEdit"
                     v-model="row.months[i]"
-                    type="number" min="0" step="any"
                     class="hc-input w-24 py-1 text-right text-xs tabular-nums"
                     placeholder="–"
                   />
@@ -154,6 +153,7 @@ import {
   LockClosedIcon, PlusIcon, TrashIcon, UsersIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import { BULAN, useHcFormat } from '@/composables/useHcFormat'
 
 const props = defineProps({

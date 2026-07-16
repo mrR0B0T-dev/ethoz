@@ -87,13 +87,12 @@
                   <tr v-for="u in comp.units" :key="u.unit_id" class="bg-gray-50/40">
                     <td class="hc-td sticky left-0 z-10 bg-gray-50 pl-14 text-xs text-gray-500" :title="u.name">{{ u.code }}</td>
                     <td v-for="(v, i) in u.months" :key="i" class="px-1 py-0.5 text-right">
-                      <input
+                      <HcNumberInput
                         v-if="editing === editKey(comp.id, u.unit_id, i)"
                         ref="editInput"
-                        type="number" min="0"
+                        v-model="editValue"
                         class="w-24 rounded border-blue-400 px-1 py-0.5 text-right text-xs tabular-nums focus:ring-blue-500"
-                        :value="Math.round(v)"
-                        @blur="saveCell($event, comp.id, u.unit_id, i)"
+                        @blur="saveCell(comp.id, u.unit_id, i)"
                         @keyup.enter="$event.target.blur()"
                         @keyup.esc="editing = null"
                       />
@@ -101,7 +100,7 @@
                         v-else
                         class="w-full rounded px-2 py-1 text-right text-xs tabular-nums text-gray-600"
                         :class="canEdit ? 'hover:bg-blue-50 hover:text-blue-700' : 'cursor-default'"
-                        @click="canEdit && startEdit(comp.id, u.unit_id, i)"
+                        @click="canEdit && startEdit(comp.id, u.unit_id, i, v)"
                       >{{ fmtCell(v) }}</button>
                     </td>
                     <td class="hc-td border-l border-gray-200 text-right text-xs tabular-nums text-gray-500">{{ fmtCell(u.total) }}</td>
@@ -138,6 +137,7 @@ import {
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import UnitCascade from '@/Components/HcRkap/UnitCascade.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import { BULAN, useHcFormat } from '@/composables/useHcFormat'
 
 const props = defineProps({
@@ -189,23 +189,25 @@ function toggleAll() {
 // ── edit inline ───────────────────────────────────────────────────────────
 const editing = ref(null)
 const editInput = ref(null)
+const editValue = ref(null)
 const editKey = (compId, unitId, monthIdx) => `${compId}:${unitId}:${monthIdx}`
 
-async function startEdit(compId, unitId, monthIdx) {
+async function startEdit(compId, unitId, monthIdx, value) {
   editing.value = editKey(compId, unitId, monthIdx)
+  editValue.value = Math.round(value ?? 0)
   await nextTick()
   const el = Array.isArray(editInput.value) ? editInput.value[0] : editInput.value
   el?.focus()
   el?.select()
 }
 
-function saveCell(event, costTypeId, unitId, monthIdx) {
+function saveCell(costTypeId, unitId, monthIdx) {
   const key = editKey(costTypeId, unitId, monthIdx)
   if (editing.value !== key) return
   editing.value = null
 
-  const amount = parseFloat(event.target.value)
-  if (Number.isNaN(amount) || amount < 0) return
+  const amount = editValue.value
+  if (amount === null || Number.isNaN(amount) || amount < 0) return
 
   router.put(route('hc.detail.upsert'), {
     fiscal_year_id: props.tahun.id,
