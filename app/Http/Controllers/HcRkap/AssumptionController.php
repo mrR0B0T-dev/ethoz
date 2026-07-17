@@ -5,6 +5,9 @@ namespace App\Http\Controllers\HcRkap;
 use App\Http\Controllers\Controller;
 use App\Http\Controllers\HcRkap\Concerns\ResolvesFiscalYear;
 use App\Models\HcRkap\Assumption;
+use App\Models\HcRkap\FiscalYear;
+use App\Services\HcRkap\EmployeeCostService;
+use App\Services\HcRkap\GradingService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
 use Inertia\Inertia;
@@ -12,6 +15,11 @@ use Inertia\Inertia;
 class AssumptionController extends Controller
 {
     use ResolvesFiscalYear;
+
+    public function __construct(
+        private EmployeeCostService $costs,
+        private GradingService $grading,
+    ) {}
 
     public function index(Request $request)
     {
@@ -31,14 +39,14 @@ class AssumptionController extends Controller
     {
         $data = $this->validated($request);
 
-        $year = \App\Models\HcRkap\FiscalYear::findOrFail($data['fiscal_year_id']);
+        $year = FiscalYear::findOrFail($data['fiscal_year_id']);
         if ($year->status === 'final') {
             return back()->with('error', 'Tahun anggaran sudah final dan terkunci.');
         }
 
-        Assumption::create($data);
+        $assumption = Assumption::create($data);
 
-        return back()->with('success', 'Asumsi ditambahkan.');
+        return back()->with('success', 'Asumsi ditambahkan.'.$this->cascade($assumption));
     }
 
     public function update(Request $request, Assumption $assumption)
@@ -53,7 +61,7 @@ class AssumptionController extends Controller
             'notes' => ['nullable', 'string'],
         ]));
 
-        return back()->with('success', 'Asumsi diperbarui.');
+        return back()->with('success', 'Asumsi diperbarui.'.$this->cascade($assumption));
     }
 
     public function destroy(Assumption $assumption)
@@ -64,7 +72,34 @@ class AssumptionController extends Controller
 
         $assumption->delete();
 
-        return back()->with('success', 'Asumsi dihapus.');
+        // tanpa asumsi kenaikan, gaji kembali = gaji tahun sebelumnya (kenaikan 0%)
+        return back()->with('success', 'Asumsi dihapus.'.$this->cascade($assumption));
+    }
+
+    /**
+     * Terapkan perubahan asumsi ke biaya terkait. Asumsi kenaikan gaji mengubah
+     * Gaji /bln pegawai yang punya Gaji Tahun Sebelumnya (base = prev + prev ×
+     * kenaikan%), lalu grade disesuaikan dan entri biaya bersumber pegawai
+     * (Gaji Dasar, Tunj. Jabatan, Transport) disamakan ulang. Komponen biaya
+     * lain (THR, bonus, BPJS, kompensasi, fee, PPN) dihitung langsung dari
+     * asumsi setiap kali halaman dibuka, jadi otomatis mengikuti nilai baru.
+     */
+    private function cascade(Assumption $assumption): string
+    {
+        if (! in_array($assumption->code, EmployeeCostService::KENAIKAN_CODES, true)) {
+            return '';
+        }
+
+        $changed = $this->costs->recomputeSalariesFromAssumptions($assumption->fiscalYear);
+        if ($changed === 0) {
+            return '';
+        }
+
+        $this->grading->applyToAll();
+        FiscalYear::where('status', '!=', 'final')->get()
+            ->each(fn ($y) => $this->costs->syncEmployeeSourcedEntries($y));
+
+        return " Gaji {$changed} pegawai dihitung ulang dari gaji tahun sebelumnya.";
     }
 
     private function validated(Request $request): array

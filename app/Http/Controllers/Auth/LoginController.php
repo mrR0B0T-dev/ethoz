@@ -14,7 +14,7 @@ class LoginController extends Controller
     public function create(): Response|RedirectResponse
     {
         if (Auth::check()) {
-            return redirect()->route('hc.dashboard');
+            return redirect()->route('ethoz.home');
         }
 
         return Inertia::render('Auth/Login');
@@ -35,7 +35,8 @@ class LoginController extends Controller
 
         $request->session()->regenerate();
 
-        return redirect()->intended(route('hc.dashboard'));
+        // masuk ke portal Ethoz — modul mengikuti hak akses peran (RBAC)
+        return redirect()->intended(route('ethoz.home'));
     }
 
     public function destroy(Request $request): RedirectResponse

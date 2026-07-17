@@ -106,6 +106,9 @@
               <th class="hc-th cursor-pointer select-none" @click="sortBy('grade_level')">
                 Grade <SortMark col="grade_level" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
+              <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('prev_year_salary')">
+                Gaji Thn Sebelumnya <SortMark col="prev_year_salary" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
               <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('base_salary')">
                 Gaji /bln <SortMark col="base_salary" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
@@ -139,6 +142,7 @@
                 <span v-if="emp.grade" class="rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[#1c5cab]">{{ emp.grade }}</span>
                 <span v-else class="text-xs text-gray-400">–</span>
               </td>
+              <td class="hc-td text-right tabular-nums text-gray-500">{{ emp.prev_year_salary ? fmtNum(emp.prev_year_salary) : '–' }}</td>
               <td class="hc-td text-right tabular-nums">{{ fmtNum(emp.base_salary) }}</td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right tabular-nums text-gray-600">
                 {{ fmtNum(emp.components[key]) }}
@@ -156,7 +160,7 @@
           </tbody>
           <tfoot class="border-t border-gray-200 bg-gray-50/60">
             <tr>
-              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 6 : 5">
+              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 7 : 6">
                 Total {{ isAll ? 'Semua Pegawai' : STATUS_LABELS[tab] }}{{ isFiltered ? ` (${filteredEmployees.length} pegawai tersaring)` : '' }}
               </td>
               <td v-for="key in componentKeys" :key="key" class="hc-td text-right font-medium tabular-nums">{{ fmtNum(viewTotals.components[key]) }}</td>
@@ -216,31 +220,45 @@
             </select>
           </label>
         </div>
-        <div class="grid grid-cols-3 gap-3">
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Thn Sebelumnya /bln</span>
+            <HcNumberInput v-model="form.prev_year_salary" class="hc-input w-full text-right" placeholder="kosongkan bila isi manual" />
+          </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Dasar /bln</span>
             <HcNumberInput
-              v-model="form.base_salary" required
-              class="hc-input w-full text-right"
+              v-model="form.base_salary" required :disabled="hasPrevSalary"
+              class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500"
               :class="salaryError ? '!border-red-400 focus:!border-red-500 focus:!ring-red-500' : ''"
             />
           </label>
+        </div>
+        <p v-if="hasPrevSalary" class="text-[11px] leading-relaxed text-gray-500">
+          Gaji /bln otomatis = Gaji Thn Sebelumnya + kenaikan
+          <b>{{ kenaikanPct }}%</b> (asumsi {{ STATUS_LABELS[form.status] }} tahun {{ tahun.year }}).
+        </p>
+        <div class="grid grid-cols-2 gap-3">
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Jabatan /bln</span>
-            <HcNumberInput v-model="form.position_allowance" :disabled="!!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
+            <HcNumberInput v-model="form.position_allowance" :disabled="!isTetap || !!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
           </label>
           <label class="block">
             <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Transport /bln</span>
-            <HcNumberInput v-model="form.transport_allowance" :disabled="!!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
+            <HcNumberInput v-model="form.transport_allowance" :disabled="!isTetap || !!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
           </label>
         </div>
+        <p v-if="!isTetap" class="text-[11px] leading-relaxed text-gray-500">
+          Tunj. Jabatan &amp; Transport hanya untuk Pegawai Tetap — status
+          {{ STATUS_LABELS[form.status] }} otomatis 0.
+        </p>
         <p v-if="salaryError" class="flex items-start gap-1 text-xs font-medium text-red-600">
           <ExclamationTriangleIcon class="mt-0.5 h-3.5 w-3.5 shrink-0" /> {{ salaryError }}
         </p>
         <p v-else-if="selectedGrade" class="text-[11px] leading-relaxed text-gray-500">
           Skala upah grade <b>{{ selectedGrade.code }}</b>: Gaji Dasar
           {{ fmtNum(selectedGrade.salary_min) }} – {{ fmtNum(selectedGrade.salary_max) }} /bln.
-          Tunj. Jabatan &amp; Transport otomatis mengikuti tarif grade.
+          <template v-if="isTetap">Tunj. Jabatan &amp; Transport otomatis mengikuti tarif grade.</template>
         </p>
         <label class="block">
           <span class="mb-1 block text-xs font-medium text-gray-600">TMT / Awal PKWT</span>
@@ -264,7 +282,7 @@
 </template>
 
 <script setup>
-import { computed, h, reactive, ref } from 'vue'
+import { computed, h, reactive, ref, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
@@ -374,7 +392,7 @@ function sortBy(key) {
     sortDir.value = sortDir.value === 'asc' ? 'desc' : 'asc'
   } else {
     sortKey.value = key
-    sortDir.value = ['name', 'unit', 'status', 'jabatan'].includes(key) ? 'asc' : 'desc'
+    sortDir.value = STRING_SORT_KEYS.includes(key) ? 'asc' : 'desc'
   }
 }
 
@@ -449,12 +467,13 @@ const selectedGrade = computed(() =>
   grades.value.find(g => g.id === form.salary_grade_id) ?? null)
 
 // pilih grade → jabatan & tunjangan mengikuti referensi grade
+// (tunjangan hanya untuk pegawai tetap; status lain selalu 0)
 function onGradeChange() {
   const g = selectedGrade.value
   if (!g) return
   form.jabatan = g.jabatan
-  form.position_allowance = g.position_allowance
-  form.transport_allowance = g.transport_allowance
+  form.position_allowance = isTetap.value ? g.position_allowance : 0
+  form.transport_allowance = isTetap.value ? g.transport_allowance : 0
 }
 
 // ganti jabatan → grade yang tidak sesuai jabatan dilepas
@@ -480,8 +499,31 @@ const modal = ref(false)
 const editingEmp = ref(null)
 const form = reactive({
   name: '', jabatan: '', salary_grade_id: null, status: 'tetap', work_unit_id: null,
-  base_salary: 0, position_allowance: 0, transport_allowance: 0,
+  base_salary: 0, prev_year_salary: null, position_allowance: 0, transport_allowance: 0,
   join_date: null, notes: '',
+})
+
+// ── Gaji /bln = Gaji Thn Sebelumnya + (Gaji Thn Sebelumnya × kenaikan) ────
+const kenaikanPct = computed(() => props.options.kenaikan?.[form.status] ?? 0)
+const hasPrevSalary = computed(() => Number(form.prev_year_salary) > 0)
+
+watch([() => form.prev_year_salary, () => form.status], () => {
+  if (hasPrevSalary.value) {
+    form.base_salary = Math.round(Number(form.prev_year_salary) * (1 + kenaikanPct.value / 100) * 100) / 100
+  }
+})
+
+// ── Tunj. Jabatan & Transport hanya untuk pegawai tetap ───────────────────
+const isTetap = computed(() => form.status === 'tetap')
+
+watch(isTetap, (tetap) => {
+  if (!tetap) {
+    form.position_allowance = 0
+    form.transport_allowance = 0
+  } else if (selectedGrade.value) {
+    form.position_allowance = selectedGrade.value.position_allowance
+    form.transport_allowance = selectedGrade.value.transport_allowance
+  }
 })
 
 function openCreate() {
@@ -489,7 +531,7 @@ function openCreate() {
   Object.assign(form, {
     name: '', jabatan: '', salary_grade_id: null,
     status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
-    base_salary: 0, position_allowance: 0, transport_allowance: 0,
+    base_salary: 0, prev_year_salary: null, position_allowance: 0, transport_allowance: 0,
     join_date: null, notes: '',
   })
   modal.value = true
@@ -504,6 +546,7 @@ function openEdit(emp) {
     status: emp.status,
     work_unit_id: emp.work_unit_id,
     base_salary: emp.base_salary,
+    prev_year_salary: emp.prev_year_salary ?? null,
     position_allowance: emp.position_allowance,
     transport_allowance: emp.transport_allowance,
     join_date: emp.join_date,

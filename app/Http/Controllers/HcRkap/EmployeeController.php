@@ -41,28 +41,71 @@ class EmployeeController extends Controller
                     'salary_min', 'salary_mid', 'salary_max',
                     'position_allowance', 'transport_allowance',
                 ))->values(),
+                'kenaikan' => $this->kenaikanPct($this->resolveYear($request)),
             ],
         ]);
     }
 
     public function store(Request $request)
     {
-        $data = $this->validated($request);
-        $employee = Employee::create($this->applyGradeRules($data));
+        $data = $this->applySalaryFormula($this->validated($request), $request);
+        $employee = Employee::create($this->applyAllowanceRules($this->applyGradeRules($data)));
         $this->autoGrade($employee);
         $this->syncRosterSourcedBudgets();
+
+        // pegawai baru otomatis tercatat sebagai kejadian masuk di modul Turnover
+        app(\App\Services\Turnover\TurnoverService::class)->recordHire($employee);
 
         return back()->with('success', 'Pegawai ditambahkan.');
     }
 
     public function update(Request $request, Employee $employee)
     {
-        $data = $this->validated($request);
-        $employee->update($this->applyGradeRules($data));
+        $data = $this->applySalaryFormula($this->validated($request), $request);
+        $employee->update($this->applyAllowanceRules($this->applyGradeRules($data)));
         $this->autoGrade($employee);
         $this->syncRosterSourcedBudgets();
 
         return back()->with('success', 'Data pegawai diperbarui.');
+    }
+
+    /** Tunj. Jabatan & Transport hanya untuk pegawai tetap; status lain selalu 0. */
+    private function applyAllowanceRules(array $data): array
+    {
+        if ($data['status'] !== 'tetap') {
+            $data['position_allowance'] = 0;
+            $data['transport_allowance'] = 0;
+        }
+
+        return $data;
+    }
+
+    /** Persen kenaikan gaji per status dari asumsi tahun terpilih. */
+    private function kenaikanPct(\App\Models\HcRkap\FiscalYear $year): array
+    {
+        $values = $year->assumptions()
+            ->whereIn('code', array_values(EmployeeCostService::KENAIKAN_CODES))
+            ->pluck('value', 'code');
+
+        return collect(EmployeeCostService::KENAIKAN_CODES)
+            ->map(fn ($code) => (float) ($values[$code] ?? 0))
+            ->all();
+    }
+
+    /**
+     * Gaji /bln dihitung dari Gaji Tahun Sebelumnya + kenaikan sesuai asumsi
+     * tahun terpilih: base = prev × (1 + kenaikan%/100). Tanpa nilai tahun
+     * sebelumnya, gaji dasar diisi manual seperti biasa.
+     */
+    private function applySalaryFormula(array $data, Request $request): array
+    {
+        $prev = (float) ($data['prev_year_salary'] ?? 0);
+        if ($prev > 0) {
+            $pct = $this->kenaikanPct($this->resolveYear($request))[$data['status']] ?? 0;
+            $data['base_salary'] = round($prev * (1 + $pct / 100), 2);
+        }
+
+        return $data;
     }
 
     /**
@@ -167,8 +210,9 @@ class EmployeeController extends Controller
             'work_unit_id' => $it['work_unit_id'],
             'status' => $it['status'],
             'base_salary' => $it['base_salary'],
-            'position_allowance' => $it['position_allowance'],
-            'transport_allowance' => $it['transport_allowance'],
+            // tunjangan jabatan & transport hanya untuk pegawai tetap
+            'position_allowance' => $it['status'] === 'tetap' ? $it['position_allowance'] : 0,
+            'transport_allowance' => $it['status'] === 'tetap' ? $it['transport_allowance'] : 0,
             'join_date' => $it['join_date'],
             'notes' => $it['notes'],
             'is_active' => true,
@@ -181,6 +225,12 @@ class EmployeeController extends Controller
         }
         $this->grading->applyToAll(); // grading otomatis pegawai baru (manual dipertahankan)
         $this->syncRosterSourcedBudgets();
+
+        // pegawai hasil impor otomatis tercatat sebagai kejadian masuk (Turnover)
+        $turnover = app(\App\Services\Turnover\TurnoverService::class);
+        Employee::where('created_at', $now)->get()->each(
+            fn ($employee) => $turnover->recordHire($employee)
+        );
 
         $message = count($rows).' pegawai berhasil diimpor.';
         if ($parsed['errors']) {
@@ -209,6 +259,7 @@ class EmployeeController extends Controller
             'work_unit_id' => ['nullable', 'exists:hc_work_units,id'],
             'status' => ['required', Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
             'base_salary' => ['required', 'numeric', 'min:0'],
+            'prev_year_salary' => ['nullable', 'numeric', 'min:0'],
             'position_allowance' => ['nullable', 'numeric', 'min:0'],
             'transport_allowance' => ['nullable', 'numeric', 'min:0'],
             'join_date' => ['nullable', 'date'],

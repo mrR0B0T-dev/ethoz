@@ -102,10 +102,12 @@ class GradingService
     {
         $grade = $gradeId ? $this->grades()->firstWhere('id', $gradeId) : null;
 
+        // jabatan & grade saling terkait: memilih grade menyetel jabatan
+        // ke referensi jabatan grade tsb (tanpa grade, jabatan dibiarkan)
         $employee->forceFill([
             'salary_grade_id' => $gradeId,
             'grade_source' => $gradeId ? 'manual' : null,
-            'jabatan' => $employee->jabatan ?: $grade?->jabatan,
+            'jabatan' => $grade ? $grade->jabatan : $employee->jabatan,
         ])->save();
     }
 

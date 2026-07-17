@@ -12,13 +12,14 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Sistem Informasi RKAP HC — Divisi Human Capital & Corporate Secretary
+| Modul RKAP HC — Divisi Human Capital & Corporate Secretary
 |--------------------------------------------------------------------------
-| Monitoring Rencana Kerja dan Anggaran Perusahaan (biaya personil) tahunan.
-| Menggunakan sesi login admin yang sama dengan panel admin.
+| Modul ekosistem Ethoz (HCIS): monitoring Rencana Kerja dan Anggaran
+| Perusahaan (biaya personil) tahunan. Wajib login dan hanya bisa diakses
+| peran yang memiliki hak akses modul "rkap" (RBAC).
 */
 
-Route::prefix('hc-rkap')->name('hc.')->middleware('admin.auth')->group(function () {
+Route::prefix('hc-rkap')->name('hc.')->middleware(['ethoz.auth', 'ethoz.module:rkap'])->group(function () {
     Route::get('/', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/detail', [DetailController::class, 'index'])->name('detail');

@@ -210,6 +210,7 @@
               <th class="hc-th">Status</th>
               <th class="hc-th text-right">Gaji Dasar /bln</th>
               <th class="hc-th text-right">Tunj. Jabatan</th>
+              <th class="hc-th text-right">Tunj. Transport</th>
               <th class="hc-th w-40">Grade / Level</th>
               <th class="hc-th">Sumber</th>
               <th class="hc-th text-right">Compa</th>
@@ -224,6 +225,7 @@
               <td class="hc-td text-xs text-gray-500">{{ e.status }}</td>
               <td class="hc-td text-right tabular-nums">{{ fmtNum(e.base_salary) }}</td>
               <td class="hc-td text-right tabular-nums text-gray-500">{{ e.position_allowance ? fmtNum(e.position_allowance) : '–' }}</td>
+              <td class="hc-td text-right tabular-nums text-gray-500">{{ e.transport_allowance ? fmtNum(e.transport_allowance) : '–' }}</td>
               <td class="px-3 py-1">
                 <select
                   class="hc-select w-36 py-1 text-xs"

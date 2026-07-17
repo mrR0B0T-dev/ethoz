@@ -4,11 +4,10 @@
   <div class="flex min-h-screen items-center justify-center bg-gray-50 px-4">
     <div class="w-full max-w-sm">
       <div class="mb-6 text-center">
-        <div class="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-[#2a78d6] text-lg font-bold text-white">
-          HC
-        </div>
-        <h1 class="text-xl font-semibold text-gray-800">Sistem Informasi RKAP HC</h1>
-        <p class="mt-1 text-sm text-gray-500">Human Capital &amp; Corporate Secretary</p>
+        <img src="/favicon.svg" alt="Ethoz" class="mx-auto mb-3 h-14 w-14" />
+        <h1 class="text-2xl font-bold tracking-tight text-gray-800">Ethoz</h1>
+        <p class="mt-1 text-sm text-gray-500">Human Capital Information System</p>
+        <p class="mt-0.5 text-xs text-gray-400">Masuk untuk mengakses modul sesuai peran Anda</p>
       </div>
 
       <form class="hc-card space-y-4 p-6" @submit.prevent="submit">

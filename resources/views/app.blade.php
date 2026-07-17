@@ -6,7 +6,7 @@
 
         <link rel="icon" type="image/svg+xml" href="/favicon.svg">
 
-        <title inertia>{{ config('app.name', 'RKAP HC') }}</title>
+        <title inertia>{{ config('app.name', 'Ethoz') }}</title>
 
         @routes
         @vite(['resources/css/app.css', 'resources/js/app.js'])

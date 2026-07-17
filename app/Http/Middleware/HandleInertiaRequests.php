@@ -23,8 +23,15 @@ class HandleInertiaRequests extends Middleware
     {
         return [
             ...parent::share($request),
+            'app' => [
+                'name' => config('ethoz.name'),
+                'tagline' => config('ethoz.tagline'),
+            ],
             'auth' => [
                 'user' => $request->user()?->only('name', 'email'),
+                // key modul yang boleh diakses — navigasi lintas modul di
+                // frontend hanya menampilkan modul yang diizinkan (RBAC)
+                'modules' => $request->user()?->moduleKeys() ?? [],
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

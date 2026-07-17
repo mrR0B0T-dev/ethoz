@@ -8,8 +8,9 @@ use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 /**
- * Alias route "admin.auth" — melindungi seluruh halaman Sistem Informasi
- * RKAP HC; pengguna yang belum login diarahkan ke halaman login admin.
+ * Alias route "ethoz.auth" (alias lama: "admin.auth") — autentikasi wajib
+ * ekosistem Ethoz: seluruh modul HCIS hanya bisa diakses setelah login;
+ * pengguna yang belum login diarahkan ke halaman login.
  */
 class EnsureAdminAuthenticated
 {

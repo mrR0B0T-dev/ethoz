@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\DB;
  */
 class EmployeeCostService
 {
+    /** Kode asumsi kenaikan gaji per status pegawai. */
+    public const KENAIKAN_CODES = [
+        'tetap' => 'kenaikan_tetap',
+        'kontrak' => 'kenaikan_kontrak',
+        'honor' => 'kenaikan_ump',
+        'direksi' => 'kenaikan_dirkom',
+    ];
+
     private array $assumptions = [];
 
     public function forYear(FiscalYear $year): array
@@ -130,6 +138,41 @@ class EmployeeCostService
         });
     }
 
+    /**
+     * Perubahan roster (pegawai masuk/keluar/nonaktif) memengaruhi jenis biaya
+     * bersumber pegawai — samakan entri seluruh tahun anggaran yang belum final.
+     */
+    public function syncAllOpenYears(): void
+    {
+        FiscalYear::where('status', '!=', 'final')->get()
+            ->each(fn ($year) => $this->syncEmployeeSourcedEntries($year));
+    }
+
+    /**
+     * Hitung ulang Gaji /bln seluruh pegawai dari Gaji Tahun Sebelumnya sesuai
+     * asumsi kenaikan tahun ini: base = prev + (prev × kenaikan%). Pegawai
+     * tanpa gaji tahun sebelumnya tidak disentuh (gaji dasar diisi manual).
+     *
+     * @return int jumlah pegawai yang gajinya berubah
+     */
+    public function recomputeSalariesFromAssumptions(FiscalYear $year): int
+    {
+        $pcts = $year->assumptions()
+            ->whereIn('code', array_values(self::KENAIKAN_CODES))
+            ->pluck('value', 'code');
+
+        $changed = 0;
+        foreach (self::KENAIKAN_CODES as $status => $code) {
+            $factor = sprintf('%.6F', 1 + (float) ($pcts[$code] ?? 0) / 100);
+            $changed += Employee::where('status', $status)
+                ->where('prev_year_salary', '>', 0)
+                ->whereRaw("base_salary <> ROUND(prev_year_salary * {$factor}, 2)")
+                ->update(['base_salary' => DB::raw("ROUND(prev_year_salary * {$factor}, 2)")]);
+        }
+
+        return $changed;
+    }
+
     private function a(string $code, float $default = 0): float
     {
         return (float) ($this->assumptions[$code] ?? $default);
@@ -167,6 +210,7 @@ class EmployeeCostService
             'join_date' => $e->join_date?->toDateString(),
             'notes' => $e->notes,
             'base_salary' => $base,
+            'prev_year_salary' => $e->prev_year_salary,
             'position_allowance' => $e->position_allowance,
             'transport_allowance' => $e->transport_allowance,
             'thp' => $thp,

@@ -5,7 +5,7 @@ import { createInertiaApp } from '@inertiajs/vue3'
 import { resolvePageComponent } from 'laravel-vite-plugin/inertia-helpers'
 import { ZiggyVue } from 'ziggy-js'
 
-const appName = import.meta.env.VITE_APP_NAME || 'RKAP HC'
+const appName = import.meta.env.VITE_APP_NAME || 'Ethoz'
 
 createInertiaApp({
     title: (title) => (title ? `${title} — ${appName}` : appName),
