@@ -132,7 +132,7 @@
   "label": "BPJS Kesehatan (beban perusahaan)",
   "group": "iuran",
   "value_type": "persen",
-  "value": 4,
+  "value": 5,
   "applies_to": null
  },
  {
@@ -140,7 +140,7 @@
   "label": "BPJS TK - JHT (beban perusahaan)",
   "group": "iuran",
   "value_type": "persen",
-  "value": 3.7,
+  "value": 5.7,
   "applies_to": null
  },
  {
@@ -164,7 +164,7 @@
   "label": "BPJS TK - Jaminan Pensiun",
   "group": "iuran",
   "value_type": "persen",
-  "value": 2,
+  "value": 3,
   "applies_to": null
  }
 ]

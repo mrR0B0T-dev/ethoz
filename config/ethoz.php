@@ -2,7 +2,7 @@
 
 /*
 |--------------------------------------------------------------------------
-| Ethoz — Human Capital Information System (HCIS)
+| Ethoz — Grow with Ethoz
 |--------------------------------------------------------------------------
 | Registri modul ekosistem. Menambahkan modul HR baru cukup:
 |   1. daftarkan modulnya di sini dengan key unik,
@@ -14,7 +14,7 @@
 return [
 
     'name' => 'Ethoz',
-    'tagline' => 'Human Capital Information System',
+    'tagline' => 'Grow with Ethoz',
 
     'modules' => [
 

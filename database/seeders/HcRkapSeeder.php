@@ -70,23 +70,38 @@ class HcRkapSeeder extends Seeder
             'GAJI.DASAR' => 'base_salary',
             'GAJI.TRANSPORT' => 'transport_allowance',
             'GAJI.JABATAN' => 'position_allowance',
+            'IURAN.PENSIUN' => 'dplk',
+            // komponen biaya yang juga tampil di Pegawai & Biaya → nilai per
+            // unit = grand total komponen tersebut (tahunan ÷ 12 per bulan)
+            'TUNJ.THR' => 'thr',
+            'TUNJ.BONUS' => 'bonus',
+            'TUNJ.KOMPENSASI' => 'kompensasi:kontrak',
+            'TUNJ.KOMPENSASI_P3' => 'kompensasi:honor',
+            'TUNJ.PPH21' => 'pph21',
+            'IURAN.JAMSOSTEK' => 'bpjs_tk',
+            'IURAN.BPJSKES' => 'bpjs_kes',
+            'HONOR.BULANAN' => 'thp:kontrak',
+            'HONOR.PIHAK3' => 'thp:honor',
         ];
 
         // jenis biaya turunan → keterangan yang tampil pada komponen terkunci
         $derived = [
-            'GAJI.DASAR' => 'Total Gaji Dasar seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
+            'GAJI.DASAR' => 'Total Gaji Pokok seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
             'GAJI.TRANSPORT' => 'Total Tunj. Transport seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
             'GAJI.JABATAN' => 'Total Tunj. Jabatan seluruh pegawai per unit — dikelola di menu Pegawai & Biaya',
             // GMM & Cabang melekat pada unit tanpa pegawai → baris terkunci bernilai tetap
             'GAJI.GMM' => 'Nilai Biaya Gaji GMM terkunci mengikuti kebijakan biaya personil dan tidak diinput manual di menu Input Nominal.',
             'GAJI.CABANG' => 'Nilai Biaya Gaji Cabang terkunci mengikuti kebijakan biaya personil dan tidak diinput manual di menu Input Nominal.',
-            'TUNJ.THR' => 'THR = jumlah bulan THR (asumsi) × (Gaji Dasar + Tunj. Jabatan + Tunj. Transport)',
-            'TUNJ.BONUS' => 'Bonus = jumlah bulan bonus (asumsi) × (Gaji Dasar + Tunj. Jabatan + Tunj. Transport)',
-            'TUNJ.PPH21' => 'PPh 21 dihitung dari Gaji Dasar, Tunj. Jabatan & Tunj. Transport',
-            'TUNJ.KOMPENSASI' => 'Kompensasi = jumlah bulan (asumsi) × Gaji Dasar',
-            'IURAN.JAMSOSTEK' => 'BPJS Ketenagakerjaan = tarif iuran (asumsi) × Gaji Dasar',
-            'IURAN.BPJSKES' => 'BPJS Kesehatan = tarif iuran (asumsi) × Gaji Dasar',
-            'IURAN.PENSIUN' => 'Iuran Dana Pensiun = tarif iuran (asumsi) × Gaji Dasar',
+            'TUNJ.THR' => 'Total THR seluruh pegawai per unit (asumsi bulan THR × THP) — dikelola di menu Pegawai & Biaya',
+            'TUNJ.BONUS' => 'Total Bonus seluruh pegawai per unit (asumsi bulan bonus × THP) — dikelola di menu Pegawai & Biaya',
+            'TUNJ.PPH21' => 'Total PPh 21 seluruh pegawai per unit (tarif × THP) — dikelola di menu Pegawai & Biaya',
+            'TUNJ.KOMPENSASI' => 'Total Kompensasi pegawai kontrak per unit — dikelola di menu Pegawai & Biaya',
+            'TUNJ.KOMPENSASI_P3' => 'Total Kompensasi pegawai honor/outsource per unit — dikelola di menu Pegawai & Biaya',
+            'HONOR.BULANAN' => 'Total THP /bln (gaji pokok + tunjangan) pegawai kontrak per unit — dikelola di menu Pegawai & Biaya',
+            'HONOR.PIHAK3' => 'Total THP /bln (gaji pokok + tunjangan) pegawai honor/outsource per unit — dikelola di menu Pegawai & Biaya',
+            'IURAN.JAMSOSTEK' => 'Total BPJS TK seluruh pegawai per unit (tarif iuran × gaji pokok) — dikelola di menu Pegawai & Biaya',
+            'IURAN.BPJSKES' => 'Total BPJS Kes seluruh pegawai per unit (tarif iuran × gaji pokok) — dikelola di menu Pegawai & Biaya',
+            'IURAN.PENSIUN' => 'Total DPLK (tarif asumsi × Gaji Pokok /bln) pegawai tetap per unit — dikelola di menu Pegawai & Biaya',
         ];
 
         foreach ($master['cost_types'] as $type) {
@@ -122,6 +137,18 @@ class HcRkapSeeder extends Seeder
     private function seedAssumptions(): void
     {
         $year = FiscalYear::where('year', 2026)->first();
+
+        // tarif DPLK (iuran dana pensiun pegawai tetap, % dari gaji pokok)
+        Assumption::updateOrCreate(
+            ['fiscal_year_id' => $year->id, 'code' => 'dplk'],
+            [
+                'label' => 'Iuran DPLK (% dari gaji pokok)',
+                'category' => 'iuran',
+                'value_type' => 'persen',
+                'value' => 21,
+                'applies_to' => 'tetap',
+            ]
+        );
 
         foreach ($this->json('assumptions.json') as $a) {
             Assumption::updateOrCreate(

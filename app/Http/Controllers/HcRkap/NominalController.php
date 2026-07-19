@@ -9,6 +9,7 @@ use App\Models\HcRkap\CostType;
 use App\Models\HcRkap\FiscalYear;
 use App\Models\HcRkap\WorkUnit;
 use App\Services\HcRkap\BudgetService;
+use App\Services\HcRkap\EmployeeCostService;
 use App\Services\HcRkap\NominalSpreadsheet;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -24,9 +25,17 @@ class NominalController extends Controller
 {
     use ResolvesFiscalYear;
 
+    /** Submenu model perhitungan (referensi workbook BDP RKAP). */
+    private const MODELS = [
+        'purnabakti' => 'Biaya Purnabakti',
+        'cuti' => 'Tunjangan Cuti',
+        'pph' => 'PPh 21 (TER)',
+    ];
+
     public function __construct(
         private BudgetService $budget,
         private NominalSpreadsheet $spreadsheet,
+        private EmployeeCostService $costs,
     ) {}
 
     public function index(Request $request)
@@ -34,11 +43,19 @@ class NominalController extends Controller
         $year = $this->resolveYear($request);
         $types = $this->budget->costTypes();
 
+        // submenu model perhitungan (?model=purnabakti|cuti|pph)
+        $modelKey = array_key_exists((string) $request->get('model'), self::MODELS)
+            ? $request->get('model') : null;
+
         // komponen yang bisa dipilih: seluruh jenis biaya yang punya induk
         $components = $types->whereNotNull('parent_id');
         $selectedId = $request->integer('komponen') ?: null;
         $selected = $selectedId ? $components->firstWhere('id', $selectedId) : null;
-        $selected ??= $components->sortBy('sort_order')->first(fn ($t) => ! $t->is_derived);
+        if (! $modelKey) {
+            $selected ??= $components->sortBy('sort_order')->first(fn ($t) => ! $t->is_derived);
+        } else {
+            $selected = null;
+        }
 
         return Inertia::render('HcRkap/Nominal', [
             'tahun' => $year,
@@ -50,14 +67,60 @@ class NominalController extends Controller
                     'components' => $types->where('parent_id', $root->id)->sortBy('sort_order')->values()
                         ->map(fn ($t) => $t->only('id', 'code', 'name', 'employee_status', 'is_derived', 'derived_note', 'employee_source')),
                 ]),
+            'models' => collect(self::MODELS)->map(fn ($name, $key) => ['key' => $key, 'name' => $name])->values(),
+            'modelKey' => $modelKey,
+            'modelData' => $modelKey ? $this->modelData($year, $modelKey) : null,
             'selected' => $selected?->only('id', 'code', 'name', 'employee_status', 'is_derived', 'derived_note', 'employee_source'),
             'rows' => $selected ? $this->unitRows($year->id, $selected->id) : [],
             'options' => [
                 'units' => $this->budget->units()->where('is_active', true)
                     ->map(fn ($u) => $u->only('id', 'code', 'name', 'type', 'parent_id'))->values(),
             ],
-            'canEdit' => $year->status !== 'final' && $selected && ! $selected->is_derived,
+            'canEdit' => ! $modelKey && $year->status !== 'final' && $selected && ! $selected->is_derived,
         ]);
+    }
+
+    /**
+     * Ubah status PTKP pegawai langsung dari tabel model PPh 21 (TER) —
+     * PPh terhitung ulang dan entri RKAP bersumber model ikut disamakan.
+     */
+    public function updatePtkp(Request $request, \App\Models\HcRkap\Employee $employee)
+    {
+        $data = $request->validate([
+            'ptkp_status' => ['required', \Illuminate\Validation\Rule::in(['TK/0', 'TK/1', 'TK/2', 'TK/3', 'K/0', 'K/1', 'K/2', 'K/3'])],
+        ]);
+
+        $employee->update($data);
+        $this->costs->syncAllOpenYears();
+
+        return back()->with('success', "Status PTKP {$employee->name} diperbarui — PPh 21 dihitung ulang.");
+    }
+
+    /** Data submenu model: baris per pegawai + rekap per unit per bulan. */
+    private function modelData(FiscalYear $year, string $modelKey): array
+    {
+        $data = match ($modelKey) {
+            'purnabakti' => $this->costs->purnabaktiModel($year),
+            'cuti' => $this->costs->cutiModel($year),
+            'pph' => $this->costs->pphModel($year),
+        };
+
+        $units = $this->budget->units()->keyBy('id');
+        $data['units'] = collect($this->costs->modelByUnit($year, $modelKey))
+            ->map(function ($months, $unitId) use ($units) {
+                $full = [];
+                for ($m = 1; $m <= 12; $m++) {
+                    $full[] = round((float) ($months[$m] ?? 0), 2);
+                }
+
+                return [
+                    'code' => $units->get($unitId)?->code ?? (string) $unitId,
+                    'months' => $full,
+                    'total' => round(array_sum($full), 2),
+                ];
+            })->sortBy('code')->values()->all();
+
+        return $data;
     }
 
     public function upsert(Request $request)

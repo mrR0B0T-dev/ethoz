@@ -6,8 +6,8 @@
       <div class="mb-6 text-center">
         <img src="/favicon.svg" alt="Ethoz" class="mx-auto mb-3 h-14 w-14" />
         <h1 class="text-2xl font-bold tracking-tight text-gray-800">Ethoz</h1>
-        <p class="mt-1 text-sm text-gray-500">Human Capital Information System</p>
-        <p class="mt-0.5 text-xs text-gray-400">Masuk untuk mengakses modul sesuai peran Anda</p>
+        <p class="mt-1 text-sm text-gray-500">Grow with Ethoz</p>
+        <p class="mt-0.5 text-xs text-gray-400">Masuk untuk mengakses modul sesuai peran Kamu</p>
       </div>
 
       <form class="hc-card space-y-4 p-6" @submit.prevent="submit">

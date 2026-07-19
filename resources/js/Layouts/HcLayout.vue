@@ -15,14 +15,15 @@
           <div class="flex h-9 w-9 items-center justify-center rounded-lg bg-[#2a78d6] text-sm font-bold text-white">HC</div>
           <div>
             <p class="text-sm font-bold leading-tight text-gray-900">RKAP HC</p>
-            <p class="text-[11px] text-gray-500">Human Capital & CorSec</p>
+            <p class="text-[11px] text-gray-500">Human Capital & Corporate Secretary</p>
           </div>
         </div>
         <Link
           :href="route('ethoz.home')"
-          class="mt-3 flex items-center gap-1.5 rounded-lg bg-gray-50 px-2.5 py-1.5 text-[11px] font-medium text-gray-500 transition-colors hover:bg-blue-50 hover:text-[#1c5cab]"
+          class="mt-3 flex items-center gap-1.5 rounded-lg border border-gray-200 bg-gray-50 px-2.5 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-[#1c5cab]"
+          title="Kembali ke portal Ethoz — daftar semua modul"
         >
-          <Squares2X2Icon class="h-3.5 w-3.5" /> Portal Ethoz — semua modul
+          <ArrowUturnLeftIcon class="h-3.5 w-3.5" /> Kembali ke Portal
         </Link>
       </div>
 
@@ -110,7 +111,7 @@ import {
   HomeIcon, TableCellsIcon, ClipboardDocumentCheckIcon, UsersIcon,
   AdjustmentsHorizontalIcon, CircleStackIcon, Bars3Icon, CalendarIcon,
   BanknotesIcon, ArrowRightStartOnRectangleIcon, ChartBarSquareIcon,
-  Squares2X2Icon,
+  ArrowUturnLeftIcon,
 } from '@heroicons/vue/24/outline'
 
 defineProps({ title: { type: String, default: 'Dashboard' } })

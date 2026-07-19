@@ -27,6 +27,7 @@ Route::prefix('hc-rkap')->name('hc.')->middleware(['ethoz.auth', 'ethoz.module:r
 
     Route::get('/nominal', [NominalController::class, 'index'])->name('nominal');
     Route::put('/nominal', [NominalController::class, 'upsert'])->name('nominal.upsert');
+    Route::put('/nominal/ptkp/{employee}', [NominalController::class, 'updatePtkp'])->name('nominal.ptkp');
     Route::get('/nominal/template', [NominalController::class, 'template'])->name('nominal.template');
     Route::post('/nominal/import', [NominalController::class, 'import'])->name('nominal.import');
 

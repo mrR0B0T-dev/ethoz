@@ -86,20 +86,24 @@ class AssumptionController extends Controller
      */
     private function cascade(Assumption $assumption): string
     {
-        if (! in_array($assumption->code, EmployeeCostService::KENAIKAN_CODES, true)) {
-            return '';
+        $message = '';
+
+        // asumsi kenaikan gaji mengubah Gaji Pokok /bln pegawai lebih dulu
+        if (in_array($assumption->code, EmployeeCostService::KENAIKAN_CODES, true)) {
+            $changed = $this->costs->recomputeSalariesFromAssumptions($assumption->fiscalYear);
+            if ($changed > 0) {
+                $this->grading->applyToAll();
+                $message = " Gaji pokok {$changed} pegawai dihitung ulang dari gaji tahun sebelumnya.";
+            }
         }
 
-        $changed = $this->costs->recomputeSalariesFromAssumptions($assumption->fiscalYear);
-        if ($changed === 0) {
-            return '';
-        }
-
-        $this->grading->applyToAll();
+        // hampir semua asumsi (THR, bonus, BPJS, DPLK, PPh21, kenaikan, dll.)
+        // memengaruhi komponen biaya bersumber pegawai → selalu samakan ulang
+        // entri RKAP-nya agar Input Nominal tetap sinkron dengan Pegawai & Biaya
         FiscalYear::where('status', '!=', 'final')->get()
             ->each(fn ($y) => $this->costs->syncEmployeeSourcedEntries($y));
 
-        return " Gaji {$changed} pegawai dihitung ulang dari gaji tahun sebelumnya.";
+        return $message.' Komponen biaya bersumber pegawai disamakan ulang.';
     }
 
     private function validated(Request $request): array

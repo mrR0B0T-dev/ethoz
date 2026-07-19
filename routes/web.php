@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Route;
 
 /*
 |--------------------------------------------------------------------------
-| Ethoz — Human Capital Information System (HCIS)
+| Ethoz — Grow with Ethoz
 |--------------------------------------------------------------------------
 | Alur akses: (1) landing /ethoz terbuka untuk semua dan menampilkan seluruh
 | modul; (2) pengguna memilih modul; (3) saat modul dibuka, login diwajibkan

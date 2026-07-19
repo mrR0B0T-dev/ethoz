@@ -8,9 +8,9 @@
         <p class="mt-4 text-xs font-bold uppercase tracking-widest text-red-500">403 Forbidden</p>
         <h1 class="mt-1 text-xl font-bold text-gray-900">Akses Ditolak</h1>
         <p class="mt-2 text-sm leading-relaxed text-gray-500">
-          Anda tidak memiliki peran dengan hak akses ke modul
+          Kamu tidak memiliki peran dengan hak akses ke modul
           <b class="text-gray-700">{{ module }}</b>.
-          Hubungi administrator bila Anda seharusnya memiliki akses.
+          Hubungi administrator bila Kamu seharusnya memiliki akses.
         </p>
         <Link :href="route('ethoz.home')" class="hc-btn mt-6 inline-flex">
           <ArrowLeftIcon class="h-4 w-4" /> Kembali ke Portal

@@ -5,14 +5,14 @@
         <p class="text-sm text-gray-500">Selamat datang, <b class="text-gray-700">{{ user.name }}</b> 👋</p>
         <h1 class="mt-1 text-2xl font-bold text-gray-900">Pilih modul untuk mulai bekerja</h1>
         <p class="mt-1 text-sm text-gray-500">
-          Modul dengan tanda kunci berada di luar hak akses peran Anda.
+          Modul dengan tanda kunci berada di luar hak akses peran Kamu.
         </p>
       </template>
       <template v-else>
         <p class="text-sm text-gray-500">Selamat datang di Ethoz 👋</p>
-        <h1 class="mt-1 text-2xl font-bold text-gray-900">Jelajahi modul Human Capital Information System</h1>
+        <h1 class="mt-1 text-2xl font-bold text-gray-900">Jelajahi modul Ethoz</h1>
         <p class="mt-1 text-sm text-gray-500">
-          Pilih modul yang ingin dibuka — Anda akan diminta masuk terlebih dahulu untuk membukanya.
+          Pilih modul yang ingin dibuka — Kamu akan diminta masuk terlebih dahulu untuk membukanya.
         </p>
       </template>
 

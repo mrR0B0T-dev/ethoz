@@ -11,7 +11,8 @@ class Employee extends Model
     protected $fillable = [
         'name', 'jabatan', 'work_unit_id', 'status', 'salary_grade_id', 'grade_source',
         'base_salary', 'prev_year_salary', 'position_allowance', 'transport_allowance',
-        'join_date', 'notes', 'is_active',
+        'join_date', 'birth_date', 'ptkp_status', 'cuti_month', 'cuti_entitlement',
+        'notes', 'is_active',
     ];
 
     protected $casts = [
@@ -20,6 +21,8 @@ class Employee extends Model
         'position_allowance' => 'float',
         'transport_allowance' => 'float',
         'join_date' => 'date',
+        'birth_date' => 'date',
+        'cuti_month' => 'integer',
         'is_active' => 'boolean',
     ];
 

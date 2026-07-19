@@ -12,7 +12,7 @@
     <!-- ── widget keputusan ───────────────────────────────────────────── -->
     <div class="mb-5 grid grid-cols-1 gap-4 xl:grid-cols-[1fr_20rem]">
       <div class="hc-card p-4">
-        <h2 class="mb-1 text-sm font-semibold text-gray-900">Sebaran Gaji Dasar vs Struktur Upah</h2>
+        <h2 class="mb-1 text-sm font-semibold text-gray-900">Sebaran Gaji Pokok vs Struktur Upah</h2>
         <p class="mb-3 text-xs text-gray-500">
           Setiap titik = satu pegawai pada grade hasil grading. Area biru = rentang min–max struktur.
           Titik di luar garis putus-putus menandakan gaji di luar rentang dan perlu keputusan penyesuaian.
@@ -208,7 +208,7 @@
               <th class="hc-th">Jabatan</th>
               <th class="hc-th">Unit</th>
               <th class="hc-th">Status</th>
-              <th class="hc-th text-right">Gaji Dasar /bln</th>
+              <th class="hc-th text-right">Gaji Pokok /bln</th>
               <th class="hc-th text-right">Tunj. Jabatan</th>
               <th class="hc-th text-right">Tunj. Transport</th>
               <th class="hc-th w-40">Grade / Level</th>

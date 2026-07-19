@@ -50,6 +50,41 @@
         />
       </div>
 
+      <!-- grand total per komponen biaya -->
+      <div class="mb-5 hc-card p-4">
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-2">
+          <h2 class="text-sm font-semibold text-gray-900">
+            Grand Total Biaya {{ isAll ? 'Seluruh Pegawai' : STATUS_LABELS[tab] }} — {{ tahun.year }}
+          </h2>
+          <!-- filter periode: bulanan (÷12) / tahunan -->
+          <div class="flex rounded-lg border border-gray-200 bg-gray-50 p-0.5">
+            <button
+              v-for="p in [['bulanan', 'Bulanan'], ['tahunan', 'Tahunan']]" :key="p[0]"
+              class="rounded-md px-3 py-1 text-xs font-medium transition-colors"
+              :class="totalPeriod === p[0] ? 'bg-white text-[#1c5cab] shadow-sm' : 'text-gray-500 hover:text-gray-700'"
+              @click="totalPeriod = p[0]"
+            >{{ p[1] }}</button>
+          </div>
+        </div>
+        <div class="grid grid-cols-2 gap-2.5 sm:grid-cols-3 xl:grid-cols-4">
+          <div
+            v-for="key in componentKeys" :key="'gt-' + key"
+            class="rounded-lg border border-gray-100 bg-gray-50/60 px-3 py-2"
+            :title="fmtIDR(periodValue(current.totals[key]))"
+          >
+            <p class="text-[10px] font-medium uppercase tracking-wide text-gray-400">{{ periodLabel(key) }}</p>
+            <p class="mt-0.5 text-sm font-semibold tabular-nums text-gray-800">{{ fmtShort(periodValue(current.totals[key])) }}</p>
+          </div>
+          <div
+            class="rounded-lg border border-blue-200 bg-blue-50 px-3 py-2"
+            :title="fmtIDR(periodValue(current.grand_total))"
+          >
+            <p class="text-[10px] font-semibold uppercase tracking-wide text-[#1c5cab]">Grand Total {{ periodSuffix }}</p>
+            <p class="mt-0.5 text-sm font-bold tabular-nums text-[#1c5cab]">{{ fmtShort(periodValue(current.grand_total)) }}</p>
+          </div>
+        </div>
+      </div>
+
       <!-- catatan asumsi -->
       <div v-if="!isAll" class="mb-5 rounded-xl border border-blue-100 bg-blue-50/50 px-4 py-3">
         <p class="mb-1 flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wide text-[#1c5cab]">
@@ -106,13 +141,29 @@
               <th class="hc-th cursor-pointer select-none" @click="sortBy('grade_level')">
                 Grade <SortMark col="grade_level" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
+              <th class="hc-th cursor-pointer select-none" @click="sortBy('birth_date')">
+                Tgl Lahir <SortMark col="birth_date" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
+              <th class="hc-th cursor-pointer select-none" @click="sortBy('join_date')">
+                TMT / Join <SortMark col="join_date" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
+              <th class="hc-th cursor-pointer select-none" @click="sortBy('ptkp_status')">
+                PTKP <SortMark col="ptkp_status" :sort-key="sortKey" :sort-dir="sortDir" />
+              </th>
               <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('prev_year_salary')">
-                Gaji Thn Sebelumnya <SortMark col="prev_year_salary" :sort-key="sortKey" :sort-dir="sortDir" />
+                Gaji Pokok Thn Sebelumnya <SortMark col="prev_year_salary" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
               <th class="hc-th cursor-pointer select-none text-right" @click="sortBy('base_salary')">
-                Gaji /bln <SortMark col="base_salary" :sort-key="sortKey" :sort-dir="sortDir" />
+                Gaji Pokok /bln <SortMark col="base_salary" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
-              <th v-for="key in componentKeys" :key="key" class="hc-th text-right">{{ COMPONENT_LABELS[key] ?? key }}</th>
+              <th
+                v-for="(key, i) in monthlyKeys" :key="'m-' + key"
+                class="hc-th text-right" :class="i === 0 ? 'border-l border-gray-200' : ''"
+              >{{ MONTHLY_LABELS[key] ?? key }}</th>
+              <th
+                v-for="(key, i) in componentKeys" :key="key"
+                class="hc-th text-right" :class="i === 0 ? 'border-l border-gray-200' : ''"
+              >{{ COMPONENT_LABELS[key] ?? key }}</th>
               <th class="hc-th cursor-pointer select-none border-l border-gray-200 text-right" @click="sortBy('total')">
                 Total /tahun <SortMark col="total" :sort-key="sortKey" :sort-dir="sortDir" />
               </th>
@@ -142,10 +193,24 @@
                 <span v-if="emp.grade" class="rounded bg-blue-50 px-1.5 py-0.5 font-mono text-[11px] font-semibold text-[#1c5cab]">{{ emp.grade }}</span>
                 <span v-else class="text-xs text-gray-400">–</span>
               </td>
+              <td class="hc-td text-xs tabular-nums text-gray-500">{{ emp.birth_date ?? '–' }}</td>
+              <td class="hc-td text-xs tabular-nums text-gray-500">{{ emp.join_date ?? '–' }}</td>
+              <td class="hc-td font-mono text-xs text-gray-600">{{ emp.ptkp_status ?? '–' }}</td>
               <td class="hc-td text-right tabular-nums text-gray-500">{{ emp.prev_year_salary ? fmtNum(emp.prev_year_salary) : '–' }}</td>
               <td class="hc-td text-right tabular-nums">{{ fmtNum(emp.base_salary) }}</td>
-              <td v-for="key in componentKeys" :key="key" class="hc-td text-right tabular-nums text-gray-600">
-                {{ fmtNum(emp.components[key]) }}
+              <td
+                v-for="(key, i) in monthlyKeys" :key="'m-' + key"
+                class="hc-td text-right tabular-nums"
+                :class="[i === 0 ? 'border-l border-gray-200' : '', key === 'total' ? 'font-medium text-gray-800' : 'text-gray-600']"
+              >
+                {{ emp.monthly && key in emp.monthly ? fmtNum(emp.monthly[key]) : '–' }}
+              </td>
+              <td
+                v-for="(key, i) in componentKeys" :key="key"
+                class="hc-td text-right tabular-nums text-gray-600"
+                :class="i === 0 ? 'border-l border-gray-200' : ''"
+              >
+                {{ key in emp.components ? fmtNum(emp.components[key]) : '–' }}
               </td>
               <td class="hc-td border-l border-gray-200 text-right font-medium tabular-nums">{{ fmtNum(emp.total) }}</td>
               <td class="hc-td text-right">
@@ -160,10 +225,19 @@
           </tbody>
           <tfoot class="border-t border-gray-200 bg-gray-50/60">
             <tr>
-              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 7 : 6">
+              <td class="hc-td sticky left-0 z-10 bg-gray-50 font-semibold" :colspan="isAll ? 10 : 9">
                 Total {{ isAll ? 'Semua Pegawai' : STATUS_LABELS[tab] }}{{ isFiltered ? ` (${filteredEmployees.length} pegawai tersaring)` : '' }}
               </td>
-              <td v-for="key in componentKeys" :key="key" class="hc-td text-right font-medium tabular-nums">{{ fmtNum(viewTotals.components[key]) }}</td>
+              <td
+                v-for="(key, i) in monthlyKeys" :key="'m-' + key"
+                class="hc-td text-right font-medium tabular-nums"
+                :class="i === 0 ? 'border-l border-gray-200' : ''"
+              >{{ fmtNum(viewTotals.monthly[key]) }}</td>
+              <td
+                v-for="(key, i) in componentKeys" :key="key"
+                class="hc-td text-right font-medium tabular-nums"
+                :class="i === 0 ? 'border-l border-gray-200' : ''"
+              >{{ fmtNum(viewTotals.components[key]) }}</td>
               <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(viewTotals.grand) }}</td>
               <td />
             </tr>
@@ -222,11 +296,11 @@
         </div>
         <div class="grid grid-cols-2 gap-3">
           <label class="block">
-            <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Thn Sebelumnya /bln</span>
+            <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Pokok Thn Sebelumnya /bln</span>
             <HcNumberInput v-model="form.prev_year_salary" class="hc-input w-full text-right" placeholder="kosongkan bila isi manual" />
           </label>
           <label class="block">
-            <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Dasar /bln</span>
+            <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Pokok /bln</span>
             <HcNumberInput
               v-model="form.base_salary" required :disabled="hasPrevSalary"
               class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500"
@@ -235,7 +309,7 @@
           </label>
         </div>
         <p v-if="hasPrevSalary" class="text-[11px] leading-relaxed text-gray-500">
-          Gaji /bln otomatis = Gaji Thn Sebelumnya + kenaikan
+          Gaji Pokok /bln otomatis = Gaji Pokok Thn Sebelumnya + kenaikan
           <b>{{ kenaikanPct }}%</b> (asumsi {{ STATUS_LABELS[form.status] }} tahun {{ tahun.year }}).
         </p>
         <div class="grid grid-cols-2 gap-3">
@@ -256,14 +330,48 @@
           <ExclamationTriangleIcon class="mt-0.5 h-3.5 w-3.5 shrink-0" /> {{ salaryError }}
         </p>
         <p v-else-if="selectedGrade" class="text-[11px] leading-relaxed text-gray-500">
-          Skala upah grade <b>{{ selectedGrade.code }}</b>: Gaji Dasar
+          Skala upah grade <b>{{ selectedGrade.code }}</b>: Gaji Pokok
           {{ fmtNum(selectedGrade.salary_min) }} – {{ fmtNum(selectedGrade.salary_max) }} /bln.
           <template v-if="isTetap">Tunj. Jabatan &amp; Transport otomatis mengikuti tarif grade.</template>
         </p>
-        <label class="block">
-          <span class="mb-1 block text-xs font-medium text-gray-600">TMT / Awal PKWT</span>
-          <input v-model="form.join_date" type="date" class="hc-input w-full" />
-        </label>
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">TMT / Awal PKWT</span>
+            <input v-model="form.join_date" type="date" class="hc-input w-full" />
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Tanggal Lahir</span>
+            <input v-model="form.birth_date" type="date" class="hc-input w-full" />
+          </label>
+        </div>
+        <div class="grid gap-3" :class="isTetap ? 'grid-cols-3' : 'grid-cols-1'">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Status PTKP</span>
+            <select v-model="form.ptkp_status" class="hc-select w-full">
+              <option :value="null">– (default TK/0)</option>
+              <option v-for="p in PTKP_OPTIONS" :key="p" :value="p">{{ p }}</option>
+            </select>
+          </label>
+          <label v-if="isTetap" class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Bulan Cuti</span>
+            <select v-model="form.cuti_month" class="hc-select w-full">
+              <option :value="null">–</option>
+              <option v-for="(b, i) in BULAN_PANJANG" :key="i" :value="i + 1">{{ b }}</option>
+            </select>
+          </label>
+          <label v-if="isTetap" class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Hak Cuti</span>
+            <select v-model="form.cuti_entitlement" class="hc-select w-full">
+              <option :value="null">–</option>
+              <option value="thn">THN — THP × 1</option>
+              <option value="3thn">3 THN — THP × 2</option>
+            </select>
+          </label>
+        </div>
+        <p class="text-[11px] leading-relaxed text-gray-400">
+          Tanggal lahir → model Biaya Purnabakti · Status PTKP → PPh 21 TER ·
+          Bulan &amp; Hak Cuti → Tunjangan Cuti (pegawai tetap).
+        </p>
         <label class="block">
           <span class="mb-1 block text-xs font-medium text-gray-600">Catatan / Keterangan</span>
           <textarea
@@ -295,7 +403,9 @@ import HcLayout from '@/Layouts/HcLayout.vue'
 import StatCard from '@/Components/HcRkap/StatCard.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
 import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
-import { useHcFormat } from '@/composables/useHcFormat'
+import { BULAN_PANJANG, useHcFormat } from '@/composables/useHcFormat'
+
+const PTKP_OPTIONS = ['TK/0', 'TK/1', 'TK/2', 'TK/3', 'K/0', 'K/1', 'K/2', 'K/3']
 
 const props = defineProps({
   tahun: Object,
@@ -322,16 +432,42 @@ const STATUS_CHIP = {
 const statusChip = (s) => STATUS_CHIP[s] ?? 'bg-gray-100 text-gray-600'
 
 const COMPONENT_LABELS = {
-  gaji: 'Gaji /thn',
+  gaji: 'Gaji Pokok /thn',
   tunj_jabatan: 'Tunj. Jabatan /thn',
   tunj_transport: 'Tunj. Transport /thn',
   thr: 'THR',
   bonus: 'Bonus',
   kompensasi: 'Kompensasi',
-  bpjs_kes: 'BPJS Kes',
-  bpjs_tk: 'BPJS TK',
-  fee: 'Mgmt Fee',
-  ppn: 'PPN',
+  cuti: 'Tunj. Cuti /thn',
+  bpjs_kes: 'BPJS Kes /thn',
+  bpjs_tk: 'BPJS TK /thn',
+  dplk: 'DPLK /thn',
+  pph21: 'PPh 21 /thn',
+  fee: 'Mgmt Fee /thn',
+  ppn: 'PPN /thn',
+}
+
+// urutan kanonis komponen biaya tahunan (untuk tab "Semua Pegawai")
+const COMPONENT_ORDER = [
+  'gaji', 'tunj_jabatan', 'tunj_transport', 'thr', 'bonus', 'cuti', 'kompensasi',
+  'bpjs_kes', 'bpjs_tk', 'dplk', 'pph21', 'fee', 'ppn',
+]
+
+// kolom biaya per bulan (mengikuti data yang tersedia per status)
+const MONTHLY_ORDER = ['tunj_jabatan', 'tunj_transport', 'thp', 'thp_thn', 'cuti', 'bpjs_kes', 'bpjs_tk', 'dplk', 'pph21', 'fee', 'ppn', 'total']
+const MONTHLY_LABELS = {
+  tunj_jabatan: 'Tunj. Jabatan /bln',
+  tunj_transport: 'Tunj. Transport /bln',
+  thp: 'THP /bln',
+  thp_thn: 'THP /thn',
+  cuti: 'Tunj. Cuti /bln',
+  bpjs_kes: 'BPJS Kes /bln',
+  bpjs_tk: 'BPJS TK /bln',
+  dplk: 'DPLK /bln',
+  pph21: 'PPh 21 /bln',
+  fee: 'Mgmt Fee /bln',
+  ppn: 'PPN /bln',
+  total: 'Total /bln',
 }
 
 const tab = ref(Object.keys(props.byStatus)[0] ?? 'tetap')
@@ -343,17 +479,36 @@ const totalHeadcount = computed(() => allEmployees.value.length)
 const current = computed(() => {
   if (isAll.value) {
     const employees = allEmployees.value
+    // tab Semua menampilkan seluruh komponen biaya: gabungkan total per
+    // komponen lintas status (komponen yang tidak dimiliki status = 0)
+    const totals = {}
+    COMPONENT_ORDER.forEach((key) => {
+      if (employees.some(e => key in (e.components ?? {}))) {
+        totals[key] = employees.reduce((sum, e) => sum + (e.components[key] ?? 0), 0)
+      }
+    })
     return {
       headcount: employees.length,
       employees,
       grand_total: employees.reduce((sum, e) => sum + (e.total ?? 0), 0),
-      totals: {},
+      totals,
       assumption_notes: [],
     }
   }
   return props.byStatus[tab.value]
 })
 const componentKeys = computed(() => Object.keys(current.value?.totals ?? {}))
+const monthlyKeys = computed(() => {
+  const employees = current.value?.employees ?? []
+  return MONTHLY_ORDER.filter(key => employees.some(e => key in (e.monthly ?? {})))
+})
+
+// ── filter periode panel Grand Total: bulanan (÷12) / tahunan ─────────────
+const totalPeriod = ref('tahunan')
+const periodSuffix = computed(() => totalPeriod.value === 'bulanan' ? '/bln' : '/thn')
+const periodValue = (v) => totalPeriod.value === 'bulanan' ? (v ?? 0) / 12 : (v ?? 0)
+const periodLabel = (key) =>
+  `${(COMPONENT_LABELS[key] ?? key).replace(' /thn', '')} ${periodSuffix.value}`
 
 // ── unduh template & impor Excel ──────────────────────────────────────────
 const importing = ref(false)
@@ -396,7 +551,7 @@ function sortBy(key) {
   }
 }
 
-const STRING_SORT_KEYS = ['name', 'unit', 'status', 'jabatan']
+const STRING_SORT_KEYS = ['name', 'unit', 'status', 'jabatan', 'birth_date', 'join_date', 'ptkp_status']
 
 const filteredEmployees = computed(() => {
   let list = current.value?.employees ?? []
@@ -424,8 +579,13 @@ const viewTotals = computed(() => {
   componentKeys.value.forEach((key) => {
     components[key] = filteredEmployees.value.reduce((sum, e) => sum + (e.components[key] ?? 0), 0)
   })
+  const monthly = {}
+  monthlyKeys.value.forEach((key) => {
+    monthly[key] = filteredEmployees.value.reduce((sum, e) => sum + (e.monthly?.[key] ?? 0), 0)
+  })
   return {
     components,
+    monthly,
     grand: filteredEmployees.value.reduce((sum, e) => sum + e.total, 0),
   }
 })
@@ -489,7 +649,7 @@ const salaryError = computed(() => {
   if (!g) return null
   const salary = Number(form.base_salary) || 0
   if (salary < g.salary_min || salary > g.salary_max) {
-    return `Gaji Dasar di luar skala upah grade ${g.code}: harus ${fmtNum(g.salary_min)} – ${fmtNum(g.salary_max)} /bln.`
+    return `Gaji Pokok di luar skala upah grade ${g.code}: harus ${fmtNum(g.salary_min)} – ${fmtNum(g.salary_max)} /bln.`
   }
   return null
 })
@@ -500,18 +660,26 @@ const editingEmp = ref(null)
 const form = reactive({
   name: '', jabatan: '', salary_grade_id: null, status: 'tetap', work_unit_id: null,
   base_salary: 0, prev_year_salary: null, position_allowance: 0, transport_allowance: 0,
-  join_date: null, notes: '',
+  join_date: null, birth_date: null, ptkp_status: null, cuti_month: null, cuti_entitlement: null,
+  notes: '',
 })
 
-// ── Gaji /bln = Gaji Thn Sebelumnya + (Gaji Thn Sebelumnya × kenaikan) ────
+// ── Gaji /bln = Gaji Thn Sebelumnya + (THP thn sebelumnya × kenaikan%) ────
+// THP = gaji thn sebelumnya + tunj. jabatan + tunj. transport (tetap saja)
 const kenaikanPct = computed(() => props.options.kenaikan?.[form.status] ?? 0)
 const hasPrevSalary = computed(() => Number(form.prev_year_salary) > 0)
 
-watch([() => form.prev_year_salary, () => form.status], () => {
-  if (hasPrevSalary.value) {
-    form.base_salary = Math.round(Number(form.prev_year_salary) * (1 + kenaikanPct.value / 100) * 100) / 100
-  }
-})
+watch(
+  [() => form.prev_year_salary, () => form.status, () => form.position_allowance, () => form.transport_allowance],
+  () => {
+    if (!hasPrevSalary.value) return
+    const prev = Number(form.prev_year_salary)
+    const allowances = form.status === 'tetap'
+      ? (Number(form.position_allowance) || 0) + (Number(form.transport_allowance) || 0)
+      : 0
+    form.base_salary = Math.round((prev + (prev + allowances) * kenaikanPct.value / 100) * 100) / 100
+  },
+)
 
 // ── Tunj. Jabatan & Transport hanya untuk pegawai tetap ───────────────────
 const isTetap = computed(() => form.status === 'tetap')
@@ -520,6 +688,8 @@ watch(isTetap, (tetap) => {
   if (!tetap) {
     form.position_allowance = 0
     form.transport_allowance = 0
+    form.cuti_month = null
+    form.cuti_entitlement = null
   } else if (selectedGrade.value) {
     form.position_allowance = selectedGrade.value.position_allowance
     form.transport_allowance = selectedGrade.value.transport_allowance
@@ -532,7 +702,8 @@ function openCreate() {
     name: '', jabatan: '', salary_grade_id: null,
     status: isAll.value ? 'tetap' : tab.value, work_unit_id: null,
     base_salary: 0, prev_year_salary: null, position_allowance: 0, transport_allowance: 0,
-    join_date: null, notes: '',
+    join_date: null, birth_date: null, ptkp_status: null, cuti_month: null, cuti_entitlement: null,
+    notes: '',
   })
   modal.value = true
 }
@@ -550,6 +721,10 @@ function openEdit(emp) {
     position_allowance: emp.position_allowance,
     transport_allowance: emp.transport_allowance,
     join_date: emp.join_date,
+    birth_date: emp.birth_date ?? null,
+    ptkp_status: emp.ptkp_status ?? null,
+    cuti_month: emp.cuti_month ?? null,
+    cuti_entitlement: emp.cuti_entitlement ?? null,
     notes: emp.notes ?? '',
   })
   // tunjangan pegawai ber-grade selalu mengikuti tarif grade-nya

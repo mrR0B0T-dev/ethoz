@@ -94,15 +94,20 @@ class EmployeeController extends Controller
 
     /**
      * Gaji /bln dihitung dari Gaji Tahun Sebelumnya + kenaikan sesuai asumsi
-     * tahun terpilih: base = prev × (1 + kenaikan%/100). Tanpa nilai tahun
-     * sebelumnya, gaji dasar diisi manual seperti biasa.
+     * tahun terpilih. Besaran kenaikan dihitung dari THP tahun sebelumnya:
+     *   base = prev + (prev + tunj_jabatan + tunj_transport) × kenaikan%.
+     * Tanpa nilai tahun sebelumnya, gaji dasar diisi manual seperti biasa.
      */
     private function applySalaryFormula(array $data, Request $request): array
     {
         $prev = (float) ($data['prev_year_salary'] ?? 0);
         if ($prev > 0) {
             $pct = $this->kenaikanPct($this->resolveYear($request))[$data['status']] ?? 0;
-            $data['base_salary'] = round($prev * (1 + $pct / 100), 2);
+            // tunjangan hanya dimiliki pegawai tetap; status lain bernilai 0
+            $allowances = $data['status'] === 'tetap'
+                ? (float) ($data['position_allowance'] ?? 0) + (float) ($data['transport_allowance'] ?? 0)
+                : 0.0;
+            $data['base_salary'] = round($prev + ($prev + $allowances) * $pct / 100, 2);
         }
 
         return $data;
@@ -129,7 +134,7 @@ class EmployeeController extends Controller
             || (float) $data['base_salary'] > $grade->salary_max) {
             throw \Illuminate\Validation\ValidationException::withMessages([
                 'base_salary' => sprintf(
-                    'Gaji dasar harus dalam rentang skala upah grade %s: Rp %s – Rp %s.',
+                    'Gaji pokok harus dalam rentang skala upah grade %s: Rp %s – Rp %s.',
                     $grade->code,
                     number_format($grade->salary_min, 0, ',', '.'),
                     number_format($grade->salary_max, 0, ',', '.'),
@@ -263,6 +268,10 @@ class EmployeeController extends Controller
             'position_allowance' => ['nullable', 'numeric', 'min:0'],
             'transport_allowance' => ['nullable', 'numeric', 'min:0'],
             'join_date' => ['nullable', 'date'],
+            'birth_date' => ['nullable', 'date'],
+            'ptkp_status' => ['nullable', Rule::in(['TK/0', 'TK/1', 'TK/2', 'TK/3', 'K/0', 'K/1', 'K/2', 'K/3'])],
+            'cuti_month' => ['nullable', 'integer', 'between:1,12'],
+            'cuti_entitlement' => ['nullable', Rule::in(['thn', '3thn'])],
             'notes' => ['nullable', 'string', 'max:1000'],
             'is_active' => ['boolean'],
         ]);

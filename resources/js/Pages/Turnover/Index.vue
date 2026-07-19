@@ -309,7 +309,7 @@
           <input v-model="form.deactivate" type="checkbox" class="mt-0.5 rounded border-gray-300" />
           <span>
             <b>Nonaktifkan pegawai dari roster RKAP HC.</b>
-            Entri anggaran bersumber pegawai (Gaji Dasar, Tunj. Jabatan, Transport) ikut disamakan.
+            Entri anggaran bersumber pegawai (Gaji Pokok, Tunj. Jabatan, Transport) ikut disamakan.
           </span>
         </label>
 

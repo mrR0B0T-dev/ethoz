@@ -13,6 +13,20 @@
           </p>
         </div>
         <div class="max-h-[34rem] overflow-y-auto py-2">
+          <!-- submenu model perhitungan (referensi workbook) -->
+          <div class="mb-1">
+            <p class="px-4 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">Model Perhitungan</p>
+            <button
+              v-for="m in models" :key="m.key"
+              class="flex w-full items-center gap-2 px-4 py-1.5 text-left text-sm transition-colors"
+              :class="modelKey === m.key ? 'bg-blue-50 font-medium text-[#1c5cab]' : 'text-gray-700 hover:bg-gray-50'"
+              @click="pickModel(m)"
+            >
+              <CalculatorIcon class="h-3.5 w-3.5 shrink-0 text-violet-500" />
+              <span class="min-w-0 flex-1 truncate">{{ m.name }}</span>
+            </button>
+          </div>
+
           <div v-for="cat in tree" :key="cat.id" class="mb-1">
             <p class="px-4 py-1 text-[11px] font-semibold uppercase tracking-wide text-gray-400">{{ cat.name }}</p>
             <button
@@ -36,8 +50,193 @@
         </div>
       </div>
 
+      <!-- panel model perhitungan (read-only) -->
+      <div v-if="modelData" class="hc-card overflow-hidden">
+        <div class="border-b border-gray-100 px-4 py-3">
+          <h2 class="flex items-center gap-2 text-sm font-semibold text-gray-900">
+            <CalculatorIcon class="h-4 w-4 text-violet-500" /> {{ activeModel?.name }} — {{ tahun.year }}
+          </h2>
+          <p class="mt-0.5 text-xs leading-relaxed text-gray-500">
+            <template v-if="modelKey === 'purnabakti'">
+              Model pesangon + UPMK: estimasi gaji terakhir = THP × (1 + {{ modelData.meta.growth }}% per tahun)^sisa masa kerja,
+              usia pensiun {{ modelData.meta.usia_pensiun }} th, pesangon {{ modelData.meta.pesangon_bulan }}×, UPMK sesuai masa kerja;
+              Biaya /thn = Grand Total ÷ sisa masa kerja. Grand total per unit menjadi nilai <b>Biaya Purnabakti</b> (terkunci).
+              Tanggal lahir pegawai diatur di menu <Link :href="route('hc.pegawai', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Pegawai &amp; Biaya</Link>.
+            </template>
+            <template v-else-if="modelKey === 'cuti'">
+              Nominal = THP × hak cuti (<b>3 THN</b> = ×2, <b>THN</b> = ×1), dibukukan pada bulan cuti masing-masing pegawai.
+              Grand total per unit menjadi nilai <b>Biaya Tunjangan Cuti</b> (terkunci).
+              Kriteria Bulan &amp; Hak Cuti diatur per pegawai di menu <Link :href="route('hc.pegawai', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Pegawai &amp; Biaya</Link>.
+            </template>
+            <template v-else>
+              PPh 21 = Tarif Efektif Rata-rata (TER, PP 58/2023) × penghasilan bruto bulanan
+              (gaji/THP + premi JKK+JKM+BPJS Kes + THR/12 + Bonus/12 + Kompensasi/12 + tunj. cuti pada bulannya);
+              kategori TER mengikuti status PTKP pegawai. Grand total per unit menjadi nilai <b>Biaya Tunjangan Pajak PPh 21</b> (terkunci).
+            </template>
+          </p>
+        </div>
+
+        <!-- filter status utk PPh -->
+        <div v-if="modelKey === 'pph'" class="flex flex-wrap gap-1 border-b border-gray-100 px-4 py-2">
+          <button
+            v-for="(label, s) in PPH_TABS" :key="s"
+            class="rounded-lg px-3 py-1 text-xs font-medium transition-colors"
+            :class="pphTab === s ? 'bg-[#2a78d6] text-white' : 'text-gray-600 hover:bg-gray-100'"
+            @click="pphTab = s"
+          >{{ label }}</button>
+        </div>
+
+        <div class="max-h-[26rem] overflow-auto">
+          <!-- Purnabakti -->
+          <table v-if="modelKey === 'purnabakti'" class="min-w-max divide-y divide-gray-100 text-sm">
+            <thead class="sticky top-0 z-10 bg-gray-50">
+              <tr>
+                <th class="hc-th">Nama</th><th class="hc-th">Unit</th><th class="hc-th">Tgl Lahir</th>
+                <th class="hc-th">TMT / Join</th>
+                <th class="hc-th text-right">THP /bln</th><th class="hc-th text-right">Thn Pensiun</th>
+                <th class="hc-th text-right">Sisa (thn)</th><th class="hc-th text-right">Est. Gaji Terakhir</th>
+                <th class="hc-th text-right">Masa Kerja</th><th class="hc-th text-right">Pesangon</th>
+                <th class="hc-th text-right">UPMK</th><th class="hc-th text-right">Grand Total</th>
+                <th class="hc-th border-l border-gray-200 text-right">Biaya /thn</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              <tr v-for="r in modelData.rows" :key="r.id" class="hover:bg-gray-50/50">
+                <td class="hc-td text-gray-800">{{ r.name }}</td>
+                <td class="hc-td text-xs text-gray-500">{{ r.unit ?? '–' }}</td>
+                <td class="hc-td text-xs tabular-nums text-gray-500">{{ r.birth_date }}</td>
+                <td class="hc-td text-xs tabular-nums text-gray-500">{{ r.join_date ?? '–' }}</td>
+                <td class="hc-td text-right tabular-nums">{{ fmtNum(r.thp) }}</td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ r.pensiun_year }}</td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ r.sisa }}</td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ fmtNum(r.est_gaji_terakhir) }}</td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ r.masa_kerja }} ({{ r.upmk_bulan }} bln)</td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ fmtNum(r.pesangon) }}</td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ fmtNum(r.upmk) }}</td>
+                <td class="hc-td text-right tabular-nums">{{ fmtNum(r.grand_total) }}</td>
+                <td class="hc-td border-l border-gray-200 text-right font-medium tabular-nums">{{ fmtNum(r.biaya_tahunan) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="border-t-2 border-gray-200 bg-gray-50/80">
+              <tr>
+                <td class="hc-td font-bold" colspan="9">Grand Total ({{ modelData.rows.length }} pegawai)</td>
+                <td class="hc-td text-right font-semibold tabular-nums">{{ fmtNum(sumBy(modelData.rows, 'pesangon')) }}</td>
+                <td class="hc-td text-right font-semibold tabular-nums">{{ fmtNum(sumBy(modelData.rows, 'upmk')) }}</td>
+                <td class="hc-td text-right font-semibold tabular-nums">{{ fmtNum(sumBy(modelData.rows, 'grand_total')) }}</td>
+                <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(sumBy(modelData.rows, 'biaya_tahunan')) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- Tunjangan Cuti -->
+          <table v-else-if="modelKey === 'cuti'" class="min-w-full divide-y divide-gray-100 text-sm">
+            <thead class="sticky top-0 z-10 bg-gray-50">
+              <tr>
+                <th class="hc-th">Nama</th><th class="hc-th">Unit</th>
+                <th class="hc-th">Bulan</th><th class="hc-th">Hak Cuti</th>
+                <th class="hc-th text-right">THP /bln</th>
+                <th class="hc-th border-l border-gray-200 text-right">Nominal</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              <tr v-for="r in modelData.rows" :key="r.id" class="hover:bg-gray-50/50">
+                <td class="hc-td text-gray-800">{{ r.name }}</td>
+                <td class="hc-td text-xs text-gray-500">{{ r.unit ?? '–' }}</td>
+                <td class="hc-td text-xs text-gray-600">{{ BULAN[r.bulan - 1] }}</td>
+                <td class="hc-td">
+                  <span class="rounded px-1.5 py-0.5 text-[10px] font-semibold" :class="r.hak === '3thn' ? 'bg-violet-50 text-violet-700' : 'bg-blue-50 text-blue-700'">
+                    {{ r.hak === '3thn' ? '3 THN (×2)' : 'THN (×1)' }}
+                  </span>
+                </td>
+                <td class="hc-td text-right tabular-nums">{{ fmtNum(r.thp) }}</td>
+                <td class="hc-td border-l border-gray-200 text-right font-medium tabular-nums">{{ fmtNum(r.nominal) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="border-t-2 border-gray-200 bg-gray-50/80">
+              <tr>
+                <td class="hc-td font-bold" colspan="5">Grand Total ({{ modelData.rows.length }} pegawai)</td>
+                <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(sumBy(modelData.rows, 'nominal')) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+
+          <!-- PPh 21 TER -->
+          <table v-else class="min-w-full divide-y divide-gray-100 text-sm">
+            <thead class="sticky top-0 z-10 bg-gray-50">
+              <tr>
+                <th class="hc-th">Nama</th><th class="hc-th">Unit</th><th class="hc-th">Status</th>
+                <th class="hc-th">PTKP</th><th class="hc-th">Kategori TER</th>
+                <th class="hc-th text-right">PPh /bln (rata²)</th>
+                <th class="hc-th border-l border-gray-200 text-right">PPh /thn</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-gray-50">
+              <tr v-for="r in pphRows" :key="r.id" class="hover:bg-gray-50/50">
+                <td class="hc-td text-gray-800">{{ r.name }}</td>
+                <td class="hc-td text-xs text-gray-500">{{ r.unit ?? '–' }}</td>
+                <td class="hc-td text-xs capitalize text-gray-600">{{ r.status }}</td>
+                <td class="px-3 py-1">
+                  <select
+                    :value="r.ptkp" :disabled="savingPtkp === r.id"
+                    class="hc-select w-24 py-1 font-mono text-xs disabled:opacity-50"
+                    title="Ubah status PTKP — PPh 21 dihitung ulang otomatis"
+                    @change="updatePtkp(r, $event.target.value)"
+                  >
+                    <option v-for="p in PTKP_OPTIONS" :key="p" :value="p">{{ p }}</option>
+                  </select>
+                </td>
+                <td class="hc-td"><span class="rounded bg-gray-100 px-1.5 py-0.5 text-[10px] font-semibold text-gray-600">TER {{ r.kategori }}</span></td>
+                <td class="hc-td text-right tabular-nums text-gray-600">{{ fmtNum(r.total / 12) }}</td>
+                <td class="hc-td border-l border-gray-200 text-right font-medium tabular-nums">{{ fmtNum(r.total) }}</td>
+              </tr>
+            </tbody>
+            <tfoot class="border-t-2 border-gray-200 bg-gray-50/80">
+              <tr>
+                <td class="hc-td font-bold" colspan="5">Grand Total ({{ pphRows.length }} pegawai)</td>
+                <td class="hc-td text-right font-semibold tabular-nums">{{ fmtNum(sumBy(pphRows, 'total') / 12) }}</td>
+                <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(sumBy(pphRows, 'total')) }}</td>
+              </tr>
+            </tfoot>
+          </table>
+        </div>
+
+        <!-- rekap per unit → nilai Input Nominal -->
+        <div class="border-t border-gray-100 px-4 py-3">
+          <h3 class="mb-2 text-xs font-semibold uppercase tracking-wide text-gray-500">
+            Grand Total per Unit — nilai komponen terkait di Input Nominal
+          </h3>
+          <div class="overflow-x-auto">
+            <table class="min-w-max divide-y divide-gray-100 text-xs">
+              <thead class="bg-gray-50/60">
+                <tr>
+                  <th class="hc-th">Unit</th>
+                  <th v-for="b in BULAN" :key="b" class="hc-th text-right">{{ b }}</th>
+                  <th class="hc-th border-l border-gray-200 text-right">Total /thn</th>
+                </tr>
+              </thead>
+              <tbody class="divide-y divide-gray-50">
+                <tr v-for="u in modelData.units" :key="u.code">
+                  <td class="hc-td font-medium text-gray-700">{{ u.code }}</td>
+                  <td v-for="(v, i) in u.months" :key="i" class="hc-td text-right tabular-nums text-gray-600">{{ v ? fmtNum(v) : '–' }}</td>
+                  <td class="hc-td border-l border-gray-200 text-right font-semibold tabular-nums">{{ fmtNum(u.total) }}</td>
+                </tr>
+              </tbody>
+              <tfoot class="border-t-2 border-gray-200 bg-gray-50/80">
+                <tr>
+                  <td class="hc-td font-bold">Grand Total</td>
+                  <td v-for="(b, i) in BULAN" :key="i" class="hc-td text-right font-semibold tabular-nums">
+                    {{ fmtNum(modelData.units.reduce((s, u) => s + (u.months[i] || 0), 0)) }}
+                  </td>
+                  <td class="hc-td border-l border-gray-200 text-right font-bold tabular-nums">{{ fmtNum(sumBy(modelData.units, 'total')) }}</td>
+                </tr>
+              </tfoot>
+            </table>
+          </div>
+        </div>
+      </div>
+
       <!-- panel input -->
-      <div v-if="selected" class="hc-card overflow-hidden">
+      <div v-else-if="selected" class="hc-card overflow-hidden">
         <div class="flex flex-wrap items-center justify-between gap-3 border-b border-gray-100 px-4 py-3">
           <div>
             <h2 class="flex items-center gap-2 text-sm font-semibold text-gray-900">
@@ -47,7 +246,7 @@
             <p class="mt-0.5 text-xs text-gray-500">
               <template v-if="selected.employee_source">
                 <UsersIcon class="inline h-3.5 w-3.5 text-emerald-600" />
-                Nilai <b>otomatis</b> = grand total {{ selected.name }} seluruh pegawai per unit.
+                Nilai <b>otomatis</b> — {{ selected.derived_note ?? `grand total ${selected.name} seluruh pegawai per unit` }}.
                 Ubah melalui menu
                 <Link :href="route('hc.pegawai', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Pegawai &amp; Biaya</Link>.
               </template>
@@ -149,8 +348,8 @@ import { computed, reactive, ref, watch } from 'vue'
 import { Link, router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import {
-  ArrowDownTrayIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, CheckIcon,
-  LockClosedIcon, PlusIcon, TrashIcon, UsersIcon,
+  ArrowDownTrayIcon, ArrowsRightLeftIcon, ArrowUpTrayIcon, CalculatorIcon,
+  CheckIcon, LockClosedIcon, PlusIcon, TrashIcon, UsersIcon,
 } from '@heroicons/vue/24/outline'
 import HcLayout from '@/Layouts/HcLayout.vue'
 import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
@@ -160,6 +359,9 @@ const props = defineProps({
   tahun: Object,
   years: Array,
   tree: Array,
+  models: Array,
+  modelKey: String,
+  modelData: Object,
   selected: Object,
   rows: Array,
   options: Object,
@@ -167,6 +369,34 @@ const props = defineProps({
 })
 
 const { fmtNum } = useHcFormat()
+
+// ── submenu model perhitungan ─────────────────────────────────────────────
+const activeModel = computed(() => (props.models ?? []).find(m => m.key === props.modelKey))
+
+function pickModel(m) {
+  router.get(route('hc.nominal'), { tahun: props.tahun.year, model: m.key }, { preserveScroll: true })
+}
+
+const sumBy = (list, key) => (list ?? []).reduce((sum, item) => sum + (item[key] || 0), 0)
+
+const PPH_TABS = { semua: 'Semua', tetap: 'Tetap', kontrak: 'Kontrak', honor: 'Honor / DKA' }
+const pphTab = ref('semua')
+const pphRows = computed(() => {
+  const rows = props.modelData?.rows ?? []
+  return pphTab.value === 'semua' ? rows : rows.filter(r => r.status === pphTab.value)
+})
+
+// PTKP bisa diubah langsung dari tabel PPh — PPh dihitung ulang di server
+const PTKP_OPTIONS = ['TK/0', 'TK/1', 'TK/2', 'TK/3', 'K/0', 'K/1', 'K/2', 'K/3']
+const savingPtkp = ref(null)
+function updatePtkp(row, value) {
+  if (value === row.ptkp) return
+  savingPtkp.value = row.id
+  router.put(route('hc.nominal.ptkp', row.id), { ptkp_status: value }, {
+    preserveScroll: true,
+    onFinish: () => { savingPtkp.value = null },
+  })
+}
 const fmtCell = (v) => (v === null || v === undefined || v === '' || Math.abs(v) < 0.005) ? '–' : fmtNum(v)
 const statusList = (s) => s ? s.split(',').filter(Boolean) : []
 

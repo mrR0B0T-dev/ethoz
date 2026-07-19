@@ -1,0 +1,3402 @@
+{
+ "birth": [
+  {
+   "unit": "BMG-GM",
+   "date": "1976-01-21",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1978-05-28",
+   "join": "2007-02-12"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1985-12-12",
+   "join": "2019-03-11"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1995-02-25",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1971-03-31",
+   "join": "1992-04-07"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1972-06-08",
+   "join": "2018-03-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1992-10-23",
+   "join": "2016-02-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1973-06-19",
+   "join": "1992-11-02"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1984-01-16",
+   "join": "2012-09-12"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1982-04-09",
+   "join": "2016-03-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1981-08-07",
+   "join": "2016-03-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1974-12-27",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1995-09-08",
+   "join": "2019-03-14"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1986-10-29",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1991-06-05",
+   "join": "2016-08-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1985-06-26",
+   "join": "2014-05-30"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1994-10-29",
+   "join": "2019-03-01"
+  },
+  {
+   "unit": "BMG-GM",
+   "date": "1973-09-01",
+   "join": "2017-03-01"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1978-02-21",
+   "join": "2015-01-03"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1980-04-15",
+   "join": "2015-01-03"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1989-01-26",
+   "join": "2016-07-18"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1993-03-06",
+   "join": "2016-01-08"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1990-10-14",
+   "join": "2016-08-15"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1987-08-05",
+   "join": "2016-01-08"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1996-11-10",
+   "join": "2016-09-01"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1985-07-13",
+   "join": "2016-08-15"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1986-07-25",
+   "join": "2019-06-03"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1980-05-12",
+   "join": "2019-09-14"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1993-09-17",
+   "join": "2020-03-01"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1975-06-05",
+   "join": "2022-06-15"
+  },
+  {
+   "unit": "BMG-MM",
+   "date": "1994-05-25",
+   "join": "2017-02-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1971-06-14",
+   "join": "1997-11-03"
+  },
+  {
+   "unit": "PMG",
+   "date": "1992-05-30",
+   "join": "2017-01-03"
+  },
+  {
+   "unit": "PMG",
+   "date": "1989-05-17",
+   "join": "2019-11-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1978-02-05",
+   "join": "2017-02-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1984-03-26",
+   "join": "2015-03-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1984-09-09",
+   "join": "2015-03-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1975-02-28",
+   "join": "2015-12-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1987-11-20",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1992-04-03",
+   "join": "2018-01-29"
+  },
+  {
+   "unit": "PMG",
+   "date": "1987-11-27",
+   "join": "2018-03-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1981-11-26",
+   "join": "2019-11-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1993-09-13",
+   "join": "2020-02-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1991-05-23",
+   "join": "2020-01-02"
+  },
+  {
+   "unit": "PMG",
+   "date": "1995-08-08",
+   "join": "2019-08-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1993-09-03",
+   "join": "2019-08-01"
+  },
+  {
+   "unit": "PMG",
+   "date": "1985-11-28",
+   "join": "2020-01-02"
+  },
+  {
+   "unit": "BCN",
+   "date": "1974-06-08",
+   "join": "2010-01-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1988-08-26",
+   "join": "2009-10-22"
+  },
+  {
+   "unit": "BCN",
+   "date": "1986-12-30",
+   "join": "2013-05-10"
+  },
+  {
+   "unit": "BCN",
+   "date": "1985-08-30",
+   "join": "2014-02-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1979-05-02",
+   "join": "2013-06-03"
+  },
+  {
+   "unit": "BCN",
+   "date": "1987-05-09",
+   "join": "2011-05-03"
+  },
+  {
+   "unit": "BCN",
+   "date": "1994-02-27",
+   "join": "2019-01-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1979-08-12",
+   "join": "2012-01-04"
+  },
+  {
+   "unit": "BCN",
+   "date": "1983-08-12",
+   "join": "2013-09-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1993-03-20",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1996-03-15",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1997-03-30",
+   "join": "2012-11-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1983-07-10",
+   "join": "2015-03-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1982-05-13",
+   "join": "2016-03-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1993-03-11",
+   "join": "2018-07-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1995-10-05",
+   "join": "2021-07-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1980-02-26",
+   "join": "2013-09-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1984-01-15",
+   "join": "2022-04-01"
+  },
+  {
+   "unit": "BCN",
+   "date": "1998-06-28",
+   "join": "2018-07-02"
+  },
+  {
+   "unit": "OSM",
+   "date": "1995-02-17",
+   "join": "2017-05-22"
+  },
+  {
+   "unit": "OSM",
+   "date": "1981-12-12",
+   "join": "2015-04-01"
+  },
+  {
+   "unit": "OSM",
+   "date": "1989-11-04",
+   "join": "2016-08-01"
+  },
+  {
+   "unit": "OSM",
+   "date": "1970-10-21",
+   "join": "2016-09-01"
+  },
+  {
+   "unit": "OSM",
+   "date": "1991-09-09",
+   "join": "2016-07-19"
+  },
+  {
+   "unit": "OSM",
+   "date": "1992-02-28",
+   "join": "2017-09-04"
+  },
+  {
+   "unit": "OSM",
+   "date": "1989-05-26",
+   "join": "2017-01-09"
+  },
+  {
+   "unit": "OSM",
+   "date": "1995-03-20",
+   "join": "2019-10-01"
+  },
+  {
+   "unit": "OSM",
+   "date": "1994-03-19",
+   "join": "2016-09-01"
+  },
+  {
+   "unit": "OSM",
+   "date": "1998-08-31",
+   "join": "2020-02-01"
+  },
+  {
+   "unit": "OSM",
+   "date": "1991-11-20",
+   "join": "2021-03-01"
+  },
+  {
+   "unit": "SMG",
+   "date": "1973-03-02",
+   "join": "2016-09-15"
+  },
+  {
+   "unit": "SMG",
+   "date": "1987-05-30",
+   "join": "2013-03-01"
+  },
+  {
+   "unit": "SMG",
+   "date": "1992-07-15",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "SMG",
+   "date": "1992-10-05",
+   "join": "2017-01-03"
+  },
+  {
+   "unit": "SMG",
+   "date": "1986-10-05",
+   "join": "2020-01-16"
+  },
+  {
+   "unit": "SMG",
+   "date": "1984-11-30",
+   "join": "2020-08-13"
+  },
+  {
+   "unit": "SMG",
+   "date": "1995-05-03",
+   "join": "2016-08-15"
+  },
+  {
+   "unit": "SMG",
+   "date": "1995-02-23",
+   "join": "2021-06-01"
+  },
+  {
+   "unit": "SMG",
+   "date": "1989-01-28",
+   "join": "2012-11-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1981-11-14",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1973-10-26",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1977-03-17",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1986-11-09",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1973-02-28",
+   "join": "2014-04-21"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1996-03-17",
+   "join": "2020-03-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1991-08-27",
+   "join": "2020-01-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1996-11-19",
+   "join": "2021-07-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1989-10-13",
+   "join": "2022-01-01"
+  },
+  {
+   "unit": "CABANG",
+   "date": "1994-12-25",
+   "join": "2019-04-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1982-09-29",
+   "join": "2009-01-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1986-06-01",
+   "join": "2009-12-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1991-03-09",
+   "join": "2016-03-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1981-08-10",
+   "join": "2014-02-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1978-04-12",
+   "join": "2016-03-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1991-06-10",
+   "join": "2017-02-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1986-03-27",
+   "join": "2017-08-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1983-12-23",
+   "join": "2008-09-15"
+  },
+  {
+   "unit": "HCS",
+   "date": "1976-04-07",
+   "join": "2017-02-03"
+  },
+  {
+   "unit": "HCS",
+   "date": "1986-07-15",
+   "join": "2016-01-09"
+  },
+  {
+   "unit": "HCS",
+   "date": "1989-01-16",
+   "join": "2017-10-23"
+  },
+  {
+   "unit": "HCS",
+   "date": "1995-07-07",
+   "join": "2017-12-27"
+  },
+  {
+   "unit": "HCS",
+   "date": "1990-10-13",
+   "join": "2016-08-15"
+  },
+  {
+   "unit": "HCS",
+   "date": "1988-11-01",
+   "join": "2019-04-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1994-11-25",
+   "join": "2018-02-12"
+  },
+  {
+   "unit": "HCS",
+   "date": "1992-09-16",
+   "join": "2017-02-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1994-03-03",
+   "join": "2016-01-09"
+  },
+  {
+   "unit": "HCS",
+   "date": "1973-12-18",
+   "join": "2013-05-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1985-02-17",
+   "join": "2016-01-08"
+  },
+  {
+   "unit": "HCS",
+   "date": "1985-07-25",
+   "join": "2016-08-15"
+  },
+  {
+   "unit": "HCS",
+   "date": "1992-03-26",
+   "join": "2020-08-03"
+  },
+  {
+   "unit": "HCS",
+   "date": "1996-09-17",
+   "join": "2019-04-04"
+  },
+  {
+   "unit": "HCS",
+   "date": "1988-09-08",
+   "join": "2020-08-18"
+  },
+  {
+   "unit": "HCS",
+   "date": "1985-01-30",
+   "join": "2019-07-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1989-05-18",
+   "join": "2020-03-01"
+  },
+  {
+   "unit": "HCS",
+   "date": "1986-10-16",
+   "join": "2020-09-09"
+  },
+  {
+   "unit": "FAC",
+   "date": "1992-04-11",
+   "join": "2017-01-01"
+  },
+  {
+   "unit": "FAC",
+   "date": "1990-09-19",
+   "join": "2015-03-01"
+  },
+  {
+   "unit": "FAC",
+   "date": "1985-04-24",
+   "join": "2017-01-02"
+  },
+  {
+   "unit": "FAC",
+   "date": "1995-04-05",
+   "join": "2018-03-01"
+  },
+  {
+   "unit": "FAC",
+   "date": "1995-09-27",
+   "join": "2017-09-26"
+  },
+  {
+   "unit": "FAC",
+   "date": "1988-12-27",
+   "join": "2016-10-03"
+  },
+  {
+   "unit": "FAC",
+   "date": "1992-08-23",
+   "join": "2015-07-01"
+  },
+  {
+   "unit": "FAC",
+   "date": "1991-03-05",
+   "join": "2020-08-01"
+  },
+  {
+   "unit": "FAC",
+   "date": "1995-10-01",
+   "join": "2019-10-14"
+  },
+  {
+   "unit": "FAC",
+   "date": "1995-11-19",
+   "join": "2018-07-02"
+  },
+  {
+   "unit": "FAC",
+   "date": "1997-05-25",
+   "join": "2019-12-01"
+  },
+  {
+   "unit": "DSP",
+   "date": "1986-05-31",
+   "join": "2009-11-11"
+  },
+  {
+   "unit": "DSP",
+   "date": "1989-04-17",
+   "join": "2021-07-01"
+  },
+  {
+   "unit": "DSP",
+   "date": "1991-04-10",
+   "join": "2018-09-01"
+  },
+  {
+   "unit": "DSP",
+   "date": "1991-05-08",
+   "join": "2016-01-09"
+  },
+  {
+   "unit": "DSP",
+   "date": "1995-06-18",
+   "join": "2018-03-12"
+  },
+  {
+   "unit": "DSP",
+   "date": "1992-03-15",
+   "join": "2016-09-01"
+  },
+  {
+   "unit": "BAC",
+   "date": "1989-07-20",
+   "join": "2017-01-01"
+  },
+  {
+   "unit": "BAC",
+   "date": "1994-02-13",
+   "join": "2018-07-01"
+  },
+  {
+   "unit": "BAC",
+   "date": "1989-01-30",
+   "join": "2020-11-02"
+  }
+ ],
+ "cuti": [
+  {
+   "unit": "BMG-GM",
+   "month": 10,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 1,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 6,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 1,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 11,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 4,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 11,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 5,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 7,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-GM",
+   "month": 5,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 10,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 10,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 5,
+   "ent": "thn"
+  },
+  {
+   "unit": "BMG-MM",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 11,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 12,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 11,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 2,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 3,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 4,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 8,
+   "ent": "3thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "PMG",
+   "month": 7,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 8,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 5,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 7,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 4,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BCN",
+   "month": 7,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 12,
+   "ent": "3thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 2,
+   "ent": "3thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 5,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 3,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 4,
+   "ent": "3thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 2,
+   "ent": "3thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 7,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 10,
+   "ent": "3thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 3,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 3,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 1,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 9,
+   "ent": "3thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "SMG",
+   "month": 5,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 8,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 8,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 5,
+   "ent": "thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 7,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 7,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 10,
+   "ent": "3thn"
+  },
+  {
+   "unit": "CABANG",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 1,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 1,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 8,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 10,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 10,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 1,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 1,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 10,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 3,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 9,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 5,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 4,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 12,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 12,
+   "ent": "thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "HCS",
+   "month": 9,
+   "ent": "3thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 1,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 10,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 1,
+   "ent": "3thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 2,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 7,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 5,
+   "ent": "3thn"
+  },
+  {
+   "unit": "DSP",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "DSP",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "DSP",
+   "month": 3,
+   "ent": "thn"
+  },
+  {
+   "unit": "DSP",
+   "month": 1,
+   "ent": "3thn"
+  },
+  {
+   "unit": "DSP",
+   "month": 3,
+   "ent": "3thn"
+  },
+  {
+   "unit": "DSP",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BAC",
+   "month": 10,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BAC",
+   "month": 6,
+   "ent": "3thn"
+  },
+  {
+   "unit": "BAC",
+   "month": 11,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 10,
+   "ent": "thn"
+  },
+  {
+   "unit": "IAT",
+   "month": 4,
+   "ent": "thn"
+  },
+  {
+   "unit": "BAC",
+   "month": 6,
+   "ent": "thn"
+  },
+  {
+   "unit": "FAC",
+   "month": 7,
+   "ent": "thn"
+  },
+  {
+   "unit": "OSM",
+   "month": 1,
+   "ent": "thn"
+  },
+  {
+   "unit": "BOD",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BOD",
+   "month": 8,
+   "ent": "thn"
+  },
+  {
+   "unit": "BOD",
+   "month": 8,
+   "ent": "thn"
+  }
+ ],
+ "ptkp": {
+  "tetap": [
+   {
+    "unit": "HCS",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/3"
+   }
+  ],
+  "kontrak": [
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BOD",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "IAT",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BOD",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/3"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BOD",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BOD",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BOD",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/3"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   }
+  ],
+  "honor": [
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "IAT",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/2"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "K/3"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "K/0"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "K/1"
+   },
+   {
+    "unit": "CABANG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-GM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BMG-MM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "PMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BCN",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "OSM",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "SMG",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "DSP",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "HCS",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "FAC",
+    "ptkp": "TK/0"
+   },
+   {
+    "unit": "BAC",
+    "ptkp": "TK/0"
+   }
+  ]
+ }
+}

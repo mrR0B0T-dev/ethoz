@@ -120,8 +120,17 @@
           </thead>
           <tbody class="divide-y divide-gray-50">
             <template v-for="(group, category) in groupedRows" :key="category">
+              <!-- baris kategori sekaligus subtotal kelompoknya -->
               <tr class="bg-blue-50/40">
-                <td :colspan="canEdit ? 6 : 5" class="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[#1c5cab]">{{ category }}</td>
+                <td v-if="canEdit" />
+                <td colspan="2" class="px-3 py-1.5 text-xs font-semibold uppercase tracking-wide text-[#1c5cab]">{{ category }}</td>
+                <td class="px-3 py-1.5 text-right text-xs font-semibold tabular-nums text-[#1c5cab]">{{ fmtNum(subtotalOf(group).rkap) }}</td>
+                <td class="px-3 py-1.5 text-right text-xs font-semibold tabular-nums text-[#1c5cab]">
+                  {{ subtotalOf(group).realisasi ? fmtNum(subtotalOf(group).realisasi) : '–' }}
+                </td>
+                <td class="px-3 py-1.5 text-right text-xs font-semibold tabular-nums" :class="subtotalOf(group).pct > 100 ? 'text-red-600' : 'text-[#1c5cab]'">
+                  {{ subtotalOf(group).pct !== null ? fmtPct(subtotalOf(group).pct) : '–' }}
+                </td>
               </tr>
               <tr v-for="row in group" :key="rowKey(row)" class="hover:bg-gray-50/50" :class="selected.has(rowKey(row)) ? 'bg-red-50/40' : ''">
                 <td v-if="canEdit" class="px-3 py-1 text-center">
@@ -144,8 +153,22 @@
                 </td>
                 <td class="hc-td text-right text-xs tabular-nums" :class="pctClass(row)">{{ pctOf(row) }}</td>
               </tr>
+
             </template>
           </tbody>
+          <tfoot v-if="rows.length" class="border-t-2 border-gray-300 bg-gray-100/80">
+            <tr>
+              <td v-if="canEdit" />
+              <td class="hc-td text-sm font-bold text-gray-900" colspan="2">Grand Total — {{ BULAN_PANJANG[bulan - 1] }} {{ tahun.year }}</td>
+              <td class="hc-td text-right text-sm font-bold tabular-nums text-gray-900">{{ fmtNum(grandTotal.rkap) }}</td>
+              <td class="hc-td text-right text-sm font-bold tabular-nums text-gray-900">
+                {{ grandTotal.realisasi ? fmtNum(grandTotal.realisasi) : '–' }}
+              </td>
+              <td class="hc-td text-right text-sm font-bold tabular-nums" :class="grandTotal.pct > 100 ? 'text-red-600' : 'text-gray-800'">
+                {{ grandTotal.pct !== null ? fmtPct(grandTotal.pct) : '–' }}
+              </td>
+            </tr>
+          </tfoot>
         </table>
         <p v-if="!rows.length" class="p-8 text-center text-sm text-gray-400">Tidak ada anggaran RKAP pada bulan ini.</p>
       </div>
@@ -231,6 +254,18 @@ const groupedRows = computed(() => {
   props.rows.forEach(r => { (out[r.category] ??= []).push(r) })
   return out
 })
+
+// subtotal RKAP & realisasi (mengikuti nilai input berjalan) per kelompok baris
+function subtotalOf(group) {
+  const rkap = group.reduce((sum, r) => sum + (r.rkap || 0), 0)
+  const realisasi = group.reduce((sum, r) => {
+    const v = parseFloat(inputs.value[rowKey(r)])
+    return sum + (Number.isNaN(v) ? 0 : v)
+  }, 0)
+  return { rkap, realisasi, pct: rkap > 0 && realisasi ? realisasi / rkap * 100 : null }
+}
+
+const grandTotal = computed(() => subtotalOf(props.rows))
 
 function pickMonth(m) {
   router.get(route('hc.realisasi'), { tahun: props.tahun.year, bulan: m }, { preserveScroll: true })

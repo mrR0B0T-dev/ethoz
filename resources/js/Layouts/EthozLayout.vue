@@ -14,6 +14,16 @@
           </span>
         </Link>
 
+        <!-- tombol kembali ke portal (tampil saat berada di dalam modul) -->
+        <Link
+          v-if="!isPortalHome"
+          :href="route('ethoz.home')"
+          class="ml-1 flex items-center gap-1.5 rounded-lg border border-gray-200 px-2.5 py-1.5 text-xs font-medium text-gray-600 transition-colors hover:border-blue-200 hover:bg-blue-50 hover:text-[#1c5cab]"
+        >
+          <ArrowUturnLeftIcon class="h-3.5 w-3.5" />
+          <span class="hidden sm:inline">Kembali ke Portal</span>
+        </Link>
+
         <div class="ml-auto flex items-center gap-3">
           <template v-if="user">
             <div class="hidden text-right sm:block">
@@ -49,14 +59,18 @@ import { computed, watch } from 'vue'
 import { Head, Link, router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
-import { ArrowRightEndOnRectangleIcon, ArrowRightStartOnRectangleIcon } from '@heroicons/vue/24/outline'
+import {
+  ArrowRightEndOnRectangleIcon, ArrowRightStartOnRectangleIcon, ArrowUturnLeftIcon,
+} from '@heroicons/vue/24/outline'
 
 defineProps({ title: { type: String, default: 'Portal' } })
 
 const page = usePage()
 const user = computed(() => page.props.auth?.user)
+// halaman landing portal sendiri tidak perlu tombol "kembali ke portal"
+const isPortalHome = computed(() => page.url.split('?')[0].replace(/\/$/, '') === '/ethoz')
 const appName = computed(() => page.props.app?.name ?? 'Ethoz')
-const appTagline = computed(() => page.props.app?.tagline ?? 'Human Capital Information System')
+const appTagline = computed(() => page.props.app?.tagline ?? 'Grow with Ethoz')
 
 function logout() {
   router.post(route('logout'))

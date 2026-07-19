@@ -22,7 +22,7 @@ class EmployeeSpreadsheet
 
     /** Header kolom data (baris 1). */
     private const HEADERS = [
-        'Nama', 'Jabatan', 'Unit (kode)', 'Status', 'Gaji Dasar /bln',
+        'Nama', 'Jabatan', 'Unit (kode)', 'Status', 'Gaji Pokok /bln',
         'Tunj. Jabatan /bln', 'Tunj. Transport /bln', 'TMT (YYYY-MM-DD)', 'Catatan',
     ];
 
@@ -73,10 +73,10 @@ class EmployeeSpreadsheet
         $lastJabatanRow = max(2, $jabatanList->count() + 1);
         $ref->getColumnDimension('F')->setWidth(22);
 
-        // struktur grade & skala upah: acuan Gaji Dasar (min–max) dan tarif tunjangan
+        // struktur grade & skala upah: acuan Gaji Pokok (min–max) dan tarif tunjangan
         $gradeHeaders = [
             'H' => 'Grade', 'I' => 'Level', 'J' => 'Jabatan',
-            'K' => 'Gaji Dasar Min', 'L' => 'Gaji Dasar Mid', 'M' => 'Gaji Dasar Max',
+            'K' => 'Gaji Pokok Min', 'L' => 'Gaji Pokok Mid', 'M' => 'Gaji Pokok Max',
             'N' => 'Tunj. Jabatan /bln', 'O' => 'Tunj. Transport /bln',
         ];
         foreach ($gradeHeaders as $col => $label) {
@@ -109,7 +109,7 @@ class EmployeeSpreadsheet
         $notes = [
             'PETUNJUK PENGISIAN:',
             '• Jabatan, Unit & Status: pilih dari dropdown (daftar pada sheet ini).',
-            '• Gaji Dasar: isi sesuai rentang skala upah grade pegawai (kolom Gaji Dasar Min–Max).',
+            '• Gaji Pokok: isi sesuai rentang skala upah grade pegawai (kolom Gaji Pokok Min–Max).',
             '• Tunj. Jabatan & Tunj. Transport: mengikuti tarif grade pada tabel di atas.',
             '• TMT: format YYYY-MM-DD (mis. 2026-01-15). Catatan: opsional.',
             '• Grade pegawai ditentukan otomatis oleh sistem dari gaji & tunjangan yang diisi.',
@@ -220,7 +220,7 @@ class EmployeeSpreadsheet
             }
 
             if ($base === null || $base < 0) {
-                $errors[] = "Baris {$row} ({$name}): Gaji Dasar tidak valid, dilewati.";
+                $errors[] = "Baris {$row} ({$name}): Gaji Pokok tidak valid, dilewati.";
                 continue;
             }
 

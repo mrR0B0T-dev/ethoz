@@ -1,8 +1,8 @@
 <template>
-  <EthozLayout title="Administrasi">
+  <EthozLayout title="Akses Ethoz">
     <div class="mb-5 flex flex-wrap items-center gap-3">
       <div>
-        <h1 class="text-xl font-bold text-gray-900">Administrasi Ethoz</h1>
+        <h1 class="text-xl font-bold text-gray-900">Akses Ethoz</h1>
         <p class="text-sm text-gray-500">Kelola pengguna, peran, dan hak akses modul ekosistem.</p>
       </div>
       <div class="ml-auto flex items-center gap-2">
@@ -40,7 +40,7 @@
           <tr v-for="u in users" :key="u.id" class="hover:bg-gray-50/50">
             <td class="hc-td font-medium text-gray-900">
               {{ u.name }}
-              <span v-if="u.id === me?.id" class="ml-1 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-[#1c5cab]">Anda</span>
+              <span v-if="u.id === me?.id" class="ml-1 rounded bg-blue-50 px-1.5 py-0.5 text-[10px] font-semibold text-[#1c5cab]">Kamu</span>
             </td>
             <td class="hc-td text-gray-600">{{ u.email }}</td>
             <td class="hc-td">
