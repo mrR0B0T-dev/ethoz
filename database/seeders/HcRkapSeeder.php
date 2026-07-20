@@ -77,11 +77,15 @@ class HcRkapSeeder extends Seeder
             'TUNJ.BONUS' => 'bonus',
             'TUNJ.KOMPENSASI' => 'kompensasi:kontrak',
             'TUNJ.KOMPENSASI_P3' => 'kompensasi:honor',
-            'TUNJ.PPH21' => 'pph21',
             'IURAN.JAMSOSTEK' => 'bpjs_tk',
             'IURAN.BPJSKES' => 'bpjs_kes',
             'HONOR.BULANAN' => 'thp:kontrak',
             'HONOR.PIHAK3' => 'thp:honor',
+            // komponen bersumber model perhitungan (submenu Input Nominal) —
+            // nilai per unit per bulan mengikuti hasil model, terkunci
+            'LAIN.PURNABAKTI' => 'model:purnabakti',
+            'TUNJ.CUTI' => 'model:cuti',
+            'TUNJ.PPH21' => 'model:pph',
         ];
 
         // jenis biaya turunan → keterangan yang tampil pada komponen terkunci
@@ -94,7 +98,9 @@ class HcRkapSeeder extends Seeder
             'GAJI.CABANG' => 'Nilai Biaya Gaji Cabang terkunci mengikuti kebijakan biaya personil dan tidak diinput manual di menu Input Nominal.',
             'TUNJ.THR' => 'Total THR seluruh pegawai per unit (asumsi bulan THR × THP) — dikelola di menu Pegawai & Biaya',
             'TUNJ.BONUS' => 'Total Bonus seluruh pegawai per unit (asumsi bulan bonus × THP) — dikelola di menu Pegawai & Biaya',
-            'TUNJ.PPH21' => 'Total PPh 21 seluruh pegawai per unit (tarif × THP) — dikelola di menu Pegawai & Biaya',
+            'TUNJ.PPH21' => 'Total PPh 21 per unit — tarif efektif rata-rata (TER) × penghasilan bruto bulanan seluruh pegawai',
+            'TUNJ.CUTI' => 'Total Tunjangan Cuti per unit — THP × hak cuti (3 THN = ×2, THN = ×1) pada bulan cuti masing-masing pegawai',
+            'LAIN.PURNABAKTI' => 'Total Biaya Purnabakti per unit — model pesangon+UPMK (submenu Input Nominal), amortisasi sisa masa kerja',
             'TUNJ.KOMPENSASI' => 'Total Kompensasi pegawai kontrak per unit — dikelola di menu Pegawai & Biaya',
             'TUNJ.KOMPENSASI_P3' => 'Total Kompensasi pegawai honor/outsource per unit — dikelola di menu Pegawai & Biaya',
             'HONOR.BULANAN' => 'Total THP /bln (gaji pokok + tunjangan) pegawai kontrak per unit — dikelola di menu Pegawai & Biaya',
