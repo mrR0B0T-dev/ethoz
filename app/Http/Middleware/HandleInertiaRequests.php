@@ -32,6 +32,9 @@ class HandleInertiaRequests extends Middleware
                 // key modul yang boleh diakses — navigasi lintas modul di
                 // frontend hanya menampilkan modul yang diizinkan (RBAC)
                 'modules' => $request->user()?->moduleKeys() ?? [],
+                // menu khusus Super Admin (mis. log aktivitas) hanya muncul
+                // bila peran ini dipegang
+                'isSuperAdmin' => $request->user()?->isSuperAdmin() ?? false,
             ],
             'flash' => [
                 'success' => $request->session()->get('success'),

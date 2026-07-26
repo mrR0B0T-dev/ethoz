@@ -58,19 +58,19 @@
           </h2>
           <p class="mt-0.5 text-xs leading-relaxed text-gray-500">
             <template v-if="modelKey === 'purnabakti'">
-              Model pesangon + UPMK: estimasi gaji terakhir = THP × (1 + {{ modelData.meta.growth }}% per tahun)^sisa masa kerja,
+              Model pesangon + UPMK: estimasi gaji terakhir = Jumlah Gaji × (1 + {{ modelData.meta.growth }}% per tahun)^sisa masa kerja,
               usia pensiun {{ modelData.meta.usia_pensiun }} th, pesangon {{ modelData.meta.pesangon_bulan }}×, UPMK sesuai masa kerja;
               Biaya /thn = Grand Total ÷ sisa masa kerja. Grand total per unit menjadi nilai <b>Biaya Purnabakti</b> (terkunci).
               Tanggal lahir pegawai diatur di menu <Link :href="route('hc.pegawai', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Pegawai &amp; Biaya</Link>.
             </template>
             <template v-else-if="modelKey === 'cuti'">
-              Nominal = THP × hak cuti (<b>3 THN</b> = ×2, <b>THN</b> = ×1), dibukukan pada bulan cuti masing-masing pegawai.
+              Nominal = Jumlah Gaji × hak cuti (<b>3 THN</b> = ×2, <b>THN</b> = ×1), dibukukan pada bulan cuti masing-masing pegawai.
               Grand total per unit menjadi nilai <b>Biaya Tunjangan Cuti</b> (terkunci).
               Kriteria Bulan &amp; Hak Cuti diatur per pegawai di menu <Link :href="route('hc.pegawai', { tahun: tahun.year })" class="font-medium text-[#1c5cab] hover:underline">Pegawai &amp; Biaya</Link>.
             </template>
             <template v-else>
               PPh 21 = Tarif Efektif Rata-rata (TER, PP 58/2023) × penghasilan bruto bulanan
-              (gaji/THP + premi JKK+JKM+BPJS Kes + THR/12 + Bonus/12 + Kompensasi/12 + tunj. cuti pada bulannya);
+              (gaji/Jumlah Gaji + premi JKK+JKM+BPJS Kes + THR/12 + Bonus/12 + Kompensasi/12 + tunj. cuti pada bulannya);
               kategori TER mengikuti status PTKP pegawai. Grand total per unit menjadi nilai <b>Biaya Tunjangan Pajak PPh 21</b> (terkunci).
             </template>
           </p>
@@ -93,7 +93,7 @@
               <tr>
                 <th class="hc-th">Nama</th><th class="hc-th">Unit</th><th class="hc-th">Tgl Lahir</th>
                 <th class="hc-th">TMT / Join</th>
-                <th class="hc-th text-right">THP /bln</th><th class="hc-th text-right">Thn Pensiun</th>
+                <th class="hc-th text-right">Jumlah Gaji /bln</th><th class="hc-th text-right">Thn Pensiun</th>
                 <th class="hc-th text-right">Sisa (thn)</th><th class="hc-th text-right">Est. Gaji Terakhir</th>
                 <th class="hc-th text-right">Masa Kerja</th><th class="hc-th text-right">Pesangon</th>
                 <th class="hc-th text-right">UPMK</th><th class="hc-th text-right">Grand Total</th>
@@ -134,7 +134,7 @@
               <tr>
                 <th class="hc-th">Nama</th><th class="hc-th">Unit</th>
                 <th class="hc-th">Bulan</th><th class="hc-th">Hak Cuti</th>
-                <th class="hc-th text-right">THP /bln</th>
+                <th class="hc-th text-right">Jumlah Gaji /bln</th>
                 <th class="hc-th border-l border-gray-200 text-right">Nominal</th>
               </tr>
             </thead>

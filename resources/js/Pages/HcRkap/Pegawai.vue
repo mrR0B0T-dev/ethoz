@@ -363,8 +363,8 @@
             <span class="mb-1 block text-xs font-medium text-gray-600">Hak Cuti</span>
             <select v-model="form.cuti_entitlement" class="hc-select w-full">
               <option :value="null">–</option>
-              <option value="thn">THN — THP × 1</option>
-              <option value="3thn">3 THN — THP × 2</option>
+              <option value="thn">THN — Jumlah Gaji × 1</option>
+              <option value="3thn">3 THN — Jumlah Gaji × 2</option>
             </select>
           </label>
         </div>
@@ -458,8 +458,8 @@ const MONTHLY_ORDER = ['tunj_jabatan', 'tunj_transport', 'thp', 'thp_thn', 'cuti
 const MONTHLY_LABELS = {
   tunj_jabatan: 'Tunj. Jabatan /bln',
   tunj_transport: 'Tunj. Transport /bln',
-  thp: 'THP /bln',
-  thp_thn: 'THP /thn',
+  thp: 'Jumlah Gaji /bln',
+  thp_thn: 'Jumlah Gaji /thn',
   cuti: 'Tunj. Cuti /bln',
   bpjs_kes: 'BPJS Kes /bln',
   bpjs_tk: 'BPJS TK /bln',
@@ -664,8 +664,8 @@ const form = reactive({
   notes: '',
 })
 
-// ── Gaji /bln = Gaji Thn Sebelumnya + (THP thn sebelumnya × kenaikan%) ────
-// THP = gaji thn sebelumnya + tunj. jabatan + tunj. transport (tetap saja)
+// ── Gaji /bln = Gaji Thn Sebelumnya + (Jumlah Gaji thn sebelumnya × kenaikan%) ────
+// Jumlah Gaji = gaji thn sebelumnya + tunj. jabatan + tunj. transport (tetap saja)
 const kenaikanPct = computed(() => props.options.kenaikan?.[form.status] ?? 0)
 const hasPrevSalary = computed(() => Number(form.prev_year_salary) > 0)
 

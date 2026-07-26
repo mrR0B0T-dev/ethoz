@@ -12,7 +12,7 @@ use Illuminate\Validation\Rule;
 use Inertia\Inertia;
 
 /**
- * Modul Administrasi Ethoz: kelola pengguna, peran, dan hak akses modul.
+ * Modul Administrator Ethoz: kelola pengguna, peran, dan hak akses modul.
  * Peran "super-admin" terkunci pada akses seluruh modul ('*') dan tidak
  * dapat dihapus agar ekosistem tidak pernah kehilangan administratornya.
  */

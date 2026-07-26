@@ -7,6 +7,7 @@ use App\Http\Controllers\HcRkap\Concerns\ResolvesFiscalYear;
 use App\Models\HcRkap\Employee;
 use App\Services\HcRkap\BudgetService;
 use App\Services\HcRkap\EmployeeCostService;
+use App\Services\HcRkap\EmployeeRegistrar;
 use App\Services\HcRkap\EmployeeSpreadsheet;
 use App\Services\HcRkap\GradingService;
 use Illuminate\Http\Request;
@@ -23,6 +24,7 @@ class EmployeeController extends Controller
         private BudgetService $budget,
         private EmployeeSpreadsheet $spreadsheet,
         private GradingService $grading,
+        private EmployeeRegistrar $registrar,
     ) {}
 
     public function index(Request $request)
@@ -48,39 +50,19 @@ class EmployeeController extends Controller
 
     public function store(Request $request)
     {
-        $data = $this->applySalaryFormula($this->validated($request), $request);
-        $employee = Employee::create($this->applyAllowanceRules($this->applyGradeRules($data)));
-        $this->autoGrade($employee);
-        $this->syncRosterSourcedBudgets();
-
-        // pegawai baru otomatis tercatat sebagai kejadian masuk di modul Turnover
-        app(\App\Services\Turnover\TurnoverService::class)->recordHire($employee);
+        $this->registrar->create($this->validated($request), $this->resolveYear($request));
 
         return back()->with('success', 'Pegawai ditambahkan.');
     }
 
     public function update(Request $request, Employee $employee)
     {
-        $data = $this->applySalaryFormula($this->validated($request), $request);
-        $employee->update($this->applyAllowanceRules($this->applyGradeRules($data)));
-        $this->autoGrade($employee);
-        $this->syncRosterSourcedBudgets();
+        $this->registrar->update($employee, $this->validated($request), $this->resolveYear($request));
 
         return back()->with('success', 'Data pegawai diperbarui.');
     }
 
-    /** Tunj. Jabatan & Transport hanya untuk pegawai tetap; status lain selalu 0. */
-    private function applyAllowanceRules(array $data): array
-    {
-        if ($data['status'] !== 'tetap') {
-            $data['position_allowance'] = 0;
-            $data['transport_allowance'] = 0;
-        }
-
-        return $data;
-    }
-
-    /** Persen kenaikan gaji per status dari asumsi tahun terpilih. */
+    /** Persen kenaikan gaji per status dari asumsi tahun terpilih (info form). */
     private function kenaikanPct(\App\Models\HcRkap\FiscalYear $year): array
     {
         $values = $year->assumptions()
@@ -92,85 +74,10 @@ class EmployeeController extends Controller
             ->all();
     }
 
-    /**
-     * Gaji /bln dihitung dari Gaji Tahun Sebelumnya + kenaikan sesuai asumsi
-     * tahun terpilih. Besaran kenaikan dihitung dari THP tahun sebelumnya:
-     *   base = prev + (prev + tunj_jabatan + tunj_transport) × kenaikan%.
-     * Tanpa nilai tahun sebelumnya, gaji dasar diisi manual seperti biasa.
-     */
-    private function applySalaryFormula(array $data, Request $request): array
-    {
-        $prev = (float) ($data['prev_year_salary'] ?? 0);
-        if ($prev > 0) {
-            $pct = $this->kenaikanPct($this->resolveYear($request))[$data['status']] ?? 0;
-            // tunjangan hanya dimiliki pegawai tetap; status lain bernilai 0
-            $allowances = $data['status'] === 'tetap'
-                ? (float) ($data['position_allowance'] ?? 0) + (float) ($data['transport_allowance'] ?? 0)
-                : 0.0;
-            $data['base_salary'] = round($prev + ($prev + $allowances) * $pct / 100, 2);
-        }
-
-        return $data;
-    }
-
-    /**
-     * Terapkan aturan skala upah bila grade dipilih pada form:
-     * gaji dasar wajib dalam rentang min–max grade, tunjangan jabatan &
-     * transport mengikuti tarif grade, jabatan kosong diisi referensi grade.
-     * Tanpa grade → salary_grade_id dilepas agar grading otomatis berjalan.
-     */
-    private function applyGradeRules(array $data): array
-    {
-        if (empty($data['salary_grade_id'])) {
-            $data['salary_grade_id'] = null;
-            $data['grade_source'] = null;
-
-            return $data;
-        }
-
-        $grade = $this->grading->grades()->firstWhere('id', (int) $data['salary_grade_id']);
-
-        if ((float) $data['base_salary'] < $grade->salary_min
-            || (float) $data['base_salary'] > $grade->salary_max) {
-            throw \Illuminate\Validation\ValidationException::withMessages([
-                'base_salary' => sprintf(
-                    'Gaji pokok harus dalam rentang skala upah grade %s: Rp %s – Rp %s.',
-                    $grade->code,
-                    number_format($grade->salary_min, 0, ',', '.'),
-                    number_format($grade->salary_max, 0, ',', '.'),
-                ),
-            ]);
-        }
-
-        $data['position_allowance'] = $grade->position_allowance;
-        $data['transport_allowance'] = $grade->transport_allowance;
-        $data['jabatan'] = $data['jabatan'] ?: $grade->jabatan;
-        $data['grade_source'] = 'manual'; // dipilih pengguna → tidak ditimpa grading otomatis
-
-        return $data;
-    }
-
-    /** Grading ulang otomatis setelah data gaji berubah; grade manual dipertahankan. */
-    private function autoGrade(Employee $employee): void
-    {
-        if ($employee->grade_source === 'manual') {
-            return;
-        }
-        $grade = $this->grading->inferGrade($employee);
-        if ($grade) {
-            $employee->forceFill([
-                'salary_grade_id' => $grade->id,
-                'grade_source' => 'auto',
-                // jabatan kosong diisi dari referensi jabatan grade-nya
-                'jabatan' => $employee->jabatan ?: $grade->jabatan,
-            ])->save();
-        }
-    }
-
     public function destroy(Request $request, Employee $employee)
     {
         $employee->delete();
-        $this->syncRosterSourcedBudgets();
+        $this->costs->syncAllOpenYears();
 
         return back()->with('success', 'Pegawai dihapus.');
     }
@@ -229,7 +136,7 @@ class EmployeeController extends Controller
             Employee::insert($chunk);
         }
         $this->grading->applyToAll(); // grading otomatis pegawai baru (manual dipertahankan)
-        $this->syncRosterSourcedBudgets();
+        $this->costs->syncAllOpenYears();
 
         // pegawai hasil impor otomatis tercatat sebagai kejadian masuk (Turnover)
         $turnover = app(\App\Services\Turnover\TurnoverService::class);
@@ -243,16 +150,6 @@ class EmployeeController extends Controller
         }
 
         return back()->with('success', $message);
-    }
-
-    /**
-     * Perubahan roster pegawai memengaruhi jenis biaya bersumber pegawai
-     * (mis. Biaya Gaji Dasar). Samakan untuk semua tahun yang belum final.
-     */
-    private function syncRosterSourcedBudgets(): void
-    {
-        \App\Models\HcRkap\FiscalYear::where('status', '!=', 'final')->get()
-            ->each(fn ($year) => $this->costs->syncEmployeeSourcedEntries($year));
     }
 
     private function validated(Request $request): array

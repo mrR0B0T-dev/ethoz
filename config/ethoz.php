@@ -7,7 +7,7 @@
 | Registri modul ekosistem. Menambahkan modul HR baru cukup:
 |   1. daftarkan modulnya di sini dengan key unik,
 |   2. bungkus seluruh route modul dengan middleware `ethoz.module:<key>`,
-|   3. berikan akses modul ke peran terkait lewat modul Administrasi.
+|   3. berikan akses modul ke peran terkait lewat modul Administrator.
 | Portal dan RBAC otomatis mengikuti registri ini.
 */
 
@@ -35,8 +35,8 @@ return [
         ],
 
         'admin' => [
-            'name' => 'Administrasi',
-            'description' => 'Kelola pengguna, peran, dan hak akses modul ekosistem Ethoz.',
+            'name' => 'Administrator',
+            'description' => 'Kelola pengguna, peran, hak akses modul, dan pantau log aktivitas ekosistem Ethoz.',
             'entry' => 'ethoz.admin',
             'icon' => 'shield',
             'color' => '#7c3aed',

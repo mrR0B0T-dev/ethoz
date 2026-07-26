@@ -178,7 +178,7 @@ class EmployeeCostService
                     foreach ($row['components'] as $componentKey => $value) {
                         $cell[$componentKey] = ($cell[$componentKey] ?? 0) + $value;
                     }
-                    // THP disimpan setara tahunan agar pembagi 12 konsisten
+                    // Jumlah Gaji disimpan setara tahunan agar pembagi 12 konsisten
                     $cell['thp'] = ($cell['thp'] ?? 0) + 12 * $row['thp'];
                 });
 
@@ -244,7 +244,7 @@ class EmployeeCostService
     /**
      * Model Biaya Purnabakti (sheet "Biaya Purnabakti"): per pegawai tetap
      * ber-tanggal-lahir — pesangon 9× + UPMK × estimasi gaji terakhir
-     * (THP × (1+growth)^sisa), diamortisasi ke sisa masa kerja.
+     * (Jumlah Gaji × (1+growth)^sisa), diamortisasi ke sisa masa kerja.
      */
     public function purnabaktiModel(FiscalYear $year): array
     {
@@ -297,7 +297,7 @@ class EmployeeCostService
 
     /**
      * Model Tunjangan Cuti: per pegawai tetap dengan kriteria Bulan & Hak
-     * Cuti — nominal = THP × 2 (hak "3 THN") atau THP × 1 (hak "THN"),
+     * Cuti — nominal = Jumlah Gaji × 2 (hak "3 THN") atau Jumlah Gaji × 1 (hak "THN"),
      * dibukukan pada bulan cuti masing-masing.
      */
     public function cutiModel(FiscalYear $year): array
@@ -414,7 +414,7 @@ class EmployeeCostService
 
     /**
      * Hitung ulang Gaji /bln seluruh pegawai dari Gaji Tahun Sebelumnya sesuai
-     * asumsi kenaikan tahun ini. Besaran kenaikan dihitung dari THP tahun
+     * asumsi kenaikan tahun ini. Besaran kenaikan dihitung dari Jumlah Gaji tahun
      * sebelumnya (gaji + tunj. jabatan + tunj. transport):
      *   base = prev + (prev + tunj_jabatan + tunj_transport) × kenaikan%.
      * Pegawai tanpa gaji tahun sebelumnya tidak disentuh (diisi manual).
@@ -476,14 +476,15 @@ class EmployeeCostService
             $monthly['tunj_jabatan'] = $e->position_allowance;
             $monthly['tunj_transport'] = $e->transport_allowance;
         }
-        // THP = gaji pokok + tunj. jabatan + tunj. transport
+        // Jumlah Gaji = gaji pokok + tunj. jabatan + tunj. transport
         $monthly['thp'] = $thp;
         $monthly['thp_thn'] = 12 * $thp;
         if ($e->status === 'tetap') {
             $monthly['cuti'] = ($components['cuti'] ?? 0) / 12;
         }
-        $monthly['bpjs_kes'] = $this->a('bpjs_kes', 4) / 100 * $base;
-        $monthly['bpjs_tk'] = $this->bpjsTkRate() / 100 * $base;
+        // BPJS Kes & TK dari Jumlah Gaji (konsisten dengan komponen tahunan)
+        $monthly['bpjs_kes'] = $this->a('bpjs_kes', 4) / 100 * $thp;
+        $monthly['bpjs_tk'] = $this->bpjsTkRate() / 100 * $thp;
         if ($e->status === 'tetap') {
             $monthly['dplk'] = $this->a('dplk', 21) / 100 * $base;
         }
@@ -523,7 +524,7 @@ class EmployeeCostService
         ];
     }
 
-    /** Nominal tunjangan cuti setahun: THP × hak cuti (3thn → ×2, thn → ×1). */
+    /** Nominal tunjangan cuti setahun: Jumlah Gaji × hak cuti (3thn → ×2, thn → ×1). */
     private function cutiNominal(Employee $e, float $thp): float
     {
         if ($e->status !== 'tetap' || ! $e->cuti_entitlement || ! $e->cuti_month) {
@@ -545,16 +546,16 @@ class EmployeeCostService
                 'thr' => $this->a('thr_kontrak', 2) * $base,
                 'bonus' => $this->a('bonus_kontrak', 1.5) * $base,
                 'kompensasi' => $this->a('kompensasi_kontrak', 1) * $base,
-                'bpjs_kes' => $this->a('bpjs_kes', 4) / 100 * 12 * $base,
-                'bpjs_tk' => $this->bpjsTkRate() / 100 * 12 * $base,
+                'bpjs_kes' => $this->a('bpjs_kes', 4) / 100 * 12 * $thp,
+                'bpjs_tk' => $this->bpjsTkRate() / 100 * 12 * $thp,
             ],
             'honor' => [
                 'gaji' => 12 * $base,
                 'thr' => $this->a('thr_honor', 1) * $base,
                 'bonus' => $this->a('bonus_honor', 0.5) * $base,
                 'kompensasi' => $this->a('kompensasi_honor', 1) * $base,
-                'bpjs_kes' => $this->a('bpjs_kes', 4) / 100 * 12 * $base,
-                'bpjs_tk' => $this->bpjsTkRate() / 100 * 12 * $base,
+                'bpjs_kes' => $this->a('bpjs_kes', 4) / 100 * 12 * $thp,
+                'bpjs_tk' => $this->bpjsTkRate() / 100 * 12 * $thp,
             ],
             default => (function () use ($e, $base, $thp) {
                 $isDireksi = $e->status === 'direksi';
@@ -568,8 +569,9 @@ class EmployeeCostService
                 if (! $isDireksi) {
                     $components['cuti'] = $this->cutiNominal($e, $thp);
                 }
-                $components['bpjs_kes'] = $this->a('bpjs_kes', 4) / 100 * 12 * $base;
-                $components['bpjs_tk'] = $this->bpjsTkRate() / 100 * 12 * $base;
+                // BPJS Kes & TK dihitung dari Jumlah Gaji (gaji pokok + tunjangan)
+                $components['bpjs_kes'] = $this->a('bpjs_kes', 4) / 100 * 12 * $thp;
+                $components['bpjs_tk'] = $this->bpjsTkRate() / 100 * 12 * $thp;
                 if (! $isDireksi) {
                     $components['dplk'] = $this->a('dplk', 21) / 100 * 12 * $base;
                 }
@@ -601,7 +603,7 @@ class EmployeeCostService
 
     /**
      * PPh 21 per bulan (1..12) satu pegawai, mengikuti model sheet PPH:
-     * bruto = gaji (THP utk tetap) + premi JKK+JKM+BPJS Kes + THR/12 +
+     * bruto = gaji (Jumlah Gaji utk tetap) + premi JKK+JKM+BPJS Kes + THR/12 +
      * Bonus/12 + Kompensasi/12 (+ tunjangan cuti pada bulan cutinya),
      * lalu PPh = TER(kategori PTKP, bruto) × bruto.
      */
@@ -631,9 +633,9 @@ class EmployeeCostService
 
     private function notesFor(string $status): array
     {
-        $bpjs = 'BPJS Kes '.$this->a('bpjs_kes', 4).'% + BPJS TK '.round($this->bpjsTkRate(), 2).'% dari gaji pokok';
+        $bpjs = 'BPJS Kes '.$this->a('bpjs_kes', 4).'% + BPJS TK '.round($this->bpjsTkRate(), 2).'% dari Jumlah Gaji';
         $pph = 'PPh 21 dihitung dengan Tarif Efektif Rata-rata (TER, PP 58/2023) dari penghasilan bruto bulanan sesuai kategori PTKP pegawai';
-        $kenaikan = 'Gaji Pokok /bln = Gaji Pokok thn sebelumnya + (THP thn sebelumnya × %Kenaikan Gaji); THP = gaji pokok + tunj. jabatan + tunj. transport';
+        $kenaikan = 'Gaji Pokok /bln = Gaji Pokok thn sebelumnya + (Jumlah Gaji thn sebelumnya × %Kenaikan Gaji); Jumlah Gaji = gaji pokok + tunj. jabatan + tunj. transport';
 
         return match ($status) {
             'kontrak' => [
@@ -650,10 +652,10 @@ class EmployeeCostService
                 $kenaikan,
             ],
             default => [
-                'THR '.$this->a('thr_tetap', 2).' bln, Bonus '.$this->a('bonus_tetap', 3.5).' bln dari THP (gaji + tunjangan)',
+                'THR '.$this->a('thr_tetap', 2).' bln, Bonus '.$this->a('bonus_tetap', 3.5).' bln dari Jumlah Gaji (gaji + tunjangan)',
                 $bpjs,
                 'DPLK '.$this->a('dplk', 21).'% dari Gaji Pokok /bln — grand total per unit menjadi nilai Iuran Dana Pensiun',
-                'Tunjangan Cuti = THP × hak cuti (3 THN = ×2, THN = ×1) pada bulan cuti masing-masing pegawai',
+                'Tunjangan Cuti = Jumlah Gaji × hak cuti (3 THN = ×2, THN = ×1) pada bulan cuti masing-masing pegawai',
                 $pph,
                 $kenaikan,
             ],

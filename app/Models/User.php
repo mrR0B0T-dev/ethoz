@@ -56,6 +56,15 @@ class User extends Authenticatable
         return in_array('*', $keys, true) || in_array($key, $keys, true);
     }
 
+    /**
+     * Apakah pengguna memegang peran Super Admin. Dipakai untuk fitur yang
+     * dibatasi khusus administrator, mis. log aktivitas (hanya-lihat).
+     */
+    public function isSuperAdmin(): bool
+    {
+        return $this->ethozRoles()->where('name', 'super-admin')->exists();
+    }
+
     /** Modul registri (config/ethoz.php) yang boleh diakses pengguna ini. */
     public function accessibleModules(): array
     {

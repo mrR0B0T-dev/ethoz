@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Auth\LoginController;
+use App\Http\Controllers\Ethoz\ActivityLogController;
 use App\Http\Controllers\Ethoz\AdminController;
 use App\Http\Controllers\Ethoz\HomeController;
 use Illuminate\Support\Facades\Route;
@@ -23,7 +24,7 @@ Route::post('/logout', [LoginController::class, 'destroy'])->name('logout');
 Route::redirect('/', '/ethoz');
 Route::get('/ethoz', [HomeController::class, 'index'])->name('ethoz.home');
 
-// ── Modul Administrasi: pengguna, peran & hak akses modul ───────────────────
+// ── Modul Administrator: pengguna, peran, hak akses modul & log aktivitas ───
 Route::prefix('ethoz/admin')->middleware(['ethoz.auth', 'ethoz.module:admin'])->group(function () {
     Route::get('/', [AdminController::class, 'index'])->name('ethoz.admin');
     Route::post('/pengguna', [AdminController::class, 'storeUser'])->name('ethoz.admin.users.store');
@@ -32,6 +33,10 @@ Route::prefix('ethoz/admin')->middleware(['ethoz.auth', 'ethoz.module:admin'])->
     Route::post('/peran', [AdminController::class, 'storeRole'])->name('ethoz.admin.roles.store');
     Route::put('/peran/{role}', [AdminController::class, 'updateRole'])->name('ethoz.admin.roles.update');
     Route::delete('/peran/{role}', [AdminController::class, 'destroyRole'])->name('ethoz.admin.roles.destroy');
+
+    // Log aktivitas — hanya-lihat, khusus Super Admin (tidak dapat diubah siapa pun)
+    Route::get('/log-aktivitas', [ActivityLogController::class, 'index'])
+        ->middleware('ethoz.super')->name('ethoz.admin.activity');
 });
 
 // ── Modul RKAP HC (Human Capital & Corporate Secretary) ─────────────────────

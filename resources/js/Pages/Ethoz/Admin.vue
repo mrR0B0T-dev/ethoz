@@ -1,19 +1,15 @@
 <template>
-  <EthozLayout title="Akses Ethoz">
-    <div class="mb-5 flex flex-wrap items-center gap-3">
-      <div>
-        <h1 class="text-xl font-bold text-gray-900">Akses Ethoz</h1>
-        <p class="text-sm text-gray-500">Kelola pengguna, peran, dan hak akses modul ekosistem.</p>
-      </div>
-      <div class="ml-auto flex items-center gap-2">
-        <button v-if="tab === 'users'" class="hc-btn" @click="openCreateUser">
-          <PlusIcon class="h-4 w-4" /> Tambah Pengguna
-        </button>
-        <button v-else class="hc-btn" @click="openCreateRole">
-          <PlusIcon class="h-4 w-4" /> Tambah Peran
-        </button>
-      </div>
-    </div>
+  <ModuleLayout title="Pengguna & Peran" :brand="brand" :accent="accent" :menus="menus">
+    <template #header>
+      <button v-if="tab === 'users'" class="hc-btn !bg-[#7c3aed] hover:!bg-[#6d28d9]" @click="openCreateUser">
+        <PlusIcon class="h-4 w-4" /> Tambah Pengguna
+      </button>
+      <button v-else class="hc-btn !bg-[#7c3aed] hover:!bg-[#6d28d9]" @click="openCreateRole">
+        <PlusIcon class="h-4 w-4" /> Tambah Peran
+      </button>
+    </template>
+
+    <p class="mb-5 text-sm text-gray-500">Kelola pengguna, peran, dan hak akses modul ekosistem.</p>
 
     <!-- tabs -->
     <div class="mb-5 flex items-center gap-1 rounded-xl border border-gray-200 bg-white p-1.5">
@@ -185,7 +181,7 @@
         </div>
       </form>
     </HcModal>
-  </EthozLayout>
+  </ModuleLayout>
 </template>
 
 <script setup>
@@ -194,14 +190,17 @@ import { router, usePage } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
 import { PencilSquareIcon, PlusIcon, TrashIcon } from '@heroicons/vue/24/outline'
-import EthozLayout from '@/Layouts/EthozLayout.vue'
+import ModuleLayout from '@/Layouts/ModuleLayout.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
+import { useAdminNav } from '@/composables/useAdminNav'
 
 const props = defineProps({
   users: Array,
   roles: Array,
   modules: Array, // registri modul: [{ key, name }]
 })
+
+const { brand, accent, menus } = useAdminNav()
 
 const me = computed(() => usePage().props.auth?.user
   ? props.users.find(u => u.email === usePage().props.auth.user.email)

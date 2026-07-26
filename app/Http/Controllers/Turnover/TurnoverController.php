@@ -7,6 +7,8 @@ use App\Models\HcRkap\Employee;
 use App\Models\Turnover\TurnoverEvent;
 use App\Services\HcRkap\BudgetService;
 use App\Services\HcRkap\EmployeeCostService;
+use App\Services\HcRkap\EmployeeRegistrar;
+use App\Services\HcRkap\GradingService;
 use App\Services\Turnover\TurnoverService;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
@@ -26,6 +28,8 @@ class TurnoverController extends Controller
         private TurnoverService $turnover,
         private EmployeeCostService $costs,
         private BudgetService $budget,
+        private GradingService $grading,
+        private EmployeeRegistrar $registrar,
     ) {}
 
     public function index(Request $request)
@@ -49,11 +53,57 @@ class TurnoverController extends Controller
                 'reasons' => collect(TurnoverService::REASONS)
                     ->map(fn ($r, $key) => ['key' => $key, 'label' => $r['label'], 'category' => $r['category']])
                     ->values(),
+                // struktur grade & skala upah — form "Pegawai Masuk" mengikuti
+                // aturan yang sama dengan modul RKAP HC (jabatan → grade → upah)
+                'grades' => $this->grading->grades()->map(fn ($g) => $g->only(
+                    'id', 'jabatan', 'code', 'level',
+                    'salary_min', 'salary_mid', 'salary_max',
+                    'position_allowance', 'transport_allowance',
+                ))->values(),
             ],
         ]);
     }
 
     public function store(Request $request)
+    {
+        // "Pegawai Masuk" = pendaftaran pegawai baru langsung ke roster RKAP HC;
+        // kejadian masuk otomatis tercatat oleh registrar (recordHire).
+        return $request->input('type') === 'masuk'
+            ? $this->storeHire($request)
+            : $this->storeExit($request);
+    }
+
+    /**
+     * Catat pegawai masuk: buat pegawai roster mengikuti aturan skala upah &
+     * grading modul RKAP HC (jabatan → grade → gaji/tunjangan), lalu kejadian
+     * masuk otomatis tercatat.
+     */
+    private function storeHire(Request $request)
+    {
+        $data = $request->validate([
+            'name' => ['required', 'string', 'max:150'],
+            'jabatan' => ['nullable', 'string', 'max:150'],
+            'salary_grade_id' => ['nullable', 'exists:hc_salary_grades,id'],
+            'work_unit_id' => ['nullable', 'exists:hc_work_units,id'],
+            'status' => ['required', Rule::in(['tetap', 'kontrak', 'honor', 'direksi'])],
+            'base_salary' => ['required', 'numeric', 'min:0'],
+            'position_allowance' => ['nullable', 'numeric', 'min:0'],
+            'transport_allowance' => ['nullable', 'numeric', 'min:0'],
+            'join_date' => ['nullable', 'date'],
+            'birth_date' => ['nullable', 'date'],
+            'ptkp_status' => ['nullable', Rule::in(['TK/0', 'TK/1', 'TK/2', 'TK/3', 'K/0', 'K/1', 'K/2', 'K/3'])],
+            'notes' => ['nullable', 'string', 'max:1000'],
+        ], [], ['name' => 'nama pegawai', 'base_salary' => 'gaji pokok']);
+
+        // registrar menegakkan aturan skala upah grade (validasi rentang gaji),
+        // tunjangan khusus pegawai tetap, grading otomatis & catat kejadian masuk
+        $this->registrar->create($data);
+
+        return back()->with('success', 'Pegawai masuk dicatat — ditambahkan ke roster & kejadian masuk tercatat otomatis.');
+    }
+
+    /** Catat pegawai keluar (opsional menonaktifkan pegawai roster). */
+    private function storeExit(Request $request)
     {
         $data = $this->validated($request);
 
@@ -68,23 +118,23 @@ class TurnoverController extends Controller
             'work_unit_id' => $employee?->work_unit_id ?? ($data['work_unit_id'] ?? null),
             'employee_status' => $employee?->status ?? ($data['employee_status'] ?? null),
             'jabatan' => $employee?->jabatan ?? ($data['jabatan'] ?? null),
-            'type' => $data['type'],
+            'type' => 'keluar',
             'event_date' => $data['event_date'],
-            'reason' => $data['type'] === 'keluar' ? $data['reason'] : null,
-            'category' => $data['type'] === 'keluar' ? $this->turnover->categoryOf($data['reason']) : null,
+            'reason' => $data['reason'],
+            'category' => $this->turnover->categoryOf($data['reason']),
             'join_date' => $employee?->join_date?->toDateString() ?? ($data['join_date'] ?? null),
             'notes' => $data['notes'] ?? null,
         ]);
 
         // keluar + pegawai roster → nonaktifkan & samakan anggaran bersumber pegawai
-        if ($event->type === 'keluar' && $employee && $request->boolean('deactivate', true) && $employee->is_active) {
+        if ($employee && $request->boolean('deactivate', true) && $employee->is_active) {
             $employee->forceFill(['is_active' => false])->save();
             $this->costs->syncAllOpenYears();
 
             return back()->with('success', 'Kejadian keluar dicatat — pegawai dinonaktifkan dari roster & anggaran disamakan.');
         }
 
-        return back()->with('success', 'Kejadian turnover dicatat.');
+        return back()->with('success', 'Kejadian keluar dicatat.');
     }
 
     public function update(Request $request, TurnoverEvent $event)

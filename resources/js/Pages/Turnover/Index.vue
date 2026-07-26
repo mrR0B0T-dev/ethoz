@@ -1,29 +1,22 @@
 <template>
-  <EthozLayout title="Turnover Pegawai">
-    <!-- header modul -->
-    <div class="mb-5 flex flex-wrap items-center gap-3">
-      <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0d9488] text-white">
-        <ArrowsRightLeftIcon class="h-6 w-6" />
-      </div>
-      <div>
-        <h1 class="text-xl font-bold text-gray-900">Turnover Pegawai</h1>
-        <p class="text-sm text-gray-500">Arus masuk-keluar pegawai, tingkat turnover & retensi — tahun {{ tahun }}</p>
-      </div>
-      <div class="ml-auto flex items-center gap-2">
-        <label class="flex items-center gap-2 text-sm">
-          <CalendarIcon class="h-4 w-4 text-gray-400" />
-          <select
-            :value="tahun" class="hc-select"
-            @change="router.get(route('turnover.dashboard'), { tahun: $event.target.value })"
-          >
-            <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
-          </select>
-        </label>
-        <button class="hc-btn !bg-[#0d9488] hover:!bg-[#0b7c71]" @click="openCreate">
-          <PlusIcon class="h-4 w-4" /> Catat Kejadian
-        </button>
-      </div>
-    </div>
+  <ModuleLayout title="Turnover Pegawai" :brand="brand" accent="#0d9488" :menus="menus">
+    <!-- kontrol modul: pemilih tahun + aksi utama -->
+    <template #header>
+      <label class="flex items-center gap-2 text-sm">
+        <CalendarIcon class="h-4 w-4 text-gray-400" />
+        <select
+          :value="tahun" class="hc-select"
+          @change="router.get(route('turnover.dashboard'), { tahun: $event.target.value })"
+        >
+          <option v-for="y in years" :key="y" :value="y">{{ y }}</option>
+        </select>
+      </label>
+      <button class="hc-btn !bg-[#0d9488] hover:!bg-[#0b7c71]" @click="openCreate">
+        <PlusIcon class="h-4 w-4" /> Catat Kejadian
+      </button>
+    </template>
+
+    <p class="mb-5 text-sm text-gray-500">Arus masuk-keluar pegawai, tingkat turnover & retensi — tahun {{ tahun }}</p>
 
     <!-- ringkasan -->
     <div class="mb-5 grid grid-cols-2 gap-4 lg:grid-cols-4">
@@ -225,19 +218,131 @@
     </p>
 
     <!-- modal catat/ubah kejadian -->
-    <HcModal :show="modal" :title="editingEvent ? 'Ubah Kejadian' : 'Catat Kejadian Turnover'" @close="modal = false">
-      <form class="space-y-3" @submit.prevent="submit">
-        <!-- jenis -->
-        <div v-if="!editingEvent" class="grid grid-cols-2 gap-2">
-          <button
-            v-for="t in [['masuk', 'Pegawai Masuk'], ['keluar', 'Pegawai Keluar']]" :key="t[0]" type="button"
-            class="rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
-            :class="form.type === t[0]
-              ? (t[0] === 'masuk' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-red-400 bg-red-50 text-red-700')
-              : 'border-gray-200 text-gray-500 hover:bg-gray-50'"
-            @click="form.type = t[0]"
-          >{{ t[1] }}</button>
+    <HcModal :show="modal" :title="modalTitle" @close="modal = false">
+      <!-- jenis kejadian (hanya saat mencatat baru) -->
+      <div v-if="!editingEvent" class="mb-3 grid grid-cols-2 gap-2">
+        <button
+          v-for="t in [['masuk', 'Pegawai Masuk'], ['keluar', 'Pegawai Keluar']]" :key="t[0]" type="button"
+          class="rounded-lg border px-3 py-2 text-sm font-medium transition-colors"
+          :class="createType === t[0]
+            ? (t[0] === 'masuk' ? 'border-emerald-500 bg-emerald-50 text-emerald-700' : 'border-red-400 bg-red-50 text-red-700')
+            : 'border-gray-200 text-gray-500 hover:bg-gray-50'"
+          @click="createType = t[0]"
+        >{{ t[1] }}</button>
+      </div>
+
+      <!-- ── FORM PEGAWAI MASUK — daftar pegawai baru langsung ke roster ─── -->
+      <form v-if="isHireForm" class="space-y-3" @submit.prevent="submitHire">
+        <label class="block">
+          <span class="mb-1 block text-xs font-medium text-gray-600">Nama Pegawai</span>
+          <input v-model="hireForm.name" type="text" required class="hc-input w-full" />
+        </label>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Jabatan</span>
+            <select v-model="hireForm.jabatan" class="hc-select w-full" @change="onJabatanChange">
+              <option value="">– pilih jabatan –</option>
+              <option v-for="j in jabatanOptions" :key="j" :value="j">{{ j }}</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Grade / Level</span>
+            <select v-model="hireForm.salary_grade_id" class="hc-select w-full" @change="onGradeChange">
+              <option :value="null">– tanpa grade (isi manual) –</option>
+              <option v-for="g in gradeOptions" :key="g.id" :value="g.id">
+                {{ g.code }} · Level {{ g.level }} — {{ g.jabatan }}
+              </option>
+            </select>
+          </label>
         </div>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Status</span>
+            <select v-model="hireForm.status" class="hc-select w-full">
+              <option v-for="(label, s) in STATUS_LABELS" :key="s" :value="s">{{ label }}</option>
+            </select>
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Unit Kerja</span>
+            <select v-model="hireForm.work_unit_id" class="hc-select w-full">
+              <option :value="null">–</option>
+              <option v-for="u in unitOptions" :key="u.id" :value="u.id">{{ u.label }}</option>
+            </select>
+          </label>
+        </div>
+
+        <label class="block">
+          <span class="mb-1 block text-xs font-medium text-gray-600">Gaji Pokok /bln</span>
+          <HcNumberInput
+            v-model="hireForm.base_salary" required
+            class="hc-input w-full text-right"
+            :class="salaryError ? '!border-red-400 focus:!border-red-500 focus:!ring-red-500' : ''"
+          />
+        </label>
+
+        <div class="grid grid-cols-2 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Jabatan /bln</span>
+            <HcNumberInput v-model="hireForm.position_allowance" :disabled="!isTetap || !!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Tunj. Transport /bln</span>
+            <HcNumberInput v-model="hireForm.transport_allowance" :disabled="!isTetap || !!selectedGrade" class="hc-input w-full text-right disabled:bg-gray-50 disabled:text-gray-500" />
+          </label>
+        </div>
+        <p v-if="!isTetap" class="text-[11px] leading-relaxed text-gray-500">
+          Tunj. Jabatan &amp; Transport hanya untuk Pegawai Tetap — status
+          {{ STATUS_LABELS[hireForm.status] }} otomatis 0.
+        </p>
+        <p v-if="salaryError" class="flex items-start gap-1 text-xs font-medium text-red-600">
+          <ExclamationTriangleIcon class="mt-0.5 h-3.5 w-3.5 shrink-0" /> {{ salaryError }}
+        </p>
+        <p v-else-if="selectedGrade" class="text-[11px] leading-relaxed text-gray-500">
+          Skala upah grade <b>{{ selectedGrade.code }}</b>: Gaji Pokok
+          {{ fmtNum(selectedGrade.salary_min) }} – {{ fmtNum(selectedGrade.salary_max) }} /bln.
+          <template v-if="isTetap">Tunj. Jabatan &amp; Transport otomatis mengikuti tarif grade.</template>
+        </p>
+
+        <div class="grid grid-cols-3 gap-3">
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Tgl Lahir</span>
+            <input v-model="hireForm.birth_date" type="date" class="hc-input w-full" />
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Tgl Join</span>
+            <input v-model="hireForm.join_date" type="date" class="hc-input w-full" />
+          </label>
+          <label class="block">
+            <span class="mb-1 block text-xs font-medium text-gray-600">Status PTKP</span>
+            <select v-model="hireForm.ptkp_status" class="hc-select w-full">
+              <option :value="null">– (default TK/0)</option>
+              <option v-for="p in PTKP_OPTIONS" :key="p" :value="p">{{ p }}</option>
+            </select>
+          </label>
+        </div>
+        <p class="text-[11px] leading-relaxed text-gray-400">
+          Tgl Lahir → model Biaya Purnabakti · Status PTKP → PPh 21 TER ·
+          Tgl Join → dasar masa kerja &amp; tanggal kejadian masuk.
+        </p>
+
+        <label class="block">
+          <span class="mb-1 block text-xs font-medium text-gray-600">Catatan</span>
+          <textarea v-model="hireForm.notes" rows="2" maxlength="1000" class="hc-input w-full resize-y"
+            placeholder="mis. penempatan awal, hasil rekrutmen, dsb." />
+        </label>
+
+        <div class="flex justify-end gap-2 pt-2">
+          <button type="button" class="hc-btn-secondary" @click="modal = false">Batal</button>
+          <button type="submit" class="hc-btn !bg-[#0d9488] hover:!bg-[#0b7c71]" :disabled="!!salaryError">
+            Catat &amp; Tambah ke Roster
+          </button>
+        </div>
+      </form>
+
+      <!-- ── FORM PEGAWAI KELUAR / UBAH KEJADIAN ─────────────────────────── -->
+      <form v-else class="space-y-3" @submit.prevent="submit">
 
         <!-- pegawai roster (opsional; keluar dari roster memicu nonaktif) -->
         <label v-if="!editingEvent" class="block">
@@ -282,7 +387,7 @@
 
         <div class="grid grid-cols-2 gap-3">
           <label class="block">
-            <span class="mb-1 block text-xs font-medium text-gray-600">Tanggal Kejadian</span>
+            <span class="mb-1 block text-xs font-medium text-gray-600">Tanggal Keluar</span>
             <input v-model="form.event_date" type="date" required class="hc-input w-full" />
           </label>
           <label class="block">
@@ -327,21 +432,22 @@
         </div>
       </form>
     </HcModal>
-  </EthozLayout>
+  </ModuleLayout>
 </template>
 
 <script setup>
-import { computed, reactive, ref } from 'vue'
+import { computed, reactive, ref, watch } from 'vue'
 import { router } from '@inertiajs/vue3'
 import { route } from 'ziggy-js'
 import Swal from 'sweetalert2'
 import {
-  ArrowsRightLeftIcon, CalendarIcon, MagnifyingGlassIcon,
+  ArrowsRightLeftIcon, CalendarIcon, ExclamationTriangleIcon, MagnifyingGlassIcon,
   PencilSquareIcon, PlusIcon, TrashIcon,
 } from '@heroicons/vue/24/outline'
-import EthozLayout from '@/Layouts/EthozLayout.vue'
+import ModuleLayout from '@/Layouts/ModuleLayout.vue'
 import StatCard from '@/Components/HcRkap/StatCard.vue'
 import HcModal from '@/Components/HcRkap/HcModal.vue'
+import HcNumberInput from '@/Components/HcRkap/HcNumberInput.vue'
 import TrendChart from '@/Components/Turnover/TrendChart.vue'
 import { useHcFormat } from '@/composables/useHcFormat'
 
@@ -358,6 +464,17 @@ const props = defineProps({
 })
 
 const { fmtNum } = useHcFormat()
+
+// identitas & navigasi sidebar modul Turnover
+const brand = {
+  badge: 'TO',
+  name: 'Turnover Pegawai',
+  subtitle: 'Human Capital & Corporate Secretary',
+  note: 'Monitoring arus masuk-keluar\npegawai & tingkat retensi',
+}
+const menus = [
+  { label: 'Dashboard Turnover', icon: ArrowsRightLeftIcon, route: 'turnover.dashboard', exact: true },
+]
 
 const STATUS_LABELS = { tetap: 'Pegawai Tetap', kontrak: 'Pegawai Kontrak', honor: 'Honor / Outsource', direksi: 'Direksi' }
 const CATEGORY_LABELS = { sukarela: 'sukarela', tidak_sukarela: 'tidak sukarela', lainnya: 'lainnya' }
@@ -403,11 +520,86 @@ const unitOptions = computed(() => {
 // ── CRUD kejadian ──────────────────────────────────────────────────────────
 const modal = ref(false)
 const editingEvent = ref(null)
+// jenis kejadian saat mencatat baru; menentukan form mana yang tampil
+const createType = ref('masuk')
+const isHireForm = computed(() => !editingEvent.value && createType.value === 'masuk')
+const modalTitle = computed(() => editingEvent.value
+  ? 'Ubah Kejadian'
+  : (createType.value === 'masuk' ? 'Catat Pegawai Masuk' : 'Catat Pegawai Keluar'))
+
 const form = reactive({
   type: 'keluar', employee_id: null, employee_name: '', work_unit_id: null,
   employee_status: null, jabatan: '', event_date: '', join_date: null,
   reason: null, notes: '', deactivate: true,
 })
+
+// ── Form "Pegawai Masuk": buat pegawai roster (aturan sama dg modul RKAP HC) ─
+const PTKP_OPTIONS = ['TK/0', 'TK/1', 'TK/2', 'TK/3', 'K/0', 'K/1', 'K/2', 'K/3']
+const hireForm = reactive({
+  name: '', jabatan: '', salary_grade_id: null, status: 'tetap', work_unit_id: null,
+  base_salary: 0, position_allowance: 0, transport_allowance: 0,
+  join_date: '', birth_date: null, ptkp_status: null, notes: '',
+})
+
+// struktur grade → jabatan & skala upah (mengikuti menu Pegawai & Biaya RKAP HC)
+const grades = computed(() => props.options.grades ?? [])
+const jabatanOptions = computed(() => {
+  const seen = new Set()
+  const out = []
+  grades.value.forEach((g) => {
+    if (!seen.has(g.jabatan)) { seen.add(g.jabatan); out.push(g.jabatan) }
+  })
+  return out
+})
+// grade difilter mengikuti jabatan terpilih (cascading dropdown)
+const gradeOptions = computed(() => hireForm.jabatan
+  ? grades.value.filter(g => g.jabatan === hireForm.jabatan)
+  : grades.value)
+const selectedGrade = computed(() => grades.value.find(g => g.id === hireForm.salary_grade_id) ?? null)
+const isTetap = computed(() => hireForm.status === 'tetap')
+
+// pilih grade → jabatan & tunjangan mengikuti tarif grade (tetap saja)
+function onGradeChange() {
+  const g = selectedGrade.value
+  if (!g) return
+  hireForm.jabatan = g.jabatan
+  hireForm.position_allowance = isTetap.value ? g.position_allowance : 0
+  hireForm.transport_allowance = isTetap.value ? g.transport_allowance : 0
+}
+// ganti jabatan → grade yang tidak sesuai dilepas
+function onJabatanChange() {
+  if (selectedGrade.value && selectedGrade.value.jabatan !== hireForm.jabatan) {
+    hireForm.salary_grade_id = null
+  }
+}
+// tunjangan hanya untuk pegawai tetap; status lain otomatis 0 & terkunci
+watch(isTetap, (tetap) => {
+  if (!tetap) {
+    hireForm.position_allowance = 0
+    hireForm.transport_allowance = 0
+  } else if (selectedGrade.value) {
+    hireForm.position_allowance = selectedGrade.value.position_allowance
+    hireForm.transport_allowance = selectedGrade.value.transport_allowance
+  }
+})
+// gaji pokok wajib dalam rentang skala upah grade terpilih
+const salaryError = computed(() => {
+  const g = selectedGrade.value
+  if (!g) return null
+  const salary = Number(hireForm.base_salary) || 0
+  if (salary < g.salary_min || salary > g.salary_max) {
+    return `Gaji Pokok di luar skala upah grade ${g.code}: harus ${fmtNum(g.salary_min)} – ${fmtNum(g.salary_max)} /bln.`
+  }
+  return null
+})
+
+function submitHire() {
+  if (salaryError.value) return
+  router.post(route('turnover.store'), { ...hireForm, type: 'masuk', tahun: props.tahun }, {
+    preserveScroll: true,
+    onSuccess: () => { modal.value = false },
+  })
+}
 
 // pilih pegawai roster → snapshot terisi otomatis
 function onEmployeeChange() {
@@ -422,6 +614,12 @@ function onEmployeeChange() {
 
 function openCreate() {
   editingEvent.value = null
+  createType.value = 'masuk'
+  Object.assign(hireForm, {
+    name: '', jabatan: '', salary_grade_id: null, status: 'tetap', work_unit_id: null,
+    base_salary: 0, position_allowance: 0, transport_allowance: 0,
+    join_date: '', birth_date: null, ptkp_status: null, notes: '',
+  })
   Object.assign(form, {
     type: 'keluar', employee_id: null, employee_name: '', work_unit_id: null,
     employee_status: null, jabatan: '', event_date: new Date().toISOString().slice(0, 10),
